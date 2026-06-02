@@ -52,6 +52,24 @@ const FACE_LANDMARKER_MODEL =
 
 let faceLandmarkerPromise: Promise<FaceLandmarker> | null = null;
 
+function ignoreTensorFlowLiteInfoLogs() {
+  const originalConsoleError = console.error.bind(console);
+
+  console.error = (...args: unknown[]) => {
+    const message = args.map((arg) => String(arg)).join(" ");
+
+    if (message.includes("Created TensorFlow Lite XNNPACK delegate for CPU")) {
+      return;
+    }
+
+    originalConsoleError(...args);
+  };
+
+  return () => {
+    console.error = originalConsoleError;
+  };
+}
+
 function getFriendlyCameraError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
 
@@ -357,7 +375,10 @@ export default function EyeTrackingDemo() {
   }, []);
 
   useEffect(() => {
+    const restoreConsoleError = ignoreTensorFlowLiteInfoLogs();
+
     return () => {
+      restoreConsoleError();
       stopTracking();
     };
   }, [stopTracking]);
