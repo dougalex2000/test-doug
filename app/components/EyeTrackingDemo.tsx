@@ -22,6 +22,12 @@ type CalibrationSample = {
   target: GazeData;
 };
 
+type FaceDebugFrame = {
+  landmarks: NormalizedLandmark[];
+  videoWidth: number;
+  videoHeight: number;
+};
+
 const calibrationPoints = [
   { id: "top-left", x: 5, y: 8 },
   { id: "top-center", x: 50, y: 8 },
@@ -45,6 +51,10 @@ const DWELL_TIME_MS = 1400;
 const MIN_CALIBRATION_SAMPLES = 9;
 const GAZE_DEAD_ZONE = 18;
 const GAZE_SMOOTHING = 0.08;
+const LEFT_EYE_OUTLINE = [33, 160, 158, 133, 153, 144, 33];
+const RIGHT_EYE_OUTLINE = [362, 385, 387, 263, 373, 380, 362];
+const LEFT_IRIS = [468, 469, 470, 471, 472, 468];
+const RIGHT_IRIS = [473, 474, 475, 476, 477, 473];
 const MEDIAPIPE_WASM =
   "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm";
 const FACE_LANDMARKER_MODEL =
@@ -228,6 +238,35 @@ function smoothPoint(previous: GazeData, next: GazeData) {
   };
 }
 
+function drawLandmarkPath(
+  context: CanvasRenderingContext2D,
+  landmarks: NormalizedLandmark[],
+  indexes: number[],
+  color: string,
+  width: number,
+) {
+  context.beginPath();
+  indexes.forEach((index, position) => {
+    const point = landmarks[index];
+
+    if (!point) {
+      return;
+    }
+
+    const x = point.x * context.canvas.width;
+    const y = point.y * context.canvas.height;
+
+    if (position === 0) {
+      context.moveTo(x, y);
+    } else {
+      context.lineTo(x, y);
+    }
+  });
+  context.strokeStyle = color;
+  context.lineWidth = width;
+  context.stroke();
+}
+
 async function getFaceLandmarker() {
   faceLandmarkerPromise ??= (async () => {
     const vision = await FilesetResolver.forVisionTasks(MEDIAPIPE_WASM);
@@ -247,6 +286,8 @@ async function getFaceLandmarker() {
 
 export default function EyeTrackingDemo() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const debugVideoRef = useRef<HTMLVideoElement>(null);
+  const debugCanvasRef = useRef<HTMLCanvasElement>(null);
   const landmarkerRef = useRef<FaceLandmarker | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const frameRef = useRef<number | null>(null);
@@ -273,6 +314,8 @@ export default function EyeTrackingDemo() {
   const [activeOption, setActiveOption] = useState<string | null>(null);
   const [dwellProgress, setDwellProgress] = useState(0);
   const [selectedOption, setSelectedOption] = useState("Nenhuma seleção ainda");
+  const [debugMode, setDebugMode] = useState(false);
+  const [debugFrame, setDebugFrame] = useState<FaceDebugFrame | null>(null);
 
   const progress = useMemo(
     () =>
@@ -382,6 +425,63 @@ export default function EyeTrackingDemo() {
     };
   }, [stopTracking]);
 
+  useEffect(() => {
+    const canvas = debugCanvasRef.current;
+
+    if (!debugMode || !canvas || !debugFrame) {
+      return;
+    }
+
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.round(rect.width));
+    canvas.height = Math.max(1, Math.round(rect.height));
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      return;
+    }
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.save();
+    context.scale(-1, 1);
+    context.translate(-canvas.width, 0);
+
+    debugFrame.landmarks.forEach((point, index) => {
+      const x = point.x * canvas.width;
+      const y = point.y * canvas.height;
+
+      context.beginPath();
+      context.arc(x, y, 1.4, 0, Math.PI * 2);
+      context.fillStyle = "rgba(255, 80, 80, 0.8)";
+      context.fill();
+
+      if (index % 12 === 0) {
+        context.fillStyle = "rgba(255, 120, 120, 0.9)";
+        context.font = "9px sans-serif";
+        context.fillText(String(index), x + 3, y - 3);
+      }
+    });
+
+    drawLandmarkPath(
+      context,
+      debugFrame.landmarks,
+      LEFT_EYE_OUTLINE,
+      "#38bdf8",
+      3,
+    );
+    drawLandmarkPath(
+      context,
+      debugFrame.landmarks,
+      RIGHT_EYE_OUTLINE,
+      "#22c55e",
+      3,
+    );
+    drawLandmarkPath(context, debugFrame.landmarks, LEFT_IRIS, "#ffffff", 3);
+    drawLandmarkPath(context, debugFrame.landmarks, RIGHT_IRIS, "#ffffff", 3);
+    context.restore();
+  }, [debugFrame, debugMode]);
+
   const updateEstimatedPoint = useCallback(
     async () => {
       const video = videoRef.current;
@@ -401,6 +501,14 @@ export default function EyeTrackingDemo() {
           );
           const landmarks = result?.faceLandmarks[0];
           const rawGaze = landmarks ? getRawGazeFromFaceLandmarks(landmarks) : null;
+
+          if (landmarks) {
+            setDebugFrame({
+              landmarks,
+              videoWidth: video.videoWidth,
+              videoHeight: video.videoHeight,
+            });
+          }
 
           if (rawGaze) {
             lastRawGazeRef.current = rawGaze;
@@ -445,7 +553,11 @@ export default function EyeTrackingDemo() {
       }
 
       videoRef.current.srcObject = stream;
+      if (debugVideoRef.current) {
+        debugVideoRef.current.srcObject = stream;
+      }
       await videoRef.current.play();
+      await debugVideoRef.current?.play();
 
       const landmarker = await getFaceLandmarker();
 
@@ -564,6 +676,14 @@ export default function EyeTrackingDemo() {
             >
               Recalibrar
             </button>
+
+            <button
+              type="button"
+              onClick={() => setDebugMode((current) => !current)}
+              className="rounded-full border border-blue-400 px-5 py-3 font-semibold text-blue-100 transition hover:bg-blue-500 hover:text-white"
+            >
+              {debugMode ? "Fechar diagnóstico" : "Ver face"}
+            </button>
           </div>
 
           <div className="mt-8">
@@ -681,6 +801,49 @@ export default function EyeTrackingDemo() {
           className="pointer-events-none fixed z-50 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.85)]"
           style={{ left: gazePoint.x, top: gazePoint.y }}
         />
+      ) : null}
+
+      {debugMode ? (
+        <div className="fixed inset-0 z-[90] bg-black/90 p-6 text-white">
+          <div className="mx-auto flex h-full max-w-6xl flex-col">
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-blue-300">
+                  Diagnóstico facial
+                </p>
+                <h3 className="text-2xl font-bold">
+                  Referências visuais dos olhos e da face
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDebugMode(false)}
+                className="rounded-full bg-white px-5 py-3 font-semibold text-zinc-950 transition hover:bg-zinc-200"
+              >
+                Fechar
+              </button>
+            </div>
+
+            <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-950">
+              <video
+                ref={debugVideoRef}
+                muted
+                playsInline
+                className="h-full w-full scale-x-[-1] object-contain"
+              />
+              <canvas
+                ref={debugCanvasRef}
+                className="pointer-events-none absolute inset-0 h-full w-full"
+              />
+            </div>
+
+            <p className="mt-4 text-sm text-zinc-400">
+              Pontos vermelhos: landmarks da face. Azul/verde: contorno dos
+              olhos. Branco: íris. Se os pontos brancos não estiverem sobre a
+              íris, a calibração do olhar fica imprecisa.
+            </p>
+          </div>
+        </div>
       ) : null}
     </section>
   );
