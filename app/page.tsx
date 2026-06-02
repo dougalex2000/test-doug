@@ -1,7 +1,6 @@
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 dark:from-black dark:to-zinc-900">
-
       {/* HERO COM IMAGEM */}
       <section
         className="relative flex min-h-[80vh] items-center justify-center text-white"
@@ -23,42 +22,49 @@ export default function Home() {
           </p>
 
           <p className="mt-6 text-lg text-zinc-300">
-            Plataforma inteligente para inclusão, aprendizagem e análise funcional
-            com integração entre software, sensores e inteligência artificial.
+            Plataforma inteligente para conectar atividades digitais,
+            comunicação alternativa e dispositivos de tecnologia assistiva em um
+            ecossistema acessível, flexível e mensurável.
           </p>
 
           <div className="mt-8 flex justify-center gap-4">
-            <button className="rounded-full bg-blue-600 px-6 py-3 font-semibold hover:bg-blue-700 transition">
+            <a
+              href="#sobre"
+              className="rounded-full bg-blue-600 px-6 py-3 font-semibold transition hover:bg-blue-700"
+            >
               Conhecer o Projeto
-            </button>
+            </a>
 
-            <button className="rounded-full border border-white px-6 py-3 font-semibold hover:bg-white hover:text-black transition">
+            <a
+              href="#modulos"
+              className="rounded-full border border-white px-6 py-3 font-semibold transition hover:bg-white hover:text-black"
+            >
               Ver Módulos
-            </button>
+            </a>
           </div>
         </div>
       </section>
 
       {/* SEÇÃO SOBRE */}
-      <section className="py-20 px-6">
-        <div className="mx-auto max-w-6xl grid gap-10 lg:grid-cols-2 items-center">
-          
+      <section id="sobre" className="py-20 px-6">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2">
           <div>
             <h2 className="text-3xl font-bold text-zinc-900 dark:text-white">
               Tecnologia Assistiva de Alto Impacto
             </h2>
 
-            <p className="mt-6 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              O Projeto DAVI integra visão computacional, sensores físicos e
+            <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+              O Projeto DAVI conecta software, dispositivos assistivos e
               inteligência artificial para permitir que pessoas com limitações
               motoras severas possam interagir, aprender e se comunicar de forma
               acessível e eficiente.
             </p>
 
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              A plataforma conecta dispositivos como ESP32, botões adaptados,
-              sensores de sopro e rastreamento ocular, criando um ecossistema
-              completo de inclusão digital e análise funcional.
+            <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+              A plataforma foi pensada para trabalhar com diferentes interfaces
+              de acesso, como botões adaptados, sensores de sopro, toque,
+              pressão, movimento, presença, rastreamento ocular,
+              microcontroladores e outros hardwares assistivos.
             </p>
           </div>
 
@@ -70,46 +76,75 @@ export default function Home() {
               backgroundPosition: "center",
             }}
           ></div>
-
         </div>
       </section>
 
       {/* MÓDULOS */}
-      <section className="py-20 px-6 bg-white dark:bg-zinc-900">
+      <section id="modulos" className="bg-white py-20 px-6 dark:bg-zinc-900">
         <div className="mx-auto max-w-6xl">
-          
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="mb-12 text-center text-3xl font-bold">
             Módulos do Sistema
           </h2>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-
             {[
-              "Alfabetização Assistida",
-              "Matemática",
-              "Língua Portuguesa",
-              "Rastreamento Ocular",
-              "Integração com ESP32",
-              "Relatórios Inteligentes",
-            ].map((item, i) => (
+              {
+                title: "Comunicação com Dispositivos",
+                description:
+                  "Conexão com hardwares assistivos por USB, Bluetooth, Wi-Fi ou comunicação serial.",
+              },
+              {
+                title: "Sensores e Acionadores",
+                description:
+                  "Suporte a botões adaptados, sensores de sopro, toque, pressão, movimento e presença.",
+              },
+              {
+                title: "Rastreamento Ocular",
+                description:
+                  "Interação por olhar para seleção, navegação, resposta e comunicação alternativa.",
+              },
+              {
+                title: "Perfis de Acessibilidade",
+                description:
+                  "Configurações individuais por usuário, tipo de acionamento, tempo de resposta e modo de interação.",
+              },
+              {
+                title: "Atividades Assistivas",
+                description:
+                  "Atividades de alfabetização, matemática, linguagem e comunicação integradas aos dispositivos conectados.",
+              },
+              {
+                title: "Relatórios Funcionais",
+                description:
+                  "Registro de uso, respostas, tempo de interação, evolução e indicadores para acompanhamento.",
+              },
+            ].map((module) => (
               <div
-                key={i}
-                className="rounded-2xl p-6 shadow-md border bg-gradient-to-br from-white to-zinc-50 dark:from-zinc-800 dark:to-zinc-900 hover:scale-105 transition"
+                key={module.title}
+                className="group rounded-xl border border-zinc-200 bg-zinc-50 p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:bg-white hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-blue-500 dark:hover:bg-zinc-900"
               >
-                <h3 className="text-xl font-semibold">{item}</h3>
-                <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  Módulo integrado ao ecossistema DAVI com foco em acessibilidade
-                  e interação inteligente.
+                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white transition group-hover:bg-indigo-600">
+                  {module.title
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((word) => word[0])
+                    .join("")}
+                </div>
+
+                <h3 className="text-xl font-semibold text-zinc-950 dark:text-white">
+                  {module.title}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                  {module.description}
                 </p>
               </div>
             ))}
-
           </div>
         </div>
       </section>
 
       {/* FOOTER / CTA */}
-      <section className="py-16 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+      <section className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16 text-center text-white">
         <h2 className="text-3xl font-bold">
           Construindo o futuro da inclusão tecnológica
         </h2>
@@ -119,11 +154,13 @@ export default function Home() {
           robótica e inteligência artificial.
         </p>
 
-        <button className="mt-8 rounded-full bg-white px-6 py-3 font-semibold text-black hover:bg-zinc-200 transition">
+        <a
+          href="#sobre"
+          className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-200"
+        >
           Acessar Plataforma
-        </button>
+        </a>
       </section>
-
     </div>
   );
 }
