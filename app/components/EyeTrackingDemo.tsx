@@ -43,6 +43,8 @@ const communicationOptions = [
 
 const DWELL_TIME_MS = 1400;
 const MIN_CALIBRATION_SAMPLES = 9;
+const BUTTON_HIT_MARGIN = 44;
+const GAZE_SMOOTHING = 0.22;
 const MEDIAPIPE_WASM =
   "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm";
 const FACE_LANDMARKER_MODEL =
@@ -159,10 +161,48 @@ function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
   const baseNormalizedY = clamp((raw.y - minRawY) / rawRangeY, 0, 1);
   const normalizedX = shouldInvertX ? 1 - baseNormalizedX : baseNormalizedX;
   const normalizedY = shouldInvertY ? 1 - baseNormalizedY : baseNormalizedY;
-
-  return {
+  const scaledPoint = {
     x: minTargetX + normalizedX * (maxTargetX - minTargetX),
     y: minTargetY + normalizedY * (maxTargetY - minTargetY),
+  };
+  const nearestSamples = samples
+    .map((sample) => ({
+      sample,
+      distance:
+        Math.hypot(raw.x - sample.raw.x, raw.y - sample.raw.y) + 0.00001,
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 4);
+  const totalWeight = nearestSamples.reduce(
+    (sum, item) => sum + 1 / item.distance,
+    0,
+  );
+  const weightedPoint = nearestSamples.reduce(
+    (point, item) => {
+      const weight = 1 / item.distance / totalWeight;
+
+      return {
+        x: point.x + item.sample.target.x * weight,
+        y: point.y + item.sample.target.y * weight,
+      };
+    },
+    { x: 0, y: 0 },
+  );
+
+  return {
+    x: clamp(scaledPoint.x * 0.65 + weightedPoint.x * 0.35, 0, window.innerWidth),
+    y: clamp(
+      scaledPoint.y * 0.65 + weightedPoint.y * 0.35,
+      0,
+      window.innerHeight,
+    ),
+  };
+}
+
+function smoothPoint(previous: GazeData, next: GazeData) {
+  return {
+    x: previous.x + (next.x - previous.x) * GAZE_SMOOTHING,
+    y: previous.y + (next.y - previous.y) * GAZE_SMOOTHING,
   };
 }
 
@@ -243,10 +283,10 @@ export default function EyeTrackingDemo() {
         const rect = element.getBoundingClientRect();
 
         return (
-          point.x >= rect.left &&
-          point.x <= rect.right &&
-          point.y >= rect.top &&
-          point.y <= rect.bottom
+          point.x >= rect.left - BUTTON_HIT_MARGIN &&
+          point.x <= rect.right + BUTTON_HIT_MARGIN &&
+          point.y >= rect.top - BUTTON_HIT_MARGIN &&
+          point.y <= rect.bottom + BUTTON_HIT_MARGIN
         );
       });
 
@@ -336,6 +376,10 @@ export default function EyeTrackingDemo() {
         } catch {
           nextPoint = lastPointRef.current;
         }
+      }
+
+      if (performance.now() > manualPointUntilRef.current) {
+        nextPoint = smoothPoint(lastPointRef.current, nextPoint);
       }
 
       lastPointRef.current = nextPoint;
