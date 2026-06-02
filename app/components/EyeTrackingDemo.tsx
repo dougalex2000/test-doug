@@ -8,19 +8,18 @@ type GazeData = {
 };
 
 type WebGazer = {
-  begin: () => Promise<void> | void;
-  clearData: () => void;
-  end: () => void;
-  pause: () => void;
-  resume: () => void;
-  recordScreenPosition: (x: number, y: number, type: string) => void;
-  setGazeListener: (
+  begin?: () => Promise<void> | void;
+  clearData?: () => void;
+  end?: () => void;
+  pause?: () => void;
+  recordScreenPosition?: (x: number, y: number, type: string) => void;
+  setGazeListener?: (
     listener: (data: GazeData | null, elapsedTime: number) => void,
   ) => void;
-  showFaceFeedbackBox: (show: boolean) => void;
-  showFaceOverlay: (show: boolean) => void;
-  showPredictionPoints: (show: boolean) => void;
-  showVideoPreview: (show: boolean) => void;
+  showFaceFeedbackBox?: (show: boolean) => void;
+  showFaceOverlay?: (show: boolean) => void;
+  showPredictionPoints?: (show: boolean) => void;
+  showVideoPreview?: (show: boolean) => void;
 };
 
 declare global {
@@ -56,6 +55,11 @@ function loadWebGazer() {
     return new Promise<void>((resolve, reject) => {
       existingScript.addEventListener("load", () => resolve(), { once: true });
       existingScript.addEventListener("error", () => reject(), { once: true });
+      window.setTimeout(() => {
+        if (window.webgazer) {
+          resolve();
+        }
+      }, 300);
     });
   }
 
@@ -64,7 +68,7 @@ function loadWebGazer() {
     script.src = WEBGAZER_SCRIPT;
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => reject();
+    script.onerror = () => reject(new Error("Falha ao carregar o WebGazer."));
     document.body.appendChild(script);
   });
 }
@@ -96,6 +100,22 @@ function styleWebGazerElements() {
   });
 }
 
+function callWebGazer(
+  webgazer: WebGazer,
+  method: keyof WebGazer,
+  ...args: unknown[]
+) {
+  const candidate = webgazer[method] as
+    | ((...methodArgs: unknown[]) => unknown)
+    | undefined;
+
+  if (typeof candidate === "function") {
+    return candidate.apply(webgazer, args);
+  }
+
+  return undefined;
+}
+
 function getFriendlyCameraError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
 
@@ -109,6 +129,10 @@ function getFriendlyCameraError(error: unknown) {
 
   if (/notreadable|trackstart/i.test(message)) {
     return "A câmera parece estar em uso por outro aplicativo. Feche chamadas, gravadores ou apps de câmera e tente novamente.";
+  }
+
+  if (/is not a function/i.test(message)) {
+    return "A biblioteca de rastreamento carregou com uma API diferente. Atualize a página e tente novamente.";
   }
 
   return message || "Não foi possível iniciar a câmera.";
@@ -131,7 +155,7 @@ export default function EyeTrackingDemo() {
   useEffect(() => {
     return () => {
       mountedRef.current = false;
-      window.webgazer?.end();
+      window.webgazer?.end?.();
     };
   }, []);
 
@@ -144,11 +168,16 @@ export default function EyeTrackingDemo() {
 
       const webgazer = window.webgazer;
 
-      if (!webgazer) {
-        throw new Error("WebGazer não foi carregado.");
+      if (!webgazer?.begin) {
+        throw new Error("WebGazer não foi carregado corretamente.");
       }
 
-      webgazer.setGazeListener((data) => {
+      callWebGazer(webgazer, "showVideoPreview", true);
+      callWebGazer(webgazer, "showPredictionPoints", false);
+      callWebGazer(webgazer, "showFaceOverlay", false);
+      callWebGazer(webgazer, "showFaceFeedbackBox", false);
+
+      callWebGazer(webgazer, "setGazeListener", (data: GazeData | null) => {
         if (!mountedRef.current || !data) {
           return;
         }
@@ -159,15 +188,10 @@ export default function EyeTrackingDemo() {
         });
       });
 
-      webgazer.showVideoPreview(true);
-      webgazer.showPredictionPoints(false);
-      webgazer.showFaceOverlay(false);
-      webgazer.showFaceFeedbackBox(false);
-
       await webgazer.begin();
       styleWebGazerElements();
       window.setTimeout(styleWebGazerElements, 500);
-      webgazer.resume();
+      window.setTimeout(styleWebGazerElements, 1500);
       setStatus("running");
     } catch (error) {
       setStatus("error");
@@ -176,13 +200,13 @@ export default function EyeTrackingDemo() {
   }, []);
 
   const stopTracking = useCallback(() => {
-    window.webgazer?.pause();
+    window.webgazer?.pause?.();
     setStatus("idle");
     setGazePoint(null);
   }, []);
 
   const resetCalibration = useCallback(() => {
-    window.webgazer?.clearData();
+    window.webgazer?.clearData?.();
     setCalibrationClicks(0);
   }, []);
 
@@ -190,7 +214,7 @@ export default function EyeTrackingDemo() {
     const x = (window.innerWidth * xPercent) / 100;
     const y = (window.innerHeight * yPercent) / 100;
 
-    window.webgazer?.recordScreenPosition(x, y, "click");
+    window.webgazer?.recordScreenPosition?.(x, y, "click");
     setCalibrationClicks((current) => current + 1);
   }, []);
 
