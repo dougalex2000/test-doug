@@ -1,28 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FaceLandmarker,
+  FilesetResolver,
+  type NormalizedLandmark,
+} from "@mediapipe/tasks-vision";
 
 type GazeData = {
   x: number;
   y: number;
 };
-
-type DetectedFace = {
-  boundingBox: DOMRectReadOnly;
-};
-
-type FaceDetectorConstructor = new (options?: {
-  fastMode?: boolean;
-  maxDetectedFaces?: number;
-}) => {
-  detect: (source: HTMLVideoElement) => Promise<DetectedFace[]>;
-};
-
-declare global {
-  interface Window {
-    FaceDetector?: FaceDetectorConstructor;
-  }
-}
 
 const calibrationPoints = [
   { id: "top-left", x: 14, y: 18 },
@@ -44,6 +32,12 @@ const communicationOptions = [
 ];
 
 const DWELL_TIME_MS = 1400;
+const MEDIAPIPE_WASM =
+  "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm";
+const FACE_LANDMARKER_MODEL =
+  "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task";
+
+let faceLandmarkerPromise: Promise<FaceLandmarker> | null = null;
 
 function getFriendlyCameraError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
@@ -67,8 +61,79 @@ function clamp(value: number, min: number, max: number) {
   return Math.max(min, Math.min(max, value));
 }
 
+function averageLandmarks(landmarks: NormalizedLandmark[], indexes: number[]) {
+  const points = indexes
+    .map((index) => landmarks[index])
+    .filter((point): point is NormalizedLandmark => Boolean(point));
+
+  if (!points.length) {
+    return null;
+  }
+
+  return {
+    x: points.reduce((sum, point) => sum + point.x, 0) / points.length,
+    y: points.reduce((sum, point) => sum + point.y, 0) / points.length,
+  };
+}
+
+function estimateGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
+  const leftIris = averageLandmarks(landmarks, [468, 469, 470, 471, 472]);
+  const rightIris = averageLandmarks(landmarks, [473, 474, 475, 476, 477]);
+  const leftEye = averageLandmarks(landmarks, [33, 133, 159, 145]);
+  const rightEye = averageLandmarks(landmarks, [362, 263, 386, 374]);
+
+  const irisCenter =
+    leftIris && rightIris
+      ? {
+          x: (leftIris.x + rightIris.x) / 2,
+          y: (leftIris.y + rightIris.y) / 2,
+        }
+      : null;
+  const eyeCenter =
+    leftEye && rightEye
+      ? {
+          x: (leftEye.x + rightEye.x) / 2,
+          y: (leftEye.y + rightEye.y) / 2,
+        }
+      : null;
+
+  if (!irisCenter || !eyeCenter) {
+    return null;
+  }
+
+  const horizontalOffset = clamp((irisCenter.x - eyeCenter.x) * 9, -0.5, 0.5);
+  const verticalOffset = clamp((irisCenter.y - eyeCenter.y) * 12, -0.5, 0.5);
+
+  return {
+    x: clamp(
+      (0.5 - horizontalOffset) * window.innerWidth,
+      0,
+      window.innerWidth,
+    ),
+    y: clamp((0.5 + verticalOffset) * window.innerHeight, 0, window.innerHeight),
+  };
+}
+
+async function getFaceLandmarker() {
+  faceLandmarkerPromise ??= (async () => {
+    const vision = await FilesetResolver.forVisionTasks(MEDIAPIPE_WASM);
+
+    return FaceLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: FACE_LANDMARKER_MODEL,
+        delegate: "GPU",
+      },
+      numFaces: 1,
+      runningMode: "VIDEO",
+    });
+  })();
+
+  return faceLandmarkerPromise;
+}
+
 export default function EyeTrackingDemo() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const landmarkerRef = useRef<FaceLandmarker | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const frameRef = useRef<number | null>(null);
   const optionRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -87,7 +152,7 @@ export default function EyeTrackingDemo() {
   const [gazePoint, setGazePoint] = useState<GazeData | null>(null);
   const [calibrationClicks, setCalibrationClicks] = useState(0);
   const [lastError, setLastError] = useState("");
-  const [detectorAvailable, setDetectorAvailable] = useState(false);
+  const [landmarkerReady, setLandmarkerReady] = useState(false);
   const [activeOption, setActiveOption] = useState<string | null>(null);
   const [dwellProgress, setDwellProgress] = useState(0);
   const [selectedOption, setSelectedOption] = useState("Nenhuma seleção ainda");
@@ -181,21 +246,17 @@ export default function EyeTrackingDemo() {
   }, []);
 
   useEffect(() => {
-    setDetectorAvailable(typeof window !== "undefined" && "FaceDetector" in window);
-
     return () => {
       stopTracking();
     };
   }, [stopTracking]);
 
   const updateEstimatedPoint = useCallback(
-    async (detector?: InstanceType<FaceDetectorConstructor>) => {
+    async () => {
       const video = videoRef.current;
 
       if (!video || video.readyState < 2) {
-        frameRef.current = requestAnimationFrame(() =>
-          updateEstimatedPoint(detector),
-        );
+        frameRef.current = requestAnimationFrame(() => updateEstimatedPoint());
         return;
       }
 
@@ -203,21 +264,15 @@ export default function EyeTrackingDemo() {
 
       if (performance.now() > manualPointUntilRef.current) {
         try {
-          const faces = detector ? await detector.detect(video) : [];
-          const face = faces[0];
+          const result = landmarkerRef.current?.detectForVideo(
+            video,
+            performance.now(),
+          );
+          const landmarks = result?.faceLandmarks[0];
+          const gaze = landmarks ? estimateGazeFromFaceLandmarks(landmarks) : null;
 
-          if (face) {
-            const centerX =
-              (face.boundingBox.x + face.boundingBox.width / 2) /
-              video.videoWidth;
-            const centerY =
-              (face.boundingBox.y + face.boundingBox.height / 2) /
-              video.videoHeight;
-
-            nextPoint = {
-              x: clamp((1 - centerX) * window.innerWidth, 0, window.innerWidth),
-              y: clamp(centerY * window.innerHeight, 0, window.innerHeight),
-            };
+          if (gaze) {
+            nextPoint = gaze;
           }
         } catch {
           nextPoint = lastPointRef.current;
@@ -228,9 +283,7 @@ export default function EyeTrackingDemo() {
       setGazePoint(nextPoint);
       updateDwellSelection(nextPoint);
 
-      frameRef.current = requestAnimationFrame(() =>
-        updateEstimatedPoint(detector),
-      );
+      frameRef.current = requestAnimationFrame(() => updateEstimatedPoint());
     },
     [updateDwellSelection],
   );
@@ -258,13 +311,12 @@ export default function EyeTrackingDemo() {
       videoRef.current.srcObject = stream;
       await videoRef.current.play();
 
-      const detector = window.FaceDetector
-        ? new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 })
-        : undefined;
+      const landmarker = await getFaceLandmarker();
 
-      setDetectorAvailable(Boolean(detector));
+      landmarkerRef.current = landmarker;
+      setLandmarkerReady(true);
       setStatus("running");
-      updateEstimatedPoint(detector);
+      updateEstimatedPoint();
     } catch (error) {
       setStatus("error");
       setLastError(getFriendlyCameraError(error));
@@ -383,9 +435,9 @@ export default function EyeTrackingDemo() {
 
           <p className="mt-4 text-sm text-zinc-500">
             Status:{" "}
-            {detectorAvailable
-              ? "detecção facial disponível"
-              : "modo câmera/calibração sem detecção facial nativa"}
+            {landmarkerReady
+              ? "MediaPipe Face Landmarker ativo"
+              : "aguardando câmera e modelo de landmarks"}
           </p>
 
           {lastError ? (
