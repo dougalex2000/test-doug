@@ -110,31 +110,42 @@ function averageLandmarks(landmarks: NormalizedLandmark[], indexes: number[]) {
 function getRawGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
   const leftIris = averageLandmarks(landmarks, [468, 469, 470, 471, 472]);
   const rightIris = averageLandmarks(landmarks, [473, 474, 475, 476, 477]);
-  const leftEye = averageLandmarks(landmarks, [33, 133, 159, 145]);
-  const rightEye = averageLandmarks(landmarks, [362, 263, 386, 374]);
+  const leftOuter = landmarks[33];
+  const leftInner = landmarks[133];
+  const leftTop = landmarks[159];
+  const leftBottom = landmarks[145];
+  const rightInner = landmarks[362];
+  const rightOuter = landmarks[263];
+  const rightTop = landmarks[386];
+  const rightBottom = landmarks[374];
 
-  const irisCenter =
-    leftIris && rightIris
-      ? {
-          x: (leftIris.x + rightIris.x) / 2,
-          y: (leftIris.y + rightIris.y) / 2,
-        }
-      : null;
-  const eyeCenter =
-    leftEye && rightEye
-      ? {
-          x: (leftEye.x + rightEye.x) / 2,
-          y: (leftEye.y + rightEye.y) / 2,
-        }
-      : null;
-
-  if (!irisCenter || !eyeCenter) {
+  if (
+    !leftIris ||
+    !rightIris ||
+    !leftOuter ||
+    !leftInner ||
+    !leftTop ||
+    !leftBottom ||
+    !rightInner ||
+    !rightOuter ||
+    !rightTop ||
+    !rightBottom
+  ) {
     return null;
   }
 
+  const leftHorizontalRange = Math.max(0.0001, leftInner.x - leftOuter.x);
+  const rightHorizontalRange = Math.max(0.0001, rightOuter.x - rightInner.x);
+  const leftVerticalRange = Math.max(0.0001, leftBottom.y - leftTop.y);
+  const rightVerticalRange = Math.max(0.0001, rightBottom.y - rightTop.y);
+  const leftX = (leftIris.x - leftOuter.x) / leftHorizontalRange;
+  const rightX = (rightIris.x - rightInner.x) / rightHorizontalRange;
+  const leftY = (leftIris.y - leftTop.y) / leftVerticalRange;
+  const rightY = (rightIris.y - rightTop.y) / rightVerticalRange;
+
   return {
-    x: irisCenter.x - eyeCenter.x,
-    y: irisCenter.y - eyeCenter.y,
+    x: (leftX + rightX) / 2,
+    y: (leftY + rightY) / 2,
   };
 }
 
@@ -164,8 +175,8 @@ function scaleRawGaze(
   if (samples.length < MIN_CALIBRATION_SAMPLES) {
     return applyVerticalTuning(
       {
-      x: clamp((0.5 - raw.x * 9) * window.innerWidth, 0, window.innerWidth),
-      y: clamp((0.5 + raw.y * 12) * window.innerHeight, 0, window.innerHeight),
+        x: clamp(raw.x * window.innerWidth, 0, window.innerWidth),
+        y: clamp(raw.y * window.innerHeight, 0, window.innerHeight),
       },
       verticalGain,
       verticalOffset,
