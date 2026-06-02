@@ -459,6 +459,15 @@ export default function EyeTrackingDemo() {
   }, [stopTracking]);
 
   useEffect(() => {
+    if (!debugMode || !debugVideoRef.current || !streamRef.current) {
+      return;
+    }
+
+    debugVideoRef.current.srcObject = streamRef.current;
+    void debugVideoRef.current.play();
+  }, [debugMode]);
+
+  useEffect(() => {
     const canvas = debugCanvasRef.current;
 
     if (!debugMode || !canvas || !debugFrame) {
