@@ -138,12 +138,38 @@ function getRawGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
   };
 }
 
-function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
+function applyVerticalTuning(
+  point: GazeData,
+  verticalGain: number,
+  verticalOffset: number,
+) {
+  return {
+    x: point.x,
+    y: clamp(
+      (point.y - window.innerHeight / 2) * verticalGain +
+        window.innerHeight / 2 +
+        verticalOffset,
+      0,
+      window.innerHeight,
+    ),
+  };
+}
+
+function scaleRawGaze(
+  raw: RawGaze,
+  samples: CalibrationSample[],
+  verticalGain: number,
+  verticalOffset: number,
+) {
   if (samples.length < MIN_CALIBRATION_SAMPLES) {
-    return {
+    return applyVerticalTuning(
+      {
       x: clamp((0.5 - raw.x * 9) * window.innerWidth, 0, window.innerWidth),
       y: clamp((0.5 + raw.y * 12) * window.innerHeight, 0, window.innerHeight),
-    };
+      },
+      verticalGain,
+      verticalOffset,
+    );
   }
 
   const minRawX = Math.min(...samples.map((sample) => sample.raw.x));
@@ -207,14 +233,22 @@ function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
     { x: 0, y: 0 },
   );
 
-  return {
-    x: clamp(scaledPoint.x * 0.65 + weightedPoint.x * 0.35, 0, window.innerWidth),
-    y: clamp(
-      scaledPoint.y * 0.65 + weightedPoint.y * 0.35,
-      0,
-      window.innerHeight,
-    ),
-  };
+  return applyVerticalTuning(
+    {
+      x: clamp(
+        scaledPoint.x * 0.65 + weightedPoint.x * 0.35,
+        0,
+        window.innerWidth,
+      ),
+      y: clamp(
+        scaledPoint.y * 0.65 + weightedPoint.y * 0.35,
+        0,
+        window.innerHeight,
+      ),
+    },
+    verticalGain,
+    verticalOffset,
+  );
 }
 
 function smoothPoint(previous: GazeData, next: GazeData) {
@@ -272,6 +306,8 @@ export default function EyeTrackingDemo() {
   const [activeOption, setActiveOption] = useState<string | null>(null);
   const [dwellProgress, setDwellProgress] = useState(0);
   const [selectedOption, setSelectedOption] = useState("Nenhuma seleção ainda");
+  const [verticalGain, setVerticalGain] = useState(1.35);
+  const [verticalOffset, setVerticalOffset] = useState(60);
 
   const progress = useMemo(
     () =>
@@ -403,7 +439,12 @@ export default function EyeTrackingDemo() {
 
           if (rawGaze) {
             lastRawGazeRef.current = rawGaze;
-            nextPoint = scaleRawGaze(rawGaze, calibrationSamplesRef.current);
+            nextPoint = scaleRawGaze(
+              rawGaze,
+              calibrationSamplesRef.current,
+              verticalGain,
+              verticalOffset,
+            );
           }
         } catch {
           nextPoint = lastPointRef.current;
@@ -420,7 +461,7 @@ export default function EyeTrackingDemo() {
 
       frameRef.current = requestAnimationFrame(() => updateEstimatedPoint());
     },
-    [updateDwellSelection],
+    [updateDwellSelection, verticalGain, verticalOffset],
   );
 
   const startTracking = useCallback(async () => {
@@ -587,6 +628,42 @@ export default function EyeTrackingDemo() {
               ? `MediaPipe ativo com ${calibrationSamplesRef.current.length} amostras`
               : "aguardando câmera e modelo de landmarks"}
           </p>
+
+          <div className="mt-5 space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+            <label className="block text-sm text-zinc-400">
+              <span className="flex justify-between">
+                <span>Alcance vertical</span>
+                <span>{verticalGain.toFixed(2)}x</span>
+              </span>
+              <input
+                type="range"
+                min="0.8"
+                max="2.4"
+                step="0.05"
+                value={verticalGain}
+                onChange={(event) => setVerticalGain(Number(event.target.value))}
+                className="mt-2 w-full accent-blue-500"
+              />
+            </label>
+
+            <label className="block text-sm text-zinc-400">
+              <span className="flex justify-between">
+                <span>Deslocamento vertical</span>
+                <span>{verticalOffset}px</span>
+              </span>
+              <input
+                type="range"
+                min="-220"
+                max="220"
+                step="10"
+                value={verticalOffset}
+                onChange={(event) =>
+                  setVerticalOffset(Number(event.target.value))
+                }
+                className="mt-2 w-full accent-blue-500"
+              />
+            </label>
+          </div>
 
           {lastError ? (
             <p className="mt-5 rounded-lg border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-100">
