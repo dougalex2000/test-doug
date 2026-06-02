@@ -36,6 +36,15 @@ const calibrationPoints = [
   { id: "bottom-right", x: 86, y: 82 },
 ];
 
+const communicationOptions = [
+  { id: "agua", label: "Água", tone: "bg-sky-500" },
+  { id: "dor", label: "Dor", tone: "bg-rose-500" },
+  { id: "sim", label: "Sim", tone: "bg-emerald-500" },
+  { id: "nao", label: "Não", tone: "bg-amber-500" },
+];
+
+const DWELL_TIME_MS = 1600;
+
 function getFriendlyCameraError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
 
@@ -62,6 +71,10 @@ export default function EyeTrackingDemo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const frameRef = useRef<number | null>(null);
+  const optionRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const dwellTargetRef = useRef<string | null>(null);
+  const dwellStartedAtRef = useRef(0);
+  const selectedDuringDwellRef = useRef(false);
   const lastPointRef = useRef<GazeData>({
     x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
     y: typeof window === "undefined" ? 0 : window.innerHeight / 2,
@@ -74,10 +87,77 @@ export default function EyeTrackingDemo() {
   const [calibrationClicks, setCalibrationClicks] = useState(0);
   const [lastError, setLastError] = useState("");
   const [detectorAvailable, setDetectorAvailable] = useState(false);
+  const [activeOption, setActiveOption] = useState<string | null>(null);
+  const [dwellProgress, setDwellProgress] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("Nenhuma seleção ainda");
 
   const progress = useMemo(
     () => Math.min(100, Math.round((calibrationClicks / 27) * 100)),
     [calibrationClicks],
+  );
+  const isCalibrated = calibrationClicks >= 9;
+
+  const selectOption = useCallback((label: string) => {
+    setSelectedOption(label);
+  }, []);
+
+  const updateDwellSelection = useCallback(
+    (point: GazeData) => {
+      if (!isCalibrated) {
+        setActiveOption(null);
+        setDwellProgress(0);
+        return;
+      }
+
+      const target = communicationOptions.find((option) => {
+        const element = optionRefs.current[option.id];
+
+        if (!element) {
+          return false;
+        }
+
+        const rect = element.getBoundingClientRect();
+
+        return (
+          point.x >= rect.left &&
+          point.x <= rect.right &&
+          point.y >= rect.top &&
+          point.y <= rect.bottom
+        );
+      });
+
+      if (!target) {
+        dwellTargetRef.current = null;
+        dwellStartedAtRef.current = 0;
+        selectedDuringDwellRef.current = false;
+        setActiveOption(null);
+        setDwellProgress(0);
+        return;
+      }
+
+      const now = performance.now();
+
+      if (dwellTargetRef.current !== target.id) {
+        dwellTargetRef.current = target.id;
+        dwellStartedAtRef.current = now;
+        selectedDuringDwellRef.current = false;
+        setActiveOption(target.id);
+        setDwellProgress(0);
+        return;
+      }
+
+      const elapsed = now - dwellStartedAtRef.current;
+      const nextProgress = Math.min(100, Math.round((elapsed / DWELL_TIME_MS) * 100));
+
+      setActiveOption(target.id);
+      setDwellProgress(nextProgress);
+
+      if (elapsed >= DWELL_TIME_MS && !selectedDuringDwellRef.current) {
+        selectedDuringDwellRef.current = true;
+        selectOption(target.label);
+      }
+    },
+    [isCalibrated, selectOption],
   );
 
   const stopTracking = useCallback(() => {
@@ -95,6 +175,8 @@ export default function EyeTrackingDemo() {
 
     setStatus("idle");
     setGazePoint(null);
+    setActiveOption(null);
+    setDwellProgress(0);
   }, []);
 
   useEffect(() => {
@@ -150,12 +232,13 @@ export default function EyeTrackingDemo() {
 
       lastPointRef.current = nextPoint;
       setGazePoint(nextPoint);
+      updateDwellSelection(nextPoint);
 
       frameRef.current = requestAnimationFrame(() =>
         updateEstimatedPoint(detector),
       );
     },
-    [],
+    [updateDwellSelection],
   );
 
   const startTracking = useCallback(async () => {
@@ -197,6 +280,9 @@ export default function EyeTrackingDemo() {
 
   const resetCalibration = useCallback(() => {
     setCalibrationClicks(0);
+    setSelectedOption("Nenhuma seleção ainda");
+    setActiveOption(null);
+    setDwellProgress(0);
     lastPointRef.current = {
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
@@ -226,9 +312,9 @@ export default function EyeTrackingDemo() {
             Rastreamento ocular pela câmera
           </h2>
           <p className="mt-5 text-lg leading-8 text-zinc-300">
-            Um protótipo para testar câmera, calibração e estimativa visual na
-            tela. Quando o navegador suporta detecção facial, o ponto acompanha a
-            posição do rosto como aproximação inicial do olhar.
+            Um protótipo para testar câmera, calibração e seleção por
+            permanência. Após calibrar, mantenha o ponto azul sobre uma opção por
+            alguns instantes para selecioná-la.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -273,6 +359,11 @@ export default function EyeTrackingDemo() {
             </div>
           </div>
 
+          <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+            <p className="text-sm text-zinc-400">Seleção atual</p>
+            <p className="mt-1 text-2xl font-bold text-white">{selectedOption}</p>
+          </div>
+
           <p className="mt-4 text-sm text-zinc-500">
             Status:{" "}
             {detectorAvailable
@@ -287,7 +378,7 @@ export default function EyeTrackingDemo() {
           ) : null}
         </div>
 
-        <div className="relative min-h-[420px] rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl">
+        <div className="relative min-h-[620px] rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl">
           <video
             ref={videoRef}
             muted
@@ -295,24 +386,56 @@ export default function EyeTrackingDemo() {
             className="absolute right-6 top-6 h-28 w-36 rounded-xl border border-zinc-700 object-cover shadow-lg"
           />
 
-          <div className="grid h-full min-h-[372px] grid-cols-3 grid-rows-3 gap-4 pt-36 sm:pt-28">
-            {calibrationPoints.map((point) => (
-              <button
-                key={point.id}
-                type="button"
-                onClick={() => calibrate(point.x, point.y)}
-                disabled={status !== "running"}
-                className="rounded-xl border border-zinc-700 bg-zinc-950 text-sm font-semibold text-zinc-300 transition hover:border-blue-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Calibrar
-              </button>
-            ))}
-          </div>
+          {isCalibrated ? (
+            <div className="grid min-h-[560px] grid-cols-2 gap-4 pt-36 sm:pt-28">
+              {communicationOptions.map((option) => {
+                const isActive = activeOption === option.id;
 
-          <div className="pointer-events-none absolute left-6 right-48 top-6 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
-            Clique nos pontos com a cabeça parada. Repita cada posição algumas
-            vezes para melhorar a precisão.
-          </div>
+                return (
+                  <button
+                    key={option.id}
+                    ref={(element) => {
+                      optionRefs.current[option.id] = element;
+                    }}
+                    type="button"
+                    onClick={() => selectOption(option.label)}
+                    className={`relative overflow-hidden rounded-2xl border border-white/10 ${option.tone} p-6 text-3xl font-bold text-white shadow-lg transition ${
+                      isActive ? "scale-[1.03] ring-4 ring-white" : ""
+                    }`}
+                  >
+                    <span className="relative z-10">{option.label}</span>
+                    {isActive ? (
+                      <span
+                        className="absolute inset-x-0 bottom-0 h-2 bg-white/90 transition-all"
+                        style={{ width: `${dwellProgress}%` }}
+                      />
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <>
+              <div className="grid h-full min-h-[560px] grid-cols-3 grid-rows-3 gap-4 pt-36 sm:pt-28">
+                {calibrationPoints.map((point) => (
+                  <button
+                    key={point.id}
+                    type="button"
+                    onClick={() => calibrate(point.x, point.y)}
+                    disabled={status !== "running"}
+                    className="rounded-xl border border-zinc-700 bg-zinc-950 text-sm font-semibold text-zinc-300 transition hover:border-blue-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Calibrar
+                  </button>
+                ))}
+              </div>
+
+              <div className="pointer-events-none absolute left-6 right-48 top-6 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
+                Clique nos pontos com a cabeça parada. Ao chegar em 33%, a tela
+                de comunicação será liberada.
+              </div>
+            </>
+          )}
         </div>
       </div>
 
