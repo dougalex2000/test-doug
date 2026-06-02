@@ -256,6 +256,7 @@ export default function EyeTrackingDemo() {
   const selectedDuringDwellRef = useRef(false);
   const manualPointUntilRef = useRef(0);
   const calibrationSamplesRef = useRef<CalibrationSample[]>([]);
+  const calibrationClicksRef = useRef(0);
   const lastRawGazeRef = useRef<RawGaze | null>(null);
   const lastPointRef = useRef<GazeData>({
     x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
@@ -289,7 +290,7 @@ export default function EyeTrackingDemo() {
 
   const updateDwellSelection = useCallback(
     (point: GazeData) => {
-      if (!isCalibrated) {
+      if (calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES) {
         setActiveOption(null);
         setDwellProgress(0);
         return;
@@ -350,7 +351,7 @@ export default function EyeTrackingDemo() {
         selectOption(target.label);
       }
     },
-    [isCalibrated, selectOption],
+    [selectOption],
   );
 
   const stopTracking = useCallback(() => {
@@ -461,6 +462,7 @@ export default function EyeTrackingDemo() {
 
   const resetCalibration = useCallback(() => {
     calibrationSamplesRef.current = [];
+    calibrationClicksRef.current = 0;
     setCalibrationClicks(0);
     setSelectedOption("Nenhuma seleção ainda");
     setActiveOption(null);
@@ -490,7 +492,8 @@ export default function EyeTrackingDemo() {
     lastPointRef.current = target;
     manualPointUntilRef.current = performance.now() + 450;
     setGazePoint(target);
-    setCalibrationClicks((current) => current + 1);
+    calibrationClicksRef.current += 1;
+    setCalibrationClicks(calibrationClicksRef.current);
   }, []);
 
   const aimAtOption = useCallback(
