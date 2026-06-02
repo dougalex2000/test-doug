@@ -16,11 +16,11 @@ type WebGazer = {
   recordScreenPosition: (x: number, y: number, type: string) => void;
   setGazeListener: (
     listener: (data: GazeData | null, elapsedTime: number) => void,
-  ) => WebGazer;
-  showFaceFeedbackBox: (show: boolean) => WebGazer;
-  showFaceOverlay: (show: boolean) => WebGazer;
-  showPredictionPoints: (show: boolean) => WebGazer;
-  showVideoPreview: (show: boolean) => WebGazer;
+  ) => void;
+  showFaceFeedbackBox: (show: boolean) => void;
+  showFaceOverlay: (show: boolean) => void;
+  showPredictionPoints: (show: boolean) => void;
+  showVideoPreview: (show: boolean) => void;
 };
 
 declare global {
@@ -69,6 +69,51 @@ function loadWebGazer() {
   });
 }
 
+function styleWebGazerElements() {
+  const ids = [
+    "webgazerVideoFeed",
+    "webgazerVideoCanvas",
+    "webgazerFaceOverlay",
+    "webgazerFaceFeedbackBox",
+  ];
+
+  ids.forEach((id) => {
+    const element = document.getElementById(id);
+
+    if (!element) {
+      return;
+    }
+
+    element.style.position = "fixed";
+    element.style.top = "16px";
+    element.style.left = "16px";
+    element.style.width = "220px";
+    element.style.height = "165px";
+    element.style.zIndex = "40";
+    element.style.borderRadius = "12px";
+    element.style.overflow = "hidden";
+    element.style.boxShadow = "0 18px 40px rgba(0, 0, 0, 0.45)";
+  });
+}
+
+function getFriendlyCameraError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (/permission|denied|notallowed/i.test(message)) {
+    return "A câmera foi bloqueada pelo navegador. Libere a câmera para este site e tente novamente.";
+  }
+
+  if (/notfound|devicesnotfound/i.test(message)) {
+    return "Não encontrei uma câmera disponível neste dispositivo.";
+  }
+
+  if (/notreadable|trackstart/i.test(message)) {
+    return "A câmera parece estar em uso por outro aplicativo. Feche chamadas, gravadores ou apps de câmera e tente novamente.";
+  }
+
+  return message || "Não foi possível iniciar a câmera.";
+}
+
 export default function EyeTrackingDemo() {
   const [status, setStatus] = useState<"idle" | "loading" | "running" | "error">(
     "idle",
@@ -103,32 +148,30 @@ export default function EyeTrackingDemo() {
         throw new Error("WebGazer não foi carregado.");
       }
 
-      webgazer
-        .setGazeListener((data) => {
-          if (!mountedRef.current || !data) {
-            return;
-          }
+      webgazer.setGazeListener((data) => {
+        if (!mountedRef.current || !data) {
+          return;
+        }
 
-          setGazePoint({
-            x: Math.max(0, Math.min(window.innerWidth, data.x)),
-            y: Math.max(0, Math.min(window.innerHeight, data.y)),
-          });
-        })
-        .showVideoPreview(true)
-        .showPredictionPoints(false)
-        .showFaceOverlay(false)
-        .showFaceFeedbackBox(false);
+        setGazePoint({
+          x: Math.max(0, Math.min(window.innerWidth, data.x)),
+          y: Math.max(0, Math.min(window.innerHeight, data.y)),
+        });
+      });
+
+      webgazer.showVideoPreview(true);
+      webgazer.showPredictionPoints(false);
+      webgazer.showFaceOverlay(false);
+      webgazer.showFaceFeedbackBox(false);
 
       await webgazer.begin();
+      styleWebGazerElements();
+      window.setTimeout(styleWebGazerElements, 500);
       webgazer.resume();
       setStatus("running");
     } catch (error) {
       setStatus("error");
-      setLastError(
-        error instanceof Error
-          ? error.message
-          : "Não foi possível iniciar a câmera.",
-      );
+      setLastError(getFriendlyCameraError(error));
     }
   }, []);
 
