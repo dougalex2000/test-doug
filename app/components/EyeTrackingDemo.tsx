@@ -137,8 +137,28 @@ function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
 
   const rawRangeX = Math.max(0.0001, maxRawX - minRawX);
   const rawRangeY = Math.max(0.0001, maxRawY - minRawY);
-  const normalizedX = clamp((raw.x - minRawX) / rawRangeX, 0, 1);
-  const normalizedY = clamp((raw.y - minRawY) / rawRangeY, 0, 1);
+  const leftSamples = samples.filter((sample) => sample.target.x < window.innerWidth * 0.35);
+  const rightSamples = samples.filter((sample) => sample.target.x > window.innerWidth * 0.65);
+  const topSamples = samples.filter((sample) => sample.target.y < window.innerHeight * 0.35);
+  const bottomSamples = samples.filter((sample) => sample.target.y > window.innerHeight * 0.65);
+  const averageRawX = (axisSamples: CalibrationSample[]) =>
+    axisSamples.reduce((sum, sample) => sum + sample.raw.x, 0) /
+    Math.max(1, axisSamples.length);
+  const averageRawY = (axisSamples: CalibrationSample[]) =>
+    axisSamples.reduce((sum, sample) => sum + sample.raw.y, 0) /
+    Math.max(1, axisSamples.length);
+  const shouldInvertX =
+    leftSamples.length > 0 &&
+    rightSamples.length > 0 &&
+    averageRawX(leftSamples) > averageRawX(rightSamples);
+  const shouldInvertY =
+    topSamples.length > 0 &&
+    bottomSamples.length > 0 &&
+    averageRawY(topSamples) > averageRawY(bottomSamples);
+  const baseNormalizedX = clamp((raw.x - minRawX) / rawRangeX, 0, 1);
+  const baseNormalizedY = clamp((raw.y - minRawY) / rawRangeY, 0, 1);
+  const normalizedX = shouldInvertX ? 1 - baseNormalizedX : baseNormalizedX;
+  const normalizedY = shouldInvertY ? 1 - baseNormalizedY : baseNormalizedY;
 
   return {
     x: minTargetX + normalizedX * (maxTargetX - minTargetX),
