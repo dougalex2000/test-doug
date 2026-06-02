@@ -43,7 +43,7 @@ const communicationOptions = [
   { id: "nao", label: "Não", tone: "bg-amber-500" },
 ];
 
-const DWELL_TIME_MS = 1600;
+const DWELL_TIME_MS = 1400;
 
 function getFriendlyCameraError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
@@ -75,6 +75,7 @@ export default function EyeTrackingDemo() {
   const dwellTargetRef = useRef<string | null>(null);
   const dwellStartedAtRef = useRef(0);
   const selectedDuringDwellRef = useRef(false);
+  const manualPointUntilRef = useRef(0);
   const lastPointRef = useRef<GazeData>({
     x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
     y: typeof window === "undefined" ? 0 : window.innerHeight / 2,
@@ -200,34 +201,27 @@ export default function EyeTrackingDemo() {
 
       let nextPoint = lastPointRef.current;
 
-      try {
-        const faces = detector ? await detector.detect(video) : [];
-        const face = faces[0];
+      if (performance.now() > manualPointUntilRef.current) {
+        try {
+          const faces = detector ? await detector.detect(video) : [];
+          const face = faces[0];
 
-        if (face) {
-          const centerX =
-            (face.boundingBox.x + face.boundingBox.width / 2) / video.videoWidth;
-          const centerY =
-            (face.boundingBox.y + face.boundingBox.height / 2) /
-            video.videoHeight;
+          if (face) {
+            const centerX =
+              (face.boundingBox.x + face.boundingBox.width / 2) /
+              video.videoWidth;
+            const centerY =
+              (face.boundingBox.y + face.boundingBox.height / 2) /
+              video.videoHeight;
 
-          nextPoint = {
-            x: clamp((1 - centerX) * window.innerWidth, 0, window.innerWidth),
-            y: clamp(centerY * window.innerHeight, 0, window.innerHeight),
-          };
-        } else {
-          const drift = Math.sin(Date.now() / 700) * 18;
-
-          nextPoint = {
-            x: clamp(lastPointRef.current.x + drift * 0.02, 0, window.innerWidth),
-            y: clamp(lastPointRef.current.y, 0, window.innerHeight),
-          };
+            nextPoint = {
+              x: clamp((1 - centerX) * window.innerWidth, 0, window.innerWidth),
+              y: clamp(centerY * window.innerHeight, 0, window.innerHeight),
+            };
+          }
+        } catch {
+          nextPoint = lastPointRef.current;
         }
-      } catch {
-        nextPoint = {
-          x: window.innerWidth / 2,
-          y: window.innerHeight / 2,
-        };
       }
 
       lastPointRef.current = nextPoint;
@@ -294,9 +288,32 @@ export default function EyeTrackingDemo() {
       x: (window.innerWidth * xPercent) / 100,
       y: (window.innerHeight * yPercent) / 100,
     };
+    manualPointUntilRef.current = performance.now() + 500;
     setGazePoint(lastPointRef.current);
     setCalibrationClicks((current) => current + 1);
   }, []);
+
+  const aimAtOption = useCallback(
+    (optionId: string) => {
+      const element = optionRefs.current[optionId];
+
+      if (!element || status !== "running") {
+        return;
+      }
+
+      const rect = element.getBoundingClientRect();
+      const nextPoint = {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      };
+
+      lastPointRef.current = nextPoint;
+      manualPointUntilRef.current = performance.now() + DWELL_TIME_MS + 500;
+      setGazePoint(nextPoint);
+      updateDwellSelection(nextPoint);
+    },
+    [status, updateDwellSelection],
+  );
 
   return (
     <section
@@ -398,6 +415,8 @@ export default function EyeTrackingDemo() {
                       optionRefs.current[option.id] = element;
                     }}
                     type="button"
+                    onMouseEnter={() => aimAtOption(option.id)}
+                    onMouseMove={() => aimAtOption(option.id)}
                     onClick={() => selectOption(option.label)}
                     className={`relative overflow-hidden rounded-2xl border border-white/10 ${option.tone} p-6 text-3xl font-bold text-white shadow-lg transition ${
                       isActive ? "scale-[1.03] ring-4 ring-white" : ""
