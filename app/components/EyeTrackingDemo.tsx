@@ -110,77 +110,40 @@ function averageLandmarks(landmarks: NormalizedLandmark[], indexes: number[]) {
 function getRawGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
   const leftIris = averageLandmarks(landmarks, [468, 469, 470, 471, 472]);
   const rightIris = averageLandmarks(landmarks, [473, 474, 475, 476, 477]);
-  const leftOuter = landmarks[33];
-  const leftInner = landmarks[133];
-  const leftTop = landmarks[159];
-  const leftBottom = landmarks[145];
-  const rightInner = landmarks[362];
-  const rightOuter = landmarks[263];
-  const rightTop = landmarks[386];
-  const rightBottom = landmarks[374];
+  const leftEye = averageLandmarks(landmarks, [33, 133, 159, 145]);
+  const rightEye = averageLandmarks(landmarks, [362, 263, 386, 374]);
 
-  if (
-    !leftIris ||
-    !rightIris ||
-    !leftOuter ||
-    !leftInner ||
-    !leftTop ||
-    !leftBottom ||
-    !rightInner ||
-    !rightOuter ||
-    !rightTop ||
-    !rightBottom
-  ) {
+  const irisCenter =
+    leftIris && rightIris
+      ? {
+          x: (leftIris.x + rightIris.x) / 2,
+          y: (leftIris.y + rightIris.y) / 2,
+        }
+      : null;
+  const eyeCenter =
+    leftEye && rightEye
+      ? {
+          x: (leftEye.x + rightEye.x) / 2,
+          y: (leftEye.y + rightEye.y) / 2,
+        }
+      : null;
+
+  if (!irisCenter || !eyeCenter) {
     return null;
   }
 
-  const leftHorizontalRange = Math.max(0.0001, leftInner.x - leftOuter.x);
-  const rightHorizontalRange = Math.max(0.0001, rightOuter.x - rightInner.x);
-  const leftVerticalRange = Math.max(0.0001, leftBottom.y - leftTop.y);
-  const rightVerticalRange = Math.max(0.0001, rightBottom.y - rightTop.y);
-  const leftX = (leftIris.x - leftOuter.x) / leftHorizontalRange;
-  const rightX = (rightIris.x - rightInner.x) / rightHorizontalRange;
-  const leftY = (leftIris.y - leftTop.y) / leftVerticalRange;
-  const rightY = (rightIris.y - rightTop.y) / rightVerticalRange;
-
   return {
-    x: (leftX + rightX) / 2,
-    y: (leftY + rightY) / 2,
+    x: irisCenter.x - eyeCenter.x,
+    y: irisCenter.y - eyeCenter.y,
   };
 }
 
-function applyVerticalTuning(
-  point: GazeData,
-  verticalGain: number,
-  verticalOffset: number,
-) {
-  return {
-    x: point.x,
-    y: clamp(
-      (point.y - window.innerHeight / 2) * verticalGain +
-        window.innerHeight / 2 +
-        verticalOffset,
-      0,
-      window.innerHeight,
-    ),
-  };
-}
-
-function scaleRawGaze(
-  raw: RawGaze,
-  samples: CalibrationSample[],
-  verticalGain: number,
-  verticalOffset: number,
-) {
+function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
   if (samples.length < MIN_CALIBRATION_SAMPLES) {
-    return applyVerticalTuning(
-      {
-        x: clamp(raw.x * window.innerWidth, 0, window.innerWidth),
-        y: clamp(raw.y * window.innerHeight, 0, window.innerHeight),
-      },
-      verticalGain,
-      verticalOffset,
-    );
+    return {
+      x: clamp((0.5 - raw.x * 9) * window.innerWidth, 0, window.innerWidth),
+      y: clamp((0.5 + raw.y * 12) * window.innerHeight, 0, window.innerHeight),
+    };
   }
 
   const minRawX = Math.min(...samples.map((sample) => sample.raw.x));
@@ -244,22 +207,14 @@ function scaleRawGaze(
     { x: 0, y: 0 },
   );
 
-  return applyVerticalTuning(
-    {
-      x: clamp(
-        scaledPoint.x * 0.65 + weightedPoint.x * 0.35,
-        0,
-        window.innerWidth,
-      ),
-      y: clamp(
-        scaledPoint.y * 0.65 + weightedPoint.y * 0.35,
-        0,
-        window.innerHeight,
-      ),
-    },
-    verticalGain,
-    verticalOffset,
-  );
+  return {
+    x: clamp(scaledPoint.x * 0.65 + weightedPoint.x * 0.35, 0, window.innerWidth),
+    y: clamp(
+      scaledPoint.y * 0.65 + weightedPoint.y * 0.35,
+      0,
+      window.innerHeight,
+    ),
+  };
 }
 
 function smoothPoint(previous: GazeData, next: GazeData) {
@@ -317,8 +272,6 @@ export default function EyeTrackingDemo() {
   const [activeOption, setActiveOption] = useState<string | null>(null);
   const [dwellProgress, setDwellProgress] = useState(0);
   const [selectedOption, setSelectedOption] = useState("Nenhuma seleção ainda");
-  const [verticalGain, setVerticalGain] = useState(1.35);
-  const [verticalOffset, setVerticalOffset] = useState(60);
 
   const progress = useMemo(
     () =>
@@ -450,12 +403,7 @@ export default function EyeTrackingDemo() {
 
           if (rawGaze) {
             lastRawGazeRef.current = rawGaze;
-            nextPoint = scaleRawGaze(
-              rawGaze,
-              calibrationSamplesRef.current,
-              verticalGain,
-              verticalOffset,
-            );
+            nextPoint = scaleRawGaze(rawGaze, calibrationSamplesRef.current);
           }
         } catch {
           nextPoint = lastPointRef.current;
@@ -472,7 +420,7 @@ export default function EyeTrackingDemo() {
 
       frameRef.current = requestAnimationFrame(() => updateEstimatedPoint());
     },
-    [updateDwellSelection, verticalGain, verticalOffset],
+    [updateDwellSelection],
   );
 
   const startTracking = useCallback(async () => {
@@ -639,42 +587,6 @@ export default function EyeTrackingDemo() {
               ? `MediaPipe ativo com ${calibrationSamplesRef.current.length} amostras`
               : "aguardando câmera e modelo de landmarks"}
           </p>
-
-          <div className="mt-5 space-y-4 rounded-xl border border-zinc-800 bg-zinc-900 p-4">
-            <label className="block text-sm text-zinc-400">
-              <span className="flex justify-between">
-                <span>Alcance vertical</span>
-                <span>{verticalGain.toFixed(2)}x</span>
-              </span>
-              <input
-                type="range"
-                min="0.8"
-                max="2.4"
-                step="0.05"
-                value={verticalGain}
-                onChange={(event) => setVerticalGain(Number(event.target.value))}
-                className="mt-2 w-full accent-blue-500"
-              />
-            </label>
-
-            <label className="block text-sm text-zinc-400">
-              <span className="flex justify-between">
-                <span>Deslocamento vertical</span>
-                <span>{verticalOffset}px</span>
-              </span>
-              <input
-                type="range"
-                min="-220"
-                max="220"
-                step="10"
-                value={verticalOffset}
-                onChange={(event) =>
-                  setVerticalOffset(Number(event.target.value))
-                }
-                className="mt-2 w-full accent-blue-500"
-              />
-            </label>
-          </div>
 
           {lastError ? (
             <p className="mt-5 rounded-lg border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-100">
