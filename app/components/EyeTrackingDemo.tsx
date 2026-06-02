@@ -244,6 +244,7 @@ function drawLandmarkPath(
   indexes: number[],
   color: string,
   width: number,
+  frame: { x: number; y: number; width: number; height: number },
 ) {
   context.beginPath();
   indexes.forEach((index, position) => {
@@ -253,8 +254,8 @@ function drawLandmarkPath(
       return;
     }
 
-    const x = point.x * context.canvas.width;
-    const y = point.y * context.canvas.height;
+    const x = frame.x + point.x * frame.width;
+    const y = frame.y + point.y * frame.height;
 
     if (position === 0) {
       context.moveTo(x, y);
@@ -265,6 +266,38 @@ function drawLandmarkPath(
   context.strokeStyle = color;
   context.lineWidth = width;
   context.stroke();
+}
+
+function getCoveredVideoFrame(
+  canvasWidth: number,
+  canvasHeight: number,
+  videoWidth: number,
+  videoHeight: number,
+) {
+  const videoAspect = videoWidth / Math.max(1, videoHeight);
+  const canvasAspect = canvasWidth / Math.max(1, canvasHeight);
+
+  if (videoAspect > canvasAspect) {
+    const height = canvasHeight;
+    const width = height * videoAspect;
+
+    return {
+      x: (canvasWidth - width) / 2,
+      y: 0,
+      width,
+      height,
+    };
+  }
+
+  const width = canvasWidth;
+  const height = width / videoAspect;
+
+  return {
+    x: 0,
+    y: (canvasHeight - height) / 2,
+    width,
+    height,
+  };
 }
 
 async function getFaceLandmarker() {
@@ -443,13 +476,16 @@ export default function EyeTrackingDemo() {
     }
 
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.save();
-    context.scale(-1, 1);
-    context.translate(-canvas.width, 0);
+    const videoFrame = getCoveredVideoFrame(
+      canvas.width,
+      canvas.height,
+      debugFrame.videoWidth,
+      debugFrame.videoHeight,
+    );
 
     debugFrame.landmarks.forEach((point, index) => {
-      const x = point.x * canvas.width;
-      const y = point.y * canvas.height;
+      const x = videoFrame.x + (1 - point.x) * videoFrame.width;
+      const y = videoFrame.y + point.y * videoFrame.height;
 
       context.beginPath();
       context.arc(x, y, 1.4, 0, Math.PI * 2);
@@ -463,23 +499,29 @@ export default function EyeTrackingDemo() {
       }
     });
 
+    const mirroredLandmarks = debugFrame.landmarks.map((point) => ({
+      ...point,
+      x: 1 - point.x,
+    }));
+
     drawLandmarkPath(
       context,
-      debugFrame.landmarks,
+      mirroredLandmarks,
       LEFT_EYE_OUTLINE,
       "#38bdf8",
       3,
+      videoFrame,
     );
     drawLandmarkPath(
       context,
-      debugFrame.landmarks,
+      mirroredLandmarks,
       RIGHT_EYE_OUTLINE,
       "#22c55e",
       3,
+      videoFrame,
     );
-    drawLandmarkPath(context, debugFrame.landmarks, LEFT_IRIS, "#ffffff", 3);
-    drawLandmarkPath(context, debugFrame.landmarks, RIGHT_IRIS, "#ffffff", 3);
-    context.restore();
+    drawLandmarkPath(context, mirroredLandmarks, LEFT_IRIS, "#ffffff", 3, videoFrame);
+    drawLandmarkPath(context, mirroredLandmarks, RIGHT_IRIS, "#ffffff", 3, videoFrame);
   }, [debugFrame, debugMode]);
 
   const updateEstimatedPoint = useCallback(
@@ -829,7 +871,7 @@ export default function EyeTrackingDemo() {
                 ref={debugVideoRef}
                 muted
                 playsInline
-                className="h-full w-full scale-x-[-1] object-contain"
+                className="h-full w-full scale-x-[-1] object-cover"
               />
               <canvas
                 ref={debugCanvasRef}
