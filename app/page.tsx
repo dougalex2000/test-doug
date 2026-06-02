@@ -123,14 +123,6 @@ export default function Home() {
                 key={module.title}
                 className="group rounded-xl border border-zinc-200 bg-zinc-50 p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:bg-white hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-blue-500 dark:hover:bg-zinc-900"
               >
-                <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-sm font-bold text-white transition group-hover:bg-indigo-600">
-                  {module.title
-                    .split(" ")
-                    .slice(0, 2)
-                    .map((word) => word[0])
-                    .join("")}
-                </div>
-
                 <h3 className="text-xl font-semibold text-zinc-950 dark:text-white">
                   {module.title}
                 </h3>
