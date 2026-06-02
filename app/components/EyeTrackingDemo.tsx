@@ -43,8 +43,8 @@ const communicationOptions = [
 
 const DWELL_TIME_MS = 1400;
 const MIN_CALIBRATION_SAMPLES = 9;
-const BUTTON_HIT_MARGIN = 180;
-const GAZE_SMOOTHING = 0.22;
+const GAZE_DEAD_ZONE = 18;
+const GAZE_SMOOTHING = 0.08;
 const MEDIAPIPE_WASM =
   "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm";
 const FACE_LANDMARKER_MODEL =
@@ -218,6 +218,10 @@ function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
 }
 
 function smoothPoint(previous: GazeData, next: GazeData) {
+  if (Math.hypot(next.x - previous.x, next.y - previous.y) < GAZE_DEAD_ZONE) {
+    return previous;
+  }
+
   return {
     x: previous.x + (next.x - previous.x) * GAZE_SMOOTHING,
     y: previous.y + (next.y - previous.y) * GAZE_SMOOTHING,
@@ -303,23 +307,17 @@ export default function EyeTrackingDemo() {
           const centerX = rect.left + rect.width / 2;
           const centerY = rect.top + rect.height / 2;
           const distance = Math.hypot(point.x - centerX, point.y - centerY);
-          const isInsideExpandedArea =
-            point.x >= rect.left - BUTTON_HIT_MARGIN &&
-            point.x <= rect.right + BUTTON_HIT_MARGIN &&
-            point.y >= rect.top - BUTTON_HIT_MARGIN &&
-            point.y <= rect.bottom + BUTTON_HIT_MARGIN;
 
           return {
             ...option,
             distance,
-            isInsideExpandedArea,
           };
         })
         .filter((option): option is NonNullable<typeof option> =>
           Boolean(option),
         )
         .sort((a, b) => a.distance - b.distance);
-      const target = candidates.find((option) => option.isInsideExpandedArea);
+      const target = candidates[0];
 
       if (!target) {
         dwellTargetRef.current = null;
