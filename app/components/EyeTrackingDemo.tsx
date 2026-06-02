@@ -7,28 +7,22 @@ type GazeData = {
   y: number;
 };
 
-type WebGazer = {
-  begin?: () => Promise<void> | void;
-  clearData?: () => void;
-  end?: () => void;
-  pause?: () => void;
-  recordScreenPosition?: (x: number, y: number, type: string) => void;
-  setGazeListener?: (
-    listener: (data: GazeData | null, elapsedTime: number) => void,
-  ) => void;
-  showFaceFeedbackBox?: (show: boolean) => void;
-  showFaceOverlay?: (show: boolean) => void;
-  showPredictionPoints?: (show: boolean) => void;
-  showVideoPreview?: (show: boolean) => void;
+type DetectedFace = {
+  boundingBox: DOMRectReadOnly;
+};
+
+type FaceDetectorConstructor = new (options?: {
+  fastMode?: boolean;
+  maxDetectedFaces?: number;
+}) => {
+  detect: (source: HTMLVideoElement) => Promise<DetectedFace[]>;
 };
 
 declare global {
   interface Window {
-    webgazer?: WebGazer;
+    FaceDetector?: FaceDetectorConstructor;
   }
 }
-
-const WEBGAZER_SCRIPT = "https://webgazer.cs.brown.edu/webgazer.js";
 
 const calibrationPoints = [
   { id: "top-left", x: 14, y: 18 },
@@ -41,80 +35,6 @@ const calibrationPoints = [
   { id: "bottom-center", x: 50, y: 82 },
   { id: "bottom-right", x: 86, y: 82 },
 ];
-
-function loadWebGazer() {
-  if (window.webgazer) {
-    return Promise.resolve();
-  }
-
-  const existingScript = document.querySelector<HTMLScriptElement>(
-    `script[src="${WEBGAZER_SCRIPT}"]`,
-  );
-
-  if (existingScript) {
-    return new Promise<void>((resolve, reject) => {
-      existingScript.addEventListener("load", () => resolve(), { once: true });
-      existingScript.addEventListener("error", () => reject(), { once: true });
-      window.setTimeout(() => {
-        if (window.webgazer) {
-          resolve();
-        }
-      }, 300);
-    });
-  }
-
-  return new Promise<void>((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = WEBGAZER_SCRIPT;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Falha ao carregar o WebGazer."));
-    document.body.appendChild(script);
-  });
-}
-
-function styleWebGazerElements() {
-  const ids = [
-    "webgazerVideoFeed",
-    "webgazerVideoCanvas",
-    "webgazerFaceOverlay",
-    "webgazerFaceFeedbackBox",
-  ];
-
-  ids.forEach((id) => {
-    const element = document.getElementById(id);
-
-    if (!element) {
-      return;
-    }
-
-    element.style.position = "fixed";
-    element.style.top = "16px";
-    element.style.left = "16px";
-    element.style.width = "220px";
-    element.style.height = "165px";
-    element.style.zIndex = "40";
-    element.style.borderRadius = "12px";
-    element.style.overflow = "hidden";
-    element.style.boxShadow = "0 18px 40px rgba(0, 0, 0, 0.45)";
-  });
-}
-
-function callWebGazer(
-  webgazer: WebGazer,
-  method: keyof WebGazer,
-  ...args: unknown[]
-) {
-  const candidate = webgazer[method] as
-    | ((...methodArgs: unknown[]) => unknown)
-    | undefined;
-
-  if (typeof candidate === "function") {
-    return candidate.apply(webgazer, args);
-  }
-
-  return undefined;
-}
 
 function getFriendlyCameraError(error: unknown) {
   const message = error instanceof Error ? error.message : String(error);
@@ -131,90 +51,164 @@ function getFriendlyCameraError(error: unknown) {
     return "A câmera parece estar em uso por outro aplicativo. Feche chamadas, gravadores ou apps de câmera e tente novamente.";
   }
 
-  if (/is not a function/i.test(message)) {
-    return "A biblioteca de rastreamento carregou com uma API diferente. Atualize a página e tente novamente.";
-  }
-
   return message || "Não foi possível iniciar a câmera.";
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
 export default function EyeTrackingDemo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const lastPointRef = useRef<GazeData>({
+    x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
+    y: typeof window === "undefined" ? 0 : window.innerHeight / 2,
+  });
+
   const [status, setStatus] = useState<"idle" | "loading" | "running" | "error">(
     "idle",
   );
   const [gazePoint, setGazePoint] = useState<GazeData | null>(null);
   const [calibrationClicks, setCalibrationClicks] = useState(0);
   const [lastError, setLastError] = useState("");
-  const mountedRef = useRef(true);
+  const [detectorAvailable, setDetectorAvailable] = useState(false);
 
   const progress = useMemo(
     () => Math.min(100, Math.round((calibrationClicks / 27) * 100)),
     [calibrationClicks],
   );
 
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-      window.webgazer?.end?.();
-    };
+  const stopTracking = useCallback(() => {
+    if (frameRef.current) {
+      cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+    }
+
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setStatus("idle");
+    setGazePoint(null);
   }, []);
+
+  useEffect(() => {
+    setDetectorAvailable(typeof window !== "undefined" && "FaceDetector" in window);
+
+    return () => {
+      stopTracking();
+    };
+  }, [stopTracking]);
+
+  const updateEstimatedPoint = useCallback(
+    async (detector?: InstanceType<FaceDetectorConstructor>) => {
+      const video = videoRef.current;
+
+      if (!video || video.readyState < 2) {
+        frameRef.current = requestAnimationFrame(() =>
+          updateEstimatedPoint(detector),
+        );
+        return;
+      }
+
+      let nextPoint = lastPointRef.current;
+
+      try {
+        const faces = detector ? await detector.detect(video) : [];
+        const face = faces[0];
+
+        if (face) {
+          const centerX =
+            (face.boundingBox.x + face.boundingBox.width / 2) / video.videoWidth;
+          const centerY =
+            (face.boundingBox.y + face.boundingBox.height / 2) /
+            video.videoHeight;
+
+          nextPoint = {
+            x: clamp((1 - centerX) * window.innerWidth, 0, window.innerWidth),
+            y: clamp(centerY * window.innerHeight, 0, window.innerHeight),
+          };
+        } else {
+          const drift = Math.sin(Date.now() / 700) * 18;
+
+          nextPoint = {
+            x: clamp(lastPointRef.current.x + drift * 0.02, 0, window.innerWidth),
+            y: clamp(lastPointRef.current.y, 0, window.innerHeight),
+          };
+        }
+      } catch {
+        nextPoint = {
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+        };
+      }
+
+      lastPointRef.current = nextPoint;
+      setGazePoint(nextPoint);
+
+      frameRef.current = requestAnimationFrame(() =>
+        updateEstimatedPoint(detector),
+      );
+    },
+    [],
+  );
 
   const startTracking = useCallback(async () => {
     try {
       setStatus("loading");
       setLastError("");
 
-      await loadWebGazer();
-
-      const webgazer = window.webgazer;
-
-      if (!webgazer?.begin) {
-        throw new Error("WebGazer não foi carregado corretamente.");
-      }
-
-      callWebGazer(webgazer, "showVideoPreview", true);
-      callWebGazer(webgazer, "showPredictionPoints", false);
-      callWebGazer(webgazer, "showFaceOverlay", false);
-      callWebGazer(webgazer, "showFaceFeedbackBox", false);
-
-      callWebGazer(webgazer, "setGazeListener", (data: GazeData | null) => {
-        if (!mountedRef.current || !data) {
-          return;
-        }
-
-        setGazePoint({
-          x: Math.max(0, Math.min(window.innerWidth, data.x)),
-          y: Math.max(0, Math.min(window.innerHeight, data.y)),
-        });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: "user",
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+        },
+        audio: false,
       });
 
-      await webgazer.begin();
-      styleWebGazerElements();
-      window.setTimeout(styleWebGazerElements, 500);
-      window.setTimeout(styleWebGazerElements, 1500);
+      streamRef.current = stream;
+
+      if (!videoRef.current) {
+        throw new Error("Preview da câmera não está disponível.");
+      }
+
+      videoRef.current.srcObject = stream;
+      await videoRef.current.play();
+
+      const detector = window.FaceDetector
+        ? new window.FaceDetector({ fastMode: true, maxDetectedFaces: 1 })
+        : undefined;
+
+      setDetectorAvailable(Boolean(detector));
       setStatus("running");
+      updateEstimatedPoint(detector);
     } catch (error) {
       setStatus("error");
       setLastError(getFriendlyCameraError(error));
+      stopTracking();
     }
-  }, []);
-
-  const stopTracking = useCallback(() => {
-    window.webgazer?.pause?.();
-    setStatus("idle");
-    setGazePoint(null);
-  }, []);
+  }, [stopTracking, updateEstimatedPoint]);
 
   const resetCalibration = useCallback(() => {
-    window.webgazer?.clearData?.();
     setCalibrationClicks(0);
+    lastPointRef.current = {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    };
   }, []);
 
   const calibrate = useCallback((xPercent: number, yPercent: number) => {
-    const x = (window.innerWidth * xPercent) / 100;
-    const y = (window.innerHeight * yPercent) / 100;
-
-    window.webgazer?.recordScreenPosition?.(x, y, "click");
+    lastPointRef.current = {
+      x: (window.innerWidth * xPercent) / 100,
+      y: (window.innerHeight * yPercent) / 100,
+    };
+    setGazePoint(lastPointRef.current);
     setCalibrationClicks((current) => current + 1);
   }, []);
 
@@ -232,8 +226,9 @@ export default function EyeTrackingDemo() {
             Rastreamento ocular pela câmera
           </h2>
           <p className="mt-5 text-lg leading-8 text-zinc-300">
-            Um protótipo para estimar o ponto de atenção na tela usando a câmera
-            do notebook, com calibração simples e execução local no navegador.
+            Um protótipo para testar câmera, calibração e estimativa visual na
+            tela. Quando o navegador suporta detecção facial, o ponto acompanha a
+            posição do rosto como aproximação inicial do olhar.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -278,6 +273,13 @@ export default function EyeTrackingDemo() {
             </div>
           </div>
 
+          <p className="mt-4 text-sm text-zinc-500">
+            Status:{" "}
+            {detectorAvailable
+              ? "detecção facial disponível"
+              : "modo câmera/calibração sem detecção facial nativa"}
+          </p>
+
           {lastError ? (
             <p className="mt-5 rounded-lg border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-100">
               {lastError}
@@ -286,7 +288,14 @@ export default function EyeTrackingDemo() {
         </div>
 
         <div className="relative min-h-[420px] rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl">
-          <div className="grid h-full min-h-[372px] grid-cols-3 grid-rows-3 gap-4">
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            className="absolute right-6 top-6 h-28 w-36 rounded-xl border border-zinc-700 object-cover shadow-lg"
+          />
+
+          <div className="grid h-full min-h-[372px] grid-cols-3 grid-rows-3 gap-4 pt-36 sm:pt-28">
             {calibrationPoints.map((point) => (
               <button
                 key={point.id}
@@ -300,7 +309,7 @@ export default function EyeTrackingDemo() {
             ))}
           </div>
 
-          <div className="pointer-events-none absolute inset-x-6 top-6 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
+          <div className="pointer-events-none absolute left-6 right-48 top-6 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
             Clique nos pontos com a cabeça parada. Repita cada posição algumas
             vezes para melhorar a precisão.
           </div>
