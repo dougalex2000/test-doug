@@ -23,15 +23,15 @@ type CalibrationSample = {
 };
 
 const calibrationPoints = [
-  { id: "top-left", x: 12, y: 16 },
-  { id: "top-center", x: 50, y: 16 },
-  { id: "top-right", x: 88, y: 16 },
-  { id: "middle-left", x: 12, y: 50 },
+  { id: "top-left", x: 5, y: 8 },
+  { id: "top-center", x: 50, y: 8 },
+  { id: "top-right", x: 95, y: 8 },
+  { id: "middle-left", x: 5, y: 50 },
   { id: "center", x: 50, y: 50 },
-  { id: "middle-right", x: 88, y: 50 },
-  { id: "bottom-left", x: 12, y: 84 },
-  { id: "bottom-center", x: 50, y: 84 },
-  { id: "bottom-right", x: 88, y: 84 },
+  { id: "middle-right", x: 95, y: 50 },
+  { id: "bottom-left", x: 5, y: 92 },
+  { id: "bottom-center", x: 50, y: 92 },
+  { id: "bottom-right", x: 95, y: 92 },
 ];
 
 const communicationOptions = [
@@ -603,28 +603,43 @@ export default function EyeTrackingDemo() {
             </div>
           ) : (
             <>
-              <div className="grid h-full min-h-[560px] grid-cols-3 grid-rows-3 gap-4 pt-36 sm:pt-28">
-                {calibrationPoints.map((point) => (
-                  <button
-                    key={point.id}
-                    type="button"
-                    onClick={() => calibrate(point.x, point.y)}
-                    disabled={status !== "running"}
-                    className="rounded-xl border border-zinc-700 bg-zinc-950 text-sm font-semibold text-zinc-300 transition hover:border-blue-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    Calibrar
-                  </button>
-                ))}
+              <div className="flex min-h-[560px] items-center justify-center rounded-2xl border border-dashed border-zinc-700 bg-zinc-950/70 p-8 pt-36 text-center sm:pt-28">
+                <div>
+                  <p className="text-2xl font-bold text-white">
+                    Calibração em tela cheia
+                  </p>
+                  <p className="mt-4 max-w-md text-zinc-400">
+                    Os pontos de calibração aparecem sobre a tela real. Olhe
+                    para cada alvo e clique nele para capturar a amostra.
+                  </p>
+                </div>
               </div>
 
               <div className="pointer-events-none absolute left-6 right-48 top-6 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
-                Olhe para cada posição e clique em calibrar. Faça os 9 pontos
-                para expandir a área útil da bolinha.
+                Olhe para os alvos que aparecem na tela inteira. Faça os 9
+                pontos para expandir a área útil da bolinha.
               </div>
             </>
           )}
         </div>
       </div>
+
+      {status === "running" && !isCalibrated
+        ? calibrationPoints.map((point, index) => (
+            <button
+              key={point.id}
+              type="button"
+              onClick={() => calibrate(point.x, point.y)}
+              className="fixed z-[70] h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-blue-600 text-sm font-bold text-white shadow-[0_0_35px_rgba(59,130,246,0.9)] transition hover:scale-110 hover:bg-blue-500"
+              style={{
+                left: `${point.x}%`,
+                top: `${point.y}%`,
+              }}
+            >
+              {index + 1}
+            </button>
+          ))
+        : null}
 
       {status === "running" && gazePoint ? (
         <div
