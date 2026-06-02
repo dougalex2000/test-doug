@@ -12,16 +12,26 @@ type GazeData = {
   y: number;
 };
 
+type RawGaze = {
+  x: number;
+  y: number;
+};
+
+type CalibrationSample = {
+  raw: RawGaze;
+  target: GazeData;
+};
+
 const calibrationPoints = [
-  { id: "top-left", x: 14, y: 18 },
-  { id: "top-center", x: 50, y: 18 },
-  { id: "top-right", x: 86, y: 18 },
-  { id: "middle-left", x: 14, y: 50 },
+  { id: "top-left", x: 12, y: 16 },
+  { id: "top-center", x: 50, y: 16 },
+  { id: "top-right", x: 88, y: 16 },
+  { id: "middle-left", x: 12, y: 50 },
   { id: "center", x: 50, y: 50 },
-  { id: "middle-right", x: 86, y: 50 },
-  { id: "bottom-left", x: 14, y: 82 },
-  { id: "bottom-center", x: 50, y: 82 },
-  { id: "bottom-right", x: 86, y: 82 },
+  { id: "middle-right", x: 88, y: 50 },
+  { id: "bottom-left", x: 12, y: 84 },
+  { id: "bottom-center", x: 50, y: 84 },
+  { id: "bottom-right", x: 88, y: 84 },
 ];
 
 const communicationOptions = [
@@ -32,6 +42,7 @@ const communicationOptions = [
 ];
 
 const DWELL_TIME_MS = 1400;
+const MIN_CALIBRATION_SAMPLES = 9;
 const MEDIAPIPE_WASM =
   "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm";
 const FACE_LANDMARKER_MODEL =
@@ -76,7 +87,7 @@ function averageLandmarks(landmarks: NormalizedLandmark[], indexes: number[]) {
   };
 }
 
-function estimateGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
+function getRawGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
   const leftIris = averageLandmarks(landmarks, [468, 469, 470, 471, 472]);
   const rightIris = averageLandmarks(landmarks, [473, 474, 475, 476, 477]);
   const leftEye = averageLandmarks(landmarks, [33, 133, 159, 145]);
@@ -101,16 +112,37 @@ function estimateGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
     return null;
   }
 
-  const horizontalOffset = clamp((irisCenter.x - eyeCenter.x) * 9, -0.5, 0.5);
-  const verticalOffset = clamp((irisCenter.y - eyeCenter.y) * 12, -0.5, 0.5);
+  return {
+    x: irisCenter.x - eyeCenter.x,
+    y: irisCenter.y - eyeCenter.y,
+  };
+}
+
+function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
+  if (samples.length < MIN_CALIBRATION_SAMPLES) {
+    return {
+      x: clamp((0.5 - raw.x * 9) * window.innerWidth, 0, window.innerWidth),
+      y: clamp((0.5 + raw.y * 12) * window.innerHeight, 0, window.innerHeight),
+    };
+  }
+
+  const minRawX = Math.min(...samples.map((sample) => sample.raw.x));
+  const maxRawX = Math.max(...samples.map((sample) => sample.raw.x));
+  const minRawY = Math.min(...samples.map((sample) => sample.raw.y));
+  const maxRawY = Math.max(...samples.map((sample) => sample.raw.y));
+  const minTargetX = Math.min(...samples.map((sample) => sample.target.x));
+  const maxTargetX = Math.max(...samples.map((sample) => sample.target.x));
+  const minTargetY = Math.min(...samples.map((sample) => sample.target.y));
+  const maxTargetY = Math.max(...samples.map((sample) => sample.target.y));
+
+  const rawRangeX = Math.max(0.0001, maxRawX - minRawX);
+  const rawRangeY = Math.max(0.0001, maxRawY - minRawY);
+  const normalizedX = clamp((raw.x - minRawX) / rawRangeX, 0, 1);
+  const normalizedY = clamp((raw.y - minRawY) / rawRangeY, 0, 1);
 
   return {
-    x: clamp(
-      (0.5 - horizontalOffset) * window.innerWidth,
-      0,
-      window.innerWidth,
-    ),
-    y: clamp((0.5 + verticalOffset) * window.innerHeight, 0, window.innerHeight),
+    x: minTargetX + normalizedX * (maxTargetX - minTargetX),
+    y: minTargetY + normalizedY * (maxTargetY - minTargetY),
   };
 }
 
@@ -141,6 +173,8 @@ export default function EyeTrackingDemo() {
   const dwellStartedAtRef = useRef(0);
   const selectedDuringDwellRef = useRef(false);
   const manualPointUntilRef = useRef(0);
+  const calibrationSamplesRef = useRef<CalibrationSample[]>([]);
+  const lastRawGazeRef = useRef<RawGaze | null>(null);
   const lastPointRef = useRef<GazeData>({
     x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
     y: typeof window === "undefined" ? 0 : window.innerHeight / 2,
@@ -158,10 +192,14 @@ export default function EyeTrackingDemo() {
   const [selectedOption, setSelectedOption] = useState("Nenhuma seleção ainda");
 
   const progress = useMemo(
-    () => Math.min(100, Math.round((calibrationClicks / 27) * 100)),
+    () =>
+      Math.min(
+        100,
+        Math.round((calibrationClicks / MIN_CALIBRATION_SAMPLES) * 100),
+      ),
     [calibrationClicks],
   );
-  const isCalibrated = calibrationClicks >= 9;
+  const isCalibrated = calibrationClicks >= MIN_CALIBRATION_SAMPLES;
 
   const selectOption = useCallback((label: string) => {
     setSelectedOption(label);
@@ -269,10 +307,11 @@ export default function EyeTrackingDemo() {
             performance.now(),
           );
           const landmarks = result?.faceLandmarks[0];
-          const gaze = landmarks ? estimateGazeFromFaceLandmarks(landmarks) : null;
+          const rawGaze = landmarks ? getRawGazeFromFaceLandmarks(landmarks) : null;
 
-          if (gaze) {
-            nextPoint = gaze;
+          if (rawGaze) {
+            lastRawGazeRef.current = rawGaze;
+            nextPoint = scaleRawGaze(rawGaze, calibrationSamplesRef.current);
           }
         } catch {
           nextPoint = lastPointRef.current;
@@ -325,6 +364,7 @@ export default function EyeTrackingDemo() {
   }, [stopTracking, updateEstimatedPoint]);
 
   const resetCalibration = useCallback(() => {
+    calibrationSamplesRef.current = [];
     setCalibrationClicks(0);
     setSelectedOption("Nenhuma seleção ainda");
     setActiveOption(null);
@@ -336,12 +376,24 @@ export default function EyeTrackingDemo() {
   }, []);
 
   const calibrate = useCallback((xPercent: number, yPercent: number) => {
-    lastPointRef.current = {
+    const target = {
       x: (window.innerWidth * xPercent) / 100,
       y: (window.innerHeight * yPercent) / 100,
     };
-    manualPointUntilRef.current = performance.now() + 500;
-    setGazePoint(lastPointRef.current);
+
+    if (lastRawGazeRef.current) {
+      calibrationSamplesRef.current = [
+        ...calibrationSamplesRef.current,
+        {
+          raw: lastRawGazeRef.current,
+          target,
+        },
+      ];
+    }
+
+    lastPointRef.current = target;
+    manualPointUntilRef.current = performance.now() + 450;
+    setGazePoint(target);
     setCalibrationClicks((current) => current + 1);
   }, []);
 
@@ -382,8 +434,8 @@ export default function EyeTrackingDemo() {
           </h2>
           <p className="mt-5 text-lg leading-8 text-zinc-300">
             Um protótipo para testar câmera, calibração e seleção por
-            permanência. Após calibrar, mantenha o ponto azul sobre uma opção por
-            alguns instantes para selecioná-la.
+            permanência. Olhe para cada ponto antes de clicar em calibrar; depois
+            a bolinha usa essas amostras para alcançar melhor os cantos.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -436,7 +488,7 @@ export default function EyeTrackingDemo() {
           <p className="mt-4 text-sm text-zinc-500">
             Status:{" "}
             {landmarkerReady
-              ? "MediaPipe Face Landmarker ativo"
+              ? `MediaPipe ativo com ${calibrationSamplesRef.current.length} amostras`
               : "aguardando câmera e modelo de landmarks"}
           </p>
 
@@ -502,8 +554,8 @@ export default function EyeTrackingDemo() {
               </div>
 
               <div className="pointer-events-none absolute left-6 right-48 top-6 rounded-xl border border-blue-400/30 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
-                Clique nos pontos com a cabeça parada. Ao chegar em 33%, a tela
-                de comunicação será liberada.
+                Olhe para cada posição e clique em calibrar. Faça os 9 pontos
+                para expandir a área útil da bolinha.
               </div>
             </>
           )}
