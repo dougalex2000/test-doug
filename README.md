@@ -13,6 +13,12 @@ A proposta integra interfaces digitais, sensores físicos, microcontroladores, r
 - Atividades assistivas
 - Relatórios funcionais
 
+## Rastreamento ocular
+
+O site inclui um protótipo experimental de rastreamento ocular pela câmera do notebook. O recurso roda no navegador, solicita permissão de câmera e usa calibração por pontos para estimar a direção do olhar.
+
+Em produção, o recurso deve ser usado em HTTPS. Em desenvolvimento local, também funciona em `localhost`.
+
 ## Tecnologias
 
 - Next.js

@@ -1,3 +1,5 @@
+import EyeTrackingDemo from "./components/EyeTrackingDemo";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 dark:from-black dark:to-zinc-900">
@@ -27,7 +29,7 @@ export default function Home() {
             ecossistema acessível, flexível e mensurável.
           </p>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a
               href="#sobre"
               className="rounded-full bg-blue-600 px-6 py-3 font-semibold transition hover:bg-blue-700"
@@ -40,6 +42,13 @@ export default function Home() {
               className="rounded-full border border-white px-6 py-3 font-semibold transition hover:bg-white hover:text-black"
             >
               Ver Módulos
+            </a>
+
+            <a
+              href="#rastreamento"
+              className="rounded-full border border-blue-300 px-6 py-3 font-semibold text-blue-100 transition hover:bg-blue-100 hover:text-blue-950"
+            >
+              Testar Câmera
             </a>
           </div>
         </div>
@@ -135,6 +144,8 @@ export default function Home() {
         </div>
       </section>
 
+      <EyeTrackingDemo />
+
       {/* FOOTER / CTA */}
       <section className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16 text-center text-white">
         <h2 className="text-3xl font-bold">
@@ -147,10 +158,10 @@ export default function Home() {
         </p>
 
         <a
-          href="#sobre"
+          href="#rastreamento"
           className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-200"
         >
-          Acessar Plataforma
+          Testar Rastreamento Ocular
         </a>
       </section>
     </div>
