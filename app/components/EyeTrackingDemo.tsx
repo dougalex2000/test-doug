@@ -336,6 +336,7 @@ export default function EyeTrackingDemo() {
   const activeCalibrationIndexRef = useRef(0);
   const calibrationPointStartedAtRef = useRef(0);
   const calibrationInstructionTimeoutRef = useRef<number | null>(null);
+  const calibrationPreviewIntervalRef = useRef<number | null>(null);
   const showCalibrationInstructionsRef = useRef(false);
   const lastRawGazeRef = useRef<RawGaze | null>(null);
   const lastPointRef = useRef<GazeData>({
@@ -349,6 +350,7 @@ export default function EyeTrackingDemo() {
   const [gazePoint, setGazePoint] = useState<GazeData | null>(null);
   const [calibrationClicks, setCalibrationClicks] = useState(0);
   const [calibrationHoldProgress, setCalibrationHoldProgress] = useState(0);
+  const [calibrationPreviewIndex, setCalibrationPreviewIndex] = useState(0);
   const [showCalibrationInstructions, setShowCalibrationInstructions] =
     useState(false);
   const [lastError, setLastError] = useState("");
@@ -374,6 +376,11 @@ export default function EyeTrackingDemo() {
   }, []);
 
   const finishCalibrationInstructions = useCallback(() => {
+    if (calibrationPreviewIntervalRef.current) {
+      window.clearInterval(calibrationPreviewIntervalRef.current);
+      calibrationPreviewIntervalRef.current = null;
+    }
+
     showCalibrationInstructionsRef.current = false;
     setShowCalibrationInstructions(false);
     calibrationPointStartedAtRef.current = performance.now();
@@ -383,12 +390,31 @@ export default function EyeTrackingDemo() {
     if (calibrationInstructionTimeoutRef.current) {
       window.clearTimeout(calibrationInstructionTimeoutRef.current);
     }
+    if (calibrationPreviewIntervalRef.current) {
+      window.clearInterval(calibrationPreviewIntervalRef.current);
+      calibrationPreviewIntervalRef.current = null;
+    }
 
     showCalibrationInstructionsRef.current = true;
     setShowCalibrationInstructions(true);
+    setCalibrationPreviewIndex(0);
     calibrationPointStartedAtRef.current =
       performance.now() + CALIBRATION_INSTRUCTIONS_MS;
     setCalibrationHoldProgress(0);
+    const previewStartedAt = performance.now();
+    const previewStepMs =
+      CALIBRATION_INSTRUCTIONS_MS / calibrationPoints.length;
+
+    calibrationPreviewIntervalRef.current = window.setInterval(() => {
+      const elapsed = performance.now() - previewStartedAt;
+
+      setCalibrationPreviewIndex(
+        Math.min(
+          calibrationPoints.length - 1,
+          Math.floor(elapsed / previewStepMs),
+        ),
+      );
+    }, 80);
 
     calibrationInstructionTimeoutRef.current = window.setTimeout(() => {
       finishCalibrationInstructions();
@@ -516,6 +542,10 @@ export default function EyeTrackingDemo() {
     if (calibrationInstructionTimeoutRef.current) {
       window.clearTimeout(calibrationInstructionTimeoutRef.current);
       calibrationInstructionTimeoutRef.current = null;
+    }
+    if (calibrationPreviewIntervalRef.current) {
+      window.clearInterval(calibrationPreviewIntervalRef.current);
+      calibrationPreviewIntervalRef.current = null;
     }
     showCalibrationInstructionsRef.current = false;
 
@@ -938,15 +968,22 @@ export default function EyeTrackingDemo() {
               Não mexa a cabeça, não use o mouse e aguarde a captura automática
               dos 9 pontos.
             </p>
-            <div className="mx-auto mt-4 grid w-full max-w-72 grid-cols-3 gap-2 rounded-xl border-2 border-white/80 bg-red-700/80 p-3">
-              {calibrationPoints.map((point, index) => (
-                <div
-                  key={point.id}
-                  className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-red-500 text-base font-black text-white shadow-lg sm:h-14 sm:w-14"
-                >
-                  {index + 1}
-                </div>
-              ))}
+            <div className="relative mx-auto mt-4 aspect-video w-full max-w-72 rounded-xl border-2 border-white/80 bg-red-700/80">
+              {(() => {
+                const point =
+                  calibrationPoints[calibrationPreviewIndex] ??
+                  calibrationPoints[0];
+
+                return (
+                  <div
+                    key={point.id}
+                    className="absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-red-500 text-xs font-black text-white shadow-lg shadow-red-950/60"
+                    style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                  >
+                    {calibrationPreviewIndex + 1}
+                  </div>
+                );
+              })()}
             </div>
             <p className="mt-4 rounded-full border-2 border-white bg-white px-5 py-3 text-base font-black text-red-700 sm:text-lg">
               A calibração começa automaticamente em 5 segundos.
