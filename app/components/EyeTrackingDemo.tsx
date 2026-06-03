@@ -1097,8 +1097,8 @@ export default function EyeTrackingDemo() {
                 top: `${point.y}%`,
               }}
             >
-                <div className="absolute h-28 w-28 animate-[ping_0.55s_cubic-bezier(0,0,0.2,1)_2] rounded-full border-8 border-yellow-300 bg-yellow-300/35 shadow-[0_0_80px_rgba(253,224,71,0.95)]" />
-                <div className="absolute h-20 w-20 animate-[pulse_0.55s_ease-in-out_2] rounded-full border-4 border-white bg-red-500/70 shadow-[0_0_70px_rgba(239,68,68,1)]" />
+                <div className="absolute h-28 w-28 animate-[ping_0.9s_cubic-bezier(0,0,0.2,1)_infinite] rounded-full border-8 border-yellow-300 bg-yellow-300/35 shadow-[0_0_80px_rgba(253,224,71,0.95)]" />
+                <div className="absolute h-20 w-20 animate-[pulse_0.9s_ease-in-out_infinite] rounded-full border-4 border-white bg-red-500/70 shadow-[0_0_70px_rgba(239,68,68,1)]" />
                 <div className="absolute h-16 w-16 rounded-full border-4 border-yellow-200 bg-red-600 shadow-[0_0_55px_rgba(253,224,71,0.95)]" />
                 <svg className="absolute h-20 w-20 -rotate-90" viewBox="0 0 80 80">
                   <circle
