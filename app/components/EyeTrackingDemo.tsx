@@ -1090,12 +1090,14 @@ export default function EyeTrackingDemo() {
 
             return (
               <div
+                key={point.id}
                 className="pointer-events-none fixed z-[70] flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
               style={{
                 left: `${point.x}%`,
                 top: `${point.y}%`,
               }}
             >
+                <div className="absolute h-16 w-16 animate-[ping_0.45s_cubic-bezier(0,0,0.2,1)_2] rounded-full border-4 border-white/90 bg-white/20" />
                 <div className="absolute h-16 w-16 rounded-full bg-red-600 shadow-[0_0_35px_rgba(239,68,68,0.9)]" />
                 <svg className="absolute h-20 w-20 -rotate-90" viewBox="0 0 80 80">
                   <circle
