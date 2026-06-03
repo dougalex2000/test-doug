@@ -48,6 +48,7 @@ const communicationOptions = [
 ];
 
 const DWELL_TIME_MS = 1400;
+const CALIBRATION_POINT_MS = 3000;
 const MIN_CALIBRATION_SAMPLES = 9;
 const GAZE_DEAD_ZONE = 18;
 const GAZE_SMOOTHING = 0.08;
@@ -331,6 +332,8 @@ export default function EyeTrackingDemo() {
   const manualPointUntilRef = useRef(0);
   const calibrationSamplesRef = useRef<CalibrationSample[]>([]);
   const calibrationClicksRef = useRef(0);
+  const activeCalibrationIndexRef = useRef(0);
+  const calibrationPointStartedAtRef = useRef(0);
   const lastRawGazeRef = useRef<RawGaze | null>(null);
   const lastPointRef = useRef<GazeData>({
     x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
@@ -342,6 +345,7 @@ export default function EyeTrackingDemo() {
   );
   const [gazePoint, setGazePoint] = useState<GazeData | null>(null);
   const [calibrationClicks, setCalibrationClicks] = useState(0);
+  const [calibrationHoldProgress, setCalibrationHoldProgress] = useState(0);
   const [lastError, setLastError] = useState("");
   const [landmarkerReady, setLandmarkerReady] = useState(false);
   const [activeOption, setActiveOption] = useState<string | null>(null);
@@ -362,6 +366,45 @@ export default function EyeTrackingDemo() {
 
   const selectOption = useCallback((label: string) => {
     setSelectedOption(label);
+  }, []);
+
+  const captureCalibrationPoint = useCallback((pointIndex: number) => {
+    const point = calibrationPoints[pointIndex];
+
+    if (!point) {
+      return;
+    }
+
+    const target = {
+      x: (window.innerWidth * point.x) / 100,
+      y: (window.innerHeight * point.y) / 100,
+    };
+
+    if (!lastRawGazeRef.current) {
+      calibrationPointStartedAtRef.current = performance.now();
+      setCalibrationHoldProgress(0);
+      return;
+    }
+
+    calibrationSamplesRef.current = [
+      ...calibrationSamplesRef.current,
+      {
+        raw: lastRawGazeRef.current,
+        target,
+      },
+    ];
+
+    lastPointRef.current = target;
+    manualPointUntilRef.current = performance.now() + 300;
+    setGazePoint(target);
+    calibrationClicksRef.current = Math.min(
+      MIN_CALIBRATION_SAMPLES,
+      calibrationClicksRef.current + 1,
+    );
+    setCalibrationClicks(calibrationClicksRef.current);
+    activeCalibrationIndexRef.current = calibrationClicksRef.current;
+    calibrationPointStartedAtRef.current = performance.now();
+    setCalibrationHoldProgress(0);
   }, []);
 
   const updateDwellSelection = useCallback(
@@ -576,11 +619,32 @@ export default function EyeTrackingDemo() {
 
       lastPointRef.current = nextPoint;
       setGazePoint(nextPoint);
+
+      if (calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES) {
+        const now = performance.now();
+
+        if (calibrationPointStartedAtRef.current === 0) {
+          calibrationPointStartedAtRef.current = now;
+        }
+
+        const elapsed = now - calibrationPointStartedAtRef.current;
+        const nextHoldProgress = Math.min(
+          100,
+          Math.round((elapsed / CALIBRATION_POINT_MS) * 100),
+        );
+
+        setCalibrationHoldProgress(nextHoldProgress);
+
+        if (elapsed >= CALIBRATION_POINT_MS) {
+          captureCalibrationPoint(activeCalibrationIndexRef.current);
+        }
+      }
+
       updateDwellSelection(nextPoint);
 
       frameRef.current = requestAnimationFrame(() => updateEstimatedPoint());
     },
-    [updateDwellSelection],
+    [captureCalibrationPoint, updateDwellSelection],
   );
 
   const startTracking = useCallback(async () => {
@@ -614,6 +678,9 @@ export default function EyeTrackingDemo() {
 
       landmarkerRef.current = landmarker;
       setLandmarkerReady(true);
+      activeCalibrationIndexRef.current = calibrationClicksRef.current;
+      calibrationPointStartedAtRef.current = performance.now();
+      setCalibrationHoldProgress(0);
       setStatus("running");
       updateEstimatedPoint();
     } catch (error) {
@@ -626,7 +693,10 @@ export default function EyeTrackingDemo() {
   const resetCalibration = useCallback(() => {
     calibrationSamplesRef.current = [];
     calibrationClicksRef.current = 0;
+    activeCalibrationIndexRef.current = 0;
+    calibrationPointStartedAtRef.current = performance.now();
     setCalibrationClicks(0);
+    setCalibrationHoldProgress(0);
     setSelectedOption("Nenhuma seleção ainda");
     setActiveOption(null);
     setDwellProgress(0);
@@ -634,29 +704,6 @@ export default function EyeTrackingDemo() {
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
     };
-  }, []);
-
-  const calibrate = useCallback((xPercent: number, yPercent: number) => {
-    const target = {
-      x: (window.innerWidth * xPercent) / 100,
-      y: (window.innerHeight * yPercent) / 100,
-    };
-
-    if (lastRawGazeRef.current) {
-      calibrationSamplesRef.current = [
-        ...calibrationSamplesRef.current,
-        {
-          raw: lastRawGazeRef.current,
-          target,
-        },
-      ];
-    }
-
-    lastPointRef.current = target;
-    manualPointUntilRef.current = performance.now() + 450;
-    setGazePoint(target);
-    calibrationClicksRef.current += 1;
-    setCalibrationClicks(calibrationClicksRef.current);
   }, []);
 
   const aimAtOption = useCallback(
@@ -831,20 +878,50 @@ export default function EyeTrackingDemo() {
       </div>
 
       {status === "running" && !isCalibrated
-        ? calibrationPoints.map((point, index) => (
-            <button
-              key={point.id}
-              type="button"
-              onClick={() => calibrate(point.x, point.y)}
-              className="fixed z-[70] h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-blue-600 text-sm font-bold text-white shadow-[0_0_35px_rgba(59,130,246,0.9)] transition hover:scale-110 hover:bg-blue-500"
+        ? (() => {
+            const point = calibrationPoints[calibrationClicks] ?? calibrationPoints[0];
+            const radius = 28;
+            const circumference = 2 * Math.PI * radius;
+            const strokeOffset =
+              circumference -
+              (calibrationHoldProgress / 100) * circumference;
+
+            return (
+              <div
+                className="pointer-events-none fixed z-[70] flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
               style={{
                 left: `${point.x}%`,
                 top: `${point.y}%`,
               }}
             >
-              {index + 1}
-            </button>
-          ))
+                <div className="absolute h-16 w-16 rounded-full bg-red-600 shadow-[0_0_35px_rgba(239,68,68,0.9)]" />
+                <svg className="absolute h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r={radius}
+                    fill="none"
+                    stroke="rgba(255,255,255,0.35)"
+                    strokeWidth="4"
+                  />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r={radius}
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeOffset}
+                    strokeLinecap="round"
+                    strokeWidth="4"
+                  />
+                </svg>
+                <span className="relative text-2xl font-bold text-white">
+                  {calibrationClicks + 1}
+                </span>
+              </div>
+            );
+          })()
         : null}
 
       {status === "running" && gazePoint ? (
