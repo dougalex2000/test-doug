@@ -48,7 +48,7 @@ const communicationOptions = [
 ];
 
 const DWELL_TIME_MS = 1400;
-const CALIBRATION_INSTRUCTIONS_MS = 4000;
+const CALIBRATION_INSTRUCTIONS_MS = 5000;
 const CALIBRATION_POINT_MS = 3000;
 const MIN_CALIBRATION_SAMPLES = 9;
 const GAZE_DEAD_ZONE = 18;
@@ -923,7 +923,7 @@ export default function EyeTrackingDemo() {
 
       {status === "running" && showCalibrationInstructions && !isCalibrated ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 px-6 text-white">
-          <div className="max-w-3xl rounded-3xl border-4 border-white bg-red-600 px-8 py-10 text-center shadow-2xl shadow-red-950/60">
+          <div className="max-w-4xl rounded-3xl border-4 border-white bg-red-600 px-8 py-10 text-center shadow-2xl shadow-red-950/60">
             <p className="text-base font-extrabold uppercase tracking-wide text-white">
               Atenção: preparação da calibração
             </p>
@@ -938,8 +938,18 @@ export default function EyeTrackingDemo() {
               Não mexa a cabeça, não use o mouse e aguarde a captura automática
               dos 9 pontos.
             </p>
+            <div className="mx-auto mt-7 grid max-w-lg grid-cols-3 gap-4 rounded-2xl border-2 border-white/80 bg-red-700/80 p-5">
+              {calibrationPoints.map((point, index) => (
+                <div
+                  key={point.id}
+                  className="flex aspect-square items-center justify-center rounded-full border-2 border-white bg-red-500 text-xl font-black text-white shadow-lg"
+                >
+                  {index + 1}
+                </div>
+              ))}
+            </div>
             <p className="mt-7 rounded-full border-2 border-white bg-white px-6 py-4 text-lg font-black text-red-700">
-              A calibração começa automaticamente em 4 segundos.
+              A calibração começa automaticamente em 5 segundos.
             </p>
           </div>
         </div>
