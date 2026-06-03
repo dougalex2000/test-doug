@@ -922,20 +922,24 @@ export default function EyeTrackingDemo() {
       </div>
 
       {status === "running" && showCalibrationInstructions && !isCalibrated ? (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 px-6 text-white">
-          <div className="max-w-2xl rounded-3xl border border-blue-400/35 bg-zinc-950/95 px-8 py-9 text-center shadow-2xl">
-            <p className="text-sm font-semibold uppercase tracking-wide text-blue-300">
-              PreparaÃ§Ã£o da calibraÃ§Ã£o
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 px-6 text-white">
+          <div className="max-w-3xl rounded-3xl border-4 border-white bg-red-600 px-8 py-10 text-center shadow-2xl shadow-red-950/60">
+            <p className="text-base font-extrabold uppercase tracking-wide text-white">
+              Atenção: preparação da calibração
             </p>
-            <h3 className="mt-3 text-3xl font-bold">
-              Mantenha a cabeÃ§a parada
+            <h3 className="mt-4 text-4xl font-black text-white">
+              Mantenha a cabeça parada
             </h3>
-            <p className="mt-4 text-lg leading-relaxed text-zinc-200">
-              Acompanhe os cÃ­rculos apenas com os olhos. NÃ£o use o mouse e
-              evite mexer o rosto durante a captura dos 9 pontos.
+            <p className="mt-5 text-2xl font-bold leading-relaxed text-white">
+              Quando os círculos aparecerem, acompanhe cada ponto somente com
+              os olhos.
             </p>
-            <p className="mt-5 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-blue-100">
-              A calibraÃ§Ã£o comeÃ§a automaticamente em 4 segundos.
+            <p className="mt-4 text-xl font-semibold leading-relaxed text-white">
+              Não mexa a cabeça, não use o mouse e aguarde a captura automática
+              dos 9 pontos.
+            </p>
+            <p className="mt-7 rounded-full border-2 border-white bg-white px-6 py-4 text-lg font-black text-red-700">
+              A calibração começa automaticamente em 4 segundos.
             </p>
           </div>
         </div>
