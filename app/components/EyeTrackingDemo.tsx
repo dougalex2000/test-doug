@@ -48,7 +48,7 @@ const communicationOptions = [
 ];
 
 const DWELL_TIME_MS = 1400;
-const CALIBRATION_INSTRUCTIONS_MS = 5000;
+const CALIBRATION_INSTRUCTIONS_MS = 7000;
 const CALIBRATION_POINT_MS = 3000;
 const MIN_CALIBRATION_SAMPLES = 9;
 const GAZE_DEAD_ZONE = 18;
@@ -955,18 +955,13 @@ export default function EyeTrackingDemo() {
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80 px-4 py-4 text-white">
           <div className="max-h-[calc(100vh-2rem)] w-full max-w-2xl overflow-hidden rounded-2xl border-4 border-white bg-red-600 px-5 py-5 text-center shadow-2xl shadow-red-950/60 sm:px-7 sm:py-6">
             <p className="text-sm font-extrabold uppercase tracking-wide text-white">
-              Atenção: preparação da calibração
+              Calibração do olhar
             </p>
             <h3 className="mt-2 text-2xl font-black text-white sm:text-3xl">
               Mantenha a cabeça parada
             </h3>
             <p className="mt-3 text-lg font-bold leading-snug text-white sm:text-xl">
-              Quando os círculos aparecerem, acompanhe cada ponto somente com
-              os olhos.
-            </p>
-            <p className="mt-3 text-base font-semibold leading-snug text-white sm:text-lg">
-              Não mexa a cabeça, não use o mouse e aguarde a captura automática
-              dos 9 pontos.
+              Siga os pontos apenas com os olhos. Não use o mouse.
             </p>
             <div className="relative mx-auto mt-4 aspect-video w-full max-w-72 rounded-xl border-2 border-white/80 bg-red-700/80">
               {(() => {
@@ -986,7 +981,7 @@ export default function EyeTrackingDemo() {
               })()}
             </div>
             <p className="mt-4 rounded-full border-2 border-white bg-white px-5 py-3 text-base font-black text-red-700 sm:text-lg">
-              A calibração começa automaticamente em 5 segundos.
+              A calibração começa automaticamente em 7 segundos.
             </p>
           </div>
         </div>
