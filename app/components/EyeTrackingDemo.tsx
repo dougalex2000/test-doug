@@ -353,6 +353,8 @@ export default function EyeTrackingDemo() {
   const [calibrationPreviewIndex, setCalibrationPreviewIndex] = useState(0);
   const [showCalibrationInstructions, setShowCalibrationInstructions] =
     useState(false);
+  const [videoDevices, setVideoDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [lastError, setLastError] = useState("");
   const [landmarkerReady, setLandmarkerReady] = useState(false);
   const [activeOption, setActiveOption] = useState<string | null>(null);
@@ -421,6 +423,27 @@ export default function EyeTrackingDemo() {
       calibrationInstructionTimeoutRef.current = null;
     }, CALIBRATION_INSTRUCTIONS_MS);
   }, [finishCalibrationInstructions]);
+
+  const refreshVideoDevices = useCallback(async () => {
+    if (!navigator.mediaDevices?.enumerateDevices) {
+      return;
+    }
+
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const cameras = devices.filter((device) => device.kind === "videoinput");
+
+    setVideoDevices(cameras);
+    setSelectedDeviceId((currentDeviceId) => {
+      if (
+        currentDeviceId &&
+        cameras.some((camera) => camera.deviceId === currentDeviceId)
+      ) {
+        return currentDeviceId;
+      }
+
+      return cameras[0]?.deviceId ?? "";
+    });
+  }, []);
 
   const captureCalibrationPoint = useCallback((pointIndex: number) => {
     const point = calibrationPoints[pointIndex];
@@ -568,6 +591,22 @@ export default function EyeTrackingDemo() {
       stopTracking();
     };
   }, [stopTracking]);
+
+  useEffect(() => {
+    void refreshVideoDevices();
+
+    navigator.mediaDevices?.addEventListener?.(
+      "devicechange",
+      refreshVideoDevices,
+    );
+
+    return () => {
+      navigator.mediaDevices?.removeEventListener?.(
+        "devicechange",
+        refreshVideoDevices,
+      );
+    };
+  }, [refreshVideoDevices]);
 
   useEffect(() => {
     if (!debugMode || !debugVideoRef.current || !streamRef.current) {
@@ -727,11 +766,17 @@ export default function EyeTrackingDemo() {
       setLastError("");
 
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: "user",
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-        },
+        video: selectedDeviceId
+          ? {
+              deviceId: { exact: selectedDeviceId },
+              width: { ideal: 640 },
+              height: { ideal: 480 },
+            }
+          : {
+              facingMode: "user",
+              width: { ideal: 640 },
+              height: { ideal: 480 },
+            },
         audio: false,
       });
 
@@ -747,6 +792,7 @@ export default function EyeTrackingDemo() {
       }
       await videoRef.current.play();
       await debugVideoRef.current?.play();
+      await refreshVideoDevices();
 
       const landmarker = await getFaceLandmarker();
 
@@ -763,7 +809,13 @@ export default function EyeTrackingDemo() {
       setLastError(getFriendlyCameraError(error));
       stopTracking();
     }
-  }, [startCalibrationInstructions, stopTracking, updateEstimatedPoint]);
+  }, [
+    refreshVideoDevices,
+    selectedDeviceId,
+    startCalibrationInstructions,
+    stopTracking,
+    updateEstimatedPoint,
+  ]);
 
   const resetCalibration = useCallback(() => {
     calibrationSamplesRef.current = [];
@@ -821,7 +873,47 @@ export default function EyeTrackingDemo() {
             a bolinha usa essas amostras para alcançar melhor os cantos.
           </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
+            <label
+              htmlFor="camera-device"
+              className="text-sm font-semibold text-zinc-200"
+            >
+              Webcam para rastreamento
+            </label>
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+              <select
+                id="camera-device"
+                value={selectedDeviceId}
+                onChange={(event) => setSelectedDeviceId(event.target.value)}
+                disabled={status === "running" || status === "loading"}
+                className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {videoDevices.length ? (
+                  videoDevices.map((device, index) => (
+                    <option key={device.deviceId} value={device.deviceId}>
+                      {device.label || `Webcam ${index + 1}`}
+                    </option>
+                  ))
+                ) : (
+                  <option value="">Webcam padrão</option>
+                )}
+              </select>
+              <button
+                type="button"
+                onClick={() => void refreshVideoDevices()}
+                disabled={status === "loading"}
+                className="rounded-xl border border-zinc-700 px-4 py-3 text-sm font-semibold text-white transition hover:border-white disabled:cursor-wait disabled:opacity-60"
+              >
+                Atualizar lista
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-zinc-500">
+              Para trocar a câmera em uso, pause o rastreamento, escolha a
+              webcam e inicie novamente.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-3">
             {status === "running" ? (
               <button
                 type="button"
