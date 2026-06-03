@@ -51,8 +51,11 @@ const DWELL_TIME_MS = 1400;
 const CALIBRATION_INSTRUCTIONS_MS = 7000;
 const CALIBRATION_POINT_MS = 2000;
 const MIN_CALIBRATION_SAMPLES = 9;
-const GAZE_DEAD_ZONE = 18;
-const GAZE_SMOOTHING = 0.08;
+const GAZE_DEAD_ZONE = 10;
+const GAZE_SMOOTHING = 0.12;
+const CALIBRATED_HORIZONTAL_EDGE_GAIN = 1.12;
+const CALIBRATED_TOP_EDGE_GAIN = 1.18;
+const CALIBRATED_BOTTOM_EDGE_GAIN = 1.45;
 const LEFT_EYE_OUTLINE = [33, 160, 158, 133, 153, 144, 33];
 const RIGHT_EYE_OUTLINE = [362, 385, 387, 263, 373, 380, 362];
 const LEFT_IRIS = [468, 469, 470, 471, 472, 468];
@@ -219,10 +222,28 @@ function scaleRawGaze(raw: RawGaze, samples: CalibrationSample[]) {
     { x: 0, y: 0 },
   );
 
+  const blendedPoint = {
+    x: scaledPoint.x * 0.72 + weightedPoint.x * 0.28,
+    y: scaledPoint.y * 0.78 + weightedPoint.y * 0.22,
+  };
+  const screenCenter = {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2,
+  };
+  const verticalGain =
+    blendedPoint.y > screenCenter.y
+      ? CALIBRATED_BOTTOM_EDGE_GAIN
+      : CALIBRATED_TOP_EDGE_GAIN;
+
   return {
-    x: clamp(scaledPoint.x * 0.65 + weightedPoint.x * 0.35, 0, window.innerWidth),
+    x: clamp(
+      screenCenter.x +
+        (blendedPoint.x - screenCenter.x) * CALIBRATED_HORIZONTAL_EDGE_GAIN,
+      0,
+      window.innerWidth,
+    ),
     y: clamp(
-      scaledPoint.y * 0.65 + weightedPoint.y * 0.35,
+      screenCenter.y + (blendedPoint.y - screenCenter.y) * verticalGain,
       0,
       window.innerHeight,
     ),
