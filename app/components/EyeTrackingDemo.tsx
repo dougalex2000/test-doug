@@ -48,6 +48,7 @@ const communicationOptions = [
 ];
 
 const DWELL_TIME_MS = 1400;
+const CALIBRATION_INSTRUCTIONS_MS = 4000;
 const CALIBRATION_POINT_MS = 3000;
 const MIN_CALIBRATION_SAMPLES = 9;
 const GAZE_DEAD_ZONE = 18;
@@ -334,6 +335,8 @@ export default function EyeTrackingDemo() {
   const calibrationClicksRef = useRef(0);
   const activeCalibrationIndexRef = useRef(0);
   const calibrationPointStartedAtRef = useRef(0);
+  const calibrationInstructionTimeoutRef = useRef<number | null>(null);
+  const showCalibrationInstructionsRef = useRef(false);
   const lastRawGazeRef = useRef<RawGaze | null>(null);
   const lastPointRef = useRef<GazeData>({
     x: typeof window === "undefined" ? 0 : window.innerWidth / 2,
@@ -346,6 +349,8 @@ export default function EyeTrackingDemo() {
   const [gazePoint, setGazePoint] = useState<GazeData | null>(null);
   const [calibrationClicks, setCalibrationClicks] = useState(0);
   const [calibrationHoldProgress, setCalibrationHoldProgress] = useState(0);
+  const [showCalibrationInstructions, setShowCalibrationInstructions] =
+    useState(false);
   const [lastError, setLastError] = useState("");
   const [landmarkerReady, setLandmarkerReady] = useState(false);
   const [activeOption, setActiveOption] = useState<string | null>(null);
@@ -367,6 +372,29 @@ export default function EyeTrackingDemo() {
   const selectOption = useCallback((label: string) => {
     setSelectedOption(label);
   }, []);
+
+  const finishCalibrationInstructions = useCallback(() => {
+    showCalibrationInstructionsRef.current = false;
+    setShowCalibrationInstructions(false);
+    calibrationPointStartedAtRef.current = performance.now();
+  }, []);
+
+  const startCalibrationInstructions = useCallback(() => {
+    if (calibrationInstructionTimeoutRef.current) {
+      window.clearTimeout(calibrationInstructionTimeoutRef.current);
+    }
+
+    showCalibrationInstructionsRef.current = true;
+    setShowCalibrationInstructions(true);
+    calibrationPointStartedAtRef.current =
+      performance.now() + CALIBRATION_INSTRUCTIONS_MS;
+    setCalibrationHoldProgress(0);
+
+    calibrationInstructionTimeoutRef.current = window.setTimeout(() => {
+      finishCalibrationInstructions();
+      calibrationInstructionTimeoutRef.current = null;
+    }, CALIBRATION_INSTRUCTIONS_MS);
+  }, [finishCalibrationInstructions]);
 
   const captureCalibrationPoint = useCallback((pointIndex: number) => {
     const point = calibrationPoints[pointIndex];
@@ -409,7 +437,10 @@ export default function EyeTrackingDemo() {
 
   const updateDwellSelection = useCallback(
     (point: GazeData) => {
-      if (calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES) {
+      if (
+        calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES &&
+        !showCalibrationInstructionsRef.current
+      ) {
         setActiveOption(null);
         setDwellProgress(0);
         return;
@@ -482,6 +513,12 @@ export default function EyeTrackingDemo() {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
 
+    if (calibrationInstructionTimeoutRef.current) {
+      window.clearTimeout(calibrationInstructionTimeoutRef.current);
+      calibrationInstructionTimeoutRef.current = null;
+    }
+    showCalibrationInstructionsRef.current = false;
+
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
@@ -490,6 +527,7 @@ export default function EyeTrackingDemo() {
     setGazePoint(null);
     setActiveOption(null);
     setDwellProgress(0);
+    setShowCalibrationInstructions(false);
   }, []);
 
   useEffect(() => {
@@ -620,7 +658,10 @@ export default function EyeTrackingDemo() {
       lastPointRef.current = nextPoint;
       setGazePoint(nextPoint);
 
-      if (calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES) {
+      if (
+        calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES &&
+        !showCalibrationInstructionsRef.current
+      ) {
         const now = performance.now();
 
         if (calibrationPointStartedAtRef.current === 0) {
@@ -644,7 +685,10 @@ export default function EyeTrackingDemo() {
 
       frameRef.current = requestAnimationFrame(() => updateEstimatedPoint());
     },
-    [captureCalibrationPoint, updateDwellSelection],
+    [
+      captureCalibrationPoint,
+      updateDwellSelection,
+    ],
   );
 
   const startTracking = useCallback(async () => {
@@ -679,8 +723,9 @@ export default function EyeTrackingDemo() {
       landmarkerRef.current = landmarker;
       setLandmarkerReady(true);
       activeCalibrationIndexRef.current = calibrationClicksRef.current;
-      calibrationPointStartedAtRef.current = performance.now();
-      setCalibrationHoldProgress(0);
+      if (calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES) {
+        startCalibrationInstructions();
+      }
       setStatus("running");
       updateEstimatedPoint();
     } catch (error) {
@@ -688,15 +733,14 @@ export default function EyeTrackingDemo() {
       setLastError(getFriendlyCameraError(error));
       stopTracking();
     }
-  }, [stopTracking, updateEstimatedPoint]);
+  }, [startCalibrationInstructions, stopTracking, updateEstimatedPoint]);
 
   const resetCalibration = useCallback(() => {
     calibrationSamplesRef.current = [];
     calibrationClicksRef.current = 0;
     activeCalibrationIndexRef.current = 0;
-    calibrationPointStartedAtRef.current = performance.now();
     setCalibrationClicks(0);
-    setCalibrationHoldProgress(0);
+    startCalibrationInstructions();
     setSelectedOption("Nenhuma seleção ainda");
     setActiveOption(null);
     setDwellProgress(0);
@@ -704,7 +748,7 @@ export default function EyeTrackingDemo() {
       x: window.innerWidth / 2,
       y: window.innerHeight / 2,
     };
-  }, []);
+  }, [startCalibrationInstructions]);
 
   const aimAtOption = useCallback(
     (optionId: string) => {
@@ -877,7 +921,27 @@ export default function EyeTrackingDemo() {
         </div>
       </div>
 
-      {status === "running" && !isCalibrated
+      {status === "running" && showCalibrationInstructions && !isCalibrated ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 px-6 text-white">
+          <div className="max-w-2xl rounded-3xl border border-blue-400/35 bg-zinc-950/95 px-8 py-9 text-center shadow-2xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-blue-300">
+              PreparaÃ§Ã£o da calibraÃ§Ã£o
+            </p>
+            <h3 className="mt-3 text-3xl font-bold">
+              Mantenha a cabeÃ§a parada
+            </h3>
+            <p className="mt-4 text-lg leading-relaxed text-zinc-200">
+              Acompanhe os cÃ­rculos apenas com os olhos. NÃ£o use o mouse e
+              evite mexer o rosto durante a captura dos 9 pontos.
+            </p>
+            <p className="mt-5 rounded-full border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-blue-100">
+              A calibraÃ§Ã£o comeÃ§a automaticamente em 4 segundos.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {status === "running" && !isCalibrated && !showCalibrationInstructions
         ? (() => {
             const point = calibrationPoints[calibrationClicks] ?? calibrationPoints[0];
             const radius = 28;
