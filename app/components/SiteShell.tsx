@@ -38,9 +38,9 @@ export function SiteHeader() {
           <Image
             src="/davi-logo.svg"
             alt="DAVI - Desenvolvimento Assistivo para vida Independente"
-            width={270}
-            height={94}
-            className="h-14 w-auto sm:h-16"
+            width={360}
+            height={125}
+            className="h-auto w-56 sm:w-72 lg:w-80"
             priority
           />
         </Link>
