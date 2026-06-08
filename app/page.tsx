@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   InfoGrid,
   LinkButton,
@@ -10,36 +11,49 @@ import { ecosystemItems, pageCards, principles } from "./lib/siteContent";
 export default function Home() {
   return (
     <PageShell>
-      <section
-        className="relative min-h-[78vh] overflow-hidden text-white"
-        style={{
-          backgroundImage: "url('/hero.jpg')",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      >
-        <div className="absolute inset-0 bg-zinc-950/75" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-zinc-950/80 to-transparent" />
-        <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-7xl flex-col justify-center px-6 py-20">
-          <p className="w-fit rounded-full border border-blue-300/40 bg-blue-500/15 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-100">
-            Tecnologia assistiva, aprendizagem e autonomia
-          </p>
-          <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">
-            DAVI — Desenvolvimento Assistivo para Vida Independente
-          </h1>
-          <p className="mt-6 max-w-4xl text-xl leading-8 text-zinc-100">
-            Plataforma inteligente de tecnologia assistiva para avaliação,
-            aprendizagem, comunicação, recomendação de dispositivos e criação de
-            soluções personalizadas.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-4">
-            <LinkButton href="/projeto">Conhecer o projeto</LinkButton>
-            <LinkButton href="/tecnologias" variant="secondary">
-              Ver tecnologias assistivas
-            </LinkButton>
-            <LinkButton href="/rastreamento" variant="secondary">
-              Testar rastreamento visual
-            </LinkButton>
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16 sm:py-20">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+          <div>
+            <p className="w-fit rounded-full bg-blue-50 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-700 ring-1 ring-blue-200">
+              Tecnologia assistiva para autonomia
+            </p>
+            <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight text-zinc-950 sm:text-6xl">
+              DAVI — Desenvolvimento Assistivo para Vida Independente
+            </h1>
+            <p className="mt-6 max-w-3xl text-xl leading-8 text-zinc-700">
+              Plataforma inteligente para avaliação, aprendizagem, comunicação,
+              recomendação de dispositivos e criação de soluções assistivas
+              personalizadas.
+            </p>
+            <div className="mt-9 flex flex-wrap gap-4">
+              <LinkButton href="/projeto">Conhecer o projeto</LinkButton>
+              <LinkButton href="/rastreamento" variant="secondary">
+                Testar rastreamento
+              </LinkButton>
+              <LinkButton href="/tecnologias" variant="secondary">
+                Ver tecnologias
+              </LinkButton>
+            </div>
+          </div>
+          <div className="relative min-h-[360px] overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
+            <Image
+              src="/hero.jpg"
+              alt="Ambiente de tecnologia assistiva com computador e dispositivo de apoio"
+              fill
+              priority
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/35 to-transparent" />
+            <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-white/90 p-4 text-zinc-950 shadow-lg backdrop-blur">
+              <p className="text-sm font-black text-blue-700">
+                Plataforma DAVI
+              </p>
+              <p className="mt-1 text-sm leading-6 text-zinc-700">
+                Avaliação, acesso assistivo, tecnologias abertas e soluções
+                personalizadas em um ecossistema único.
+              </p>
+            </div>
           </div>
         </div>
       </section>

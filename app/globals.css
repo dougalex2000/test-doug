@@ -37,6 +37,34 @@ h3 {
   color: #ffffff;
 }
 
+.davi-large-text {
+  font-size: 18px;
+}
+
+.davi-high-contrast body {
+  background: #ffffff;
+  color: #000000;
+}
+
+.davi-high-contrast a,
+.davi-high-contrast button {
+  text-decoration-thickness: 2px;
+}
+
+.davi-high-contrast :focus-visible {
+  outline: 4px solid #fdb022;
+  outline-offset: 3px;
+}
+
+.davi-reduce-motion *,
+.davi-reduce-motion *::before,
+.davi-reduce-motion *::after {
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

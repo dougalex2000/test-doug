@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
 
 const focusRing =
@@ -10,6 +10,15 @@ const focusRing =
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const [largeText, setLargeText] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("davi-large-text", largeText);
+    document.documentElement.classList.toggle("davi-high-contrast", highContrast);
+    document.documentElement.classList.toggle("davi-reduce-motion", reducedMotion);
+  }, [highContrast, largeText, reducedMotion]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/95 shadow-sm backdrop-blur">
@@ -64,6 +73,44 @@ export function SiteHeader() {
           >
             Testar rastreamento
           </Link>
+        </div>
+      </div>
+      <div className="border-t border-zinc-100 bg-zinc-50/90">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-6 py-2 text-xs font-bold text-zinc-700">
+          <span className="mr-1 uppercase tracking-wide text-zinc-500">
+            Acessibilidade
+          </span>
+          {[
+            {
+              label: "A+",
+              pressed: largeText,
+              action: () => setLargeText((current) => !current),
+            },
+            {
+              label: "Alto contraste",
+              pressed: highContrast,
+              action: () => setHighContrast((current) => !current),
+            },
+            {
+              label: "Reduzir movimento",
+              pressed: reducedMotion,
+              action: () => setReducedMotion((current) => !current),
+            },
+          ].map((control) => (
+            <button
+              key={control.label}
+              type="button"
+              aria-pressed={control.pressed}
+              onClick={control.action}
+              className={`rounded-full border px-3 py-1.5 transition ${focusRing} ${
+                control.pressed
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-zinc-300 bg-white text-zinc-700 hover:border-blue-400 hover:text-blue-700"
+              }`}
+            >
+              {control.label}
+            </button>
+          ))}
         </div>
       </div>
     </header>
@@ -208,7 +255,8 @@ export function InfoGrid({
     <div className={`grid gap-5 md:grid-cols-2 ${columns}`}>
       {items.map((item) => {
         const content = (
-          <div className="group h-full rounded-2xl border border-zinc-200 bg-zinc-50 p-6 transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:bg-white hover:shadow-xl hover:shadow-blue-950/10">
+          <div className="group h-full rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-950/10">
+            <div className="mb-5 h-1.5 w-12 rounded-full bg-blue-600 transition group-hover:w-16" />
             <h3 className="text-xl font-black text-zinc-950 transition group-hover:text-blue-700">
               {item.title}
             </h3>
