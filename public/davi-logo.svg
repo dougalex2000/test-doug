@@ -1,27 +1,31 @@
-<svg width="1400" height="430" viewBox="0 0 1400 430" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="1500" height="520" viewBox="0 0 1500 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Logo DAVI</title>
-  <desc id="desc">Logo DAVI com tipografia azul profunda e mão robótica assistiva no interior da letra A.</desc>
-  <rect width="1400" height="430" fill="white"/>
+  <desc id="desc">Logo DAVI com mão robótica assistiva dentro da letra A e texto Desenvolvimento Assistivo para vida Independente.</desc>
+  <rect width="1500" height="520" fill="#FFFFFF"/>
   <g fill="#082B63">
-    <text x="45" y="300" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="285" font-weight="900" letter-spacing="-8">DAVI</text>
+    <path d="M110 146H354C478 146 565 223 565 326C565 429 478 506 354 506H110V342H208V429H351C421 429 467 387 467 326C467 265 421 223 351 223H110V146Z"/>
+    <path d="M596 506L785 146H886L1075 506H975L836 239L696 506H596Z"/>
+    <path d="M996 146H1098L1244 428L1390 146H1492L1300 506H1188L996 146Z"/>
+    <path d="M1378 146H1471V506H1378V146Z"/>
   </g>
-  <g transform="translate(590 150)" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M78 146C54 146 37 131 34 108L28 70C26 56 34 45 47 43C56 42 64 46 68 53C70 42 78 35 89 35C100 35 108 42 110 53C113 44 121 39 131 40C142 41 149 49 150 60V82C154 75 161 71 169 72C181 74 188 85 184 97L173 132C168 150 153 160 134 160H91C85 160 80 155 80 149V146H78Z" fill="white" stroke="#082B63" stroke-width="8"/>
-    <path d="M70 104V60" stroke="#082B63" stroke-width="8"/>
-    <path d="M110 103V58" stroke="#082B63" stroke-width="8"/>
-    <path d="M149 105V64" stroke="#082B63" stroke-width="8"/>
-    <path d="M48 92V68" stroke="#082B63" stroke-width="8"/>
-    <path d="M91 160V190C91 199 98 206 107 206H132C141 206 148 199 148 190V160" fill="white"/>
-    <path d="M91 160V190C91 199 98 206 107 206H132C141 206 148 199 148 190V160" stroke="#082B63" stroke-width="8"/>
-    <path d="M119 171V193" stroke="#1DA1F2" stroke-width="7"/>
-    <circle cx="91" cy="122" r="13" fill="white" stroke="#1DA1F2" stroke-width="8"/>
-    <circle cx="124" cy="110" r="11" fill="white" stroke="#1DA1F2" stroke-width="7"/>
-    <path d="M96 112L116 96" stroke="#1DA1F2" stroke-width="6"/>
-    <path d="M77 143C86 151 100 154 115 153" stroke="#1DA1F2" stroke-width="5"/>
-    <path d="M57 129C62 137 68 143 75 148" stroke="#1DA1F2" stroke-width="5"/>
-    <path d="M88 35V15C88 5 96 -3 106 -3C116 -3 124 5 124 15V72" fill="white"/>
-    <path d="M88 35V15C88 5 96 -3 106 -3C116 -3 124 5 124 15V72" stroke="#082B63" stroke-width="8"/>
-    <path d="M98 42H123" stroke="#1DA1F2" stroke-width="5"/>
+  <g transform="translate(714 257) scale(1.04)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M73 126C50 126 34 112 31 91L26 56C24 44 31 35 42 34C50 33 57 37 60 43C62 33 69 27 79 27C89 27 96 33 98 43C100 35 108 30 117 31C127 32 133 39 134 49V70C138 64 144 61 151 62C162 64 168 73 165 84L155 116C150 132 137 141 120 141H82C77 141 73 137 73 132V126Z" fill="#FFFFFF" stroke="#082B63" stroke-width="7"/>
+    <path d="M62 89V49" stroke="#082B63" stroke-width="7"/>
+    <path d="M98 89V48" stroke="#082B63" stroke-width="7"/>
+    <path d="M134 91V53" stroke="#082B63" stroke-width="7"/>
+    <path d="M43 78V57" stroke="#082B63" stroke-width="7"/>
+    <path d="M83 141V167C83 175 89 181 97 181H120C128 181 134 175 134 167V141" fill="#FFFFFF"/>
+    <path d="M83 141V167C83 175 89 181 97 181H120C128 181 134 175 134 167V141" stroke="#082B63" stroke-width="7"/>
+    <path d="M109 151V171" stroke="#1DA1F2" stroke-width="6"/>
+    <circle cx="83" cy="105" r="12" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="7"/>
+    <circle cx="113" cy="94" r="10" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="6"/>
+    <path d="M88 97L105 83" stroke="#1DA1F2" stroke-width="5"/>
+    <path d="M70 124C79 131 92 134 105 133" stroke="#1DA1F2" stroke-width="4"/>
+    <path d="M52 112C57 119 63 124 69 128" stroke="#1DA1F2" stroke-width="4"/>
+    <path d="M78 27V9C78 0 85 -7 94 -7C103 -7 110 0 110 9V62" fill="#FFFFFF"/>
+    <path d="M78 27V9C78 0 85 -7 94 -7C103 -7 110 0 110 9V62" stroke="#082B63" stroke-width="7"/>
+    <path d="M88 33H109" stroke="#1DA1F2" stroke-width="4"/>
+    <path d="M88 12H109" stroke="#1DA1F2" stroke-width="4"/>
   </g>
-  <text x="306" y="365" fill="#082B63" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700">Tecnologia Assistiva para Vida Independente</text>
+  <text x="110" y="460" fill="#1F2937" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="500" letter-spacing="1">Desenvolvimento Assistivo para vida Independente</text>
 </svg>

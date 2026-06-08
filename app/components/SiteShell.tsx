@@ -32,24 +32,17 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
         <Link
           href="/"
-          className={`flex w-fit items-center gap-3 rounded-2xl ${focusRing}`}
+          className={`flex w-fit items-center rounded-2xl ${focusRing}`}
+          aria-label="DAVI - Desenvolvimento Assistivo para vida Independente"
         >
           <Image
-            src="/davi-mark.svg"
-            alt=""
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-2xl shadow-lg shadow-blue-600/20"
+            src="/davi-logo.svg"
+            alt="DAVI - Desenvolvimento Assistivo para vida Independente"
+            width={270}
+            height={94}
+            className="h-14 w-auto sm:h-16"
             priority
           />
-          <span>
-            <span className="block text-xl font-black tracking-tight text-zinc-950">
-              DAVI
-            </span>
-            <span className="block text-xs font-bold uppercase tracking-wide text-zinc-500">
-              Vida Independente
-            </span>
-          </span>
         </Link>
 
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
@@ -292,3 +285,4 @@ export function InfoGrid({
     </div>
   );
 }
+
