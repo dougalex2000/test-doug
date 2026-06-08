@@ -1,26 +1,8 @@
 <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Símbolo DAVI</title>
-  <desc id="desc">Símbolo compacto DAVI com letra A e mão robótica assistiva.</desc>
+  <desc id="desc">Símbolo compacto DAVI com letra A.</desc>
   <rect width="220" height="220" rx="44" fill="#FFFFFF"/>
   <rect x="4" y="4" width="212" height="212" rx="40" stroke="#E4E7EC" stroke-width="8"/>
   <path d="M48 180L110 36L172 180H136L124 150H76L64 180H48Z" fill="#082B63"/>
   <path d="M88 120L110 68L132 120H88Z" fill="#FFFFFF"/>
-  <g transform="translate(72 86) scale(0.68)" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M34 116V143C34 151 40 157 48 157H71C79 157 85 151 85 143V116" fill="#FFFFFF" stroke="#082B63" stroke-width="5"/>
-    <path d="M45 130H74" stroke="#082B63" stroke-width="3.5"/>
-    <path d="M60 134V150" stroke="#1DA1F2" stroke-width="4.5"/>
-    <path d="M38 119C27 114 22 104 20 91L16 67C15 57 21 50 30 50C36 50 41 54 43 61L44 76C45 68 50 63 57 63C64 63 69 68 70 75C71 68 76 64 83 64C91 64 96 70 96 78V91C101 82 111 82 116 89C120 94 119 101 115 106L104 120C98 127 90 130 81 130H53C45 130 40 126 38 119Z" fill="#FFFFFF" stroke="#082B63" stroke-width="5"/>
-    <path d="M44 92V63" stroke="#082B63" stroke-width="5"/>
-    <path d="M70 96V76" stroke="#082B63" stroke-width="5"/>
-    <path d="M96 98V79" stroke="#082B63" stroke-width="5"/>
-    <path d="M29 85V68" stroke="#082B63" stroke-width="5"/>
-    <path d="M72 76V16C72 8 78 2 86 2C94 2 100 8 100 16V95" fill="#FFFFFF"/>
-    <path d="M72 76V16C72 8 78 2 86 2C94 2 100 8 100 16V95" stroke="#082B63" stroke-width="5"/>
-    <path d="M79 30H99" stroke="#1DA1F2" stroke-width="3.5"/>
-    <path d="M79 59H99" stroke="#1DA1F2" stroke-width="3.5"/>
-    <path d="M43 108C52 115 64 118 77 117" stroke="#1DA1F2" stroke-width="3.5"/>
-    <circle cx="55" cy="103" r="8.5" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="5"/>
-    <circle cx="82" cy="96" r="7.5" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="4.5"/>
-    <path d="M63 101L75 98" stroke="#1DA1F2" stroke-width="3.5"/>
-  </g>
 </svg>
