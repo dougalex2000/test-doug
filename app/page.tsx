@@ -17,19 +17,9 @@ export default function Home() {
             <p className="w-fit rounded-full bg-blue-50 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-700 ring-1 ring-blue-200">
               Tecnologia assistiva para autonomia
             </p>
-            <h1 className="sr-only">
+            <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight text-zinc-950 sm:text-6xl">
               DAVI — Desenvolvimento Assistivo para Vida Independente
             </h1>
-            <div className="mt-6 max-w-4xl">
-              <Image
-                src="/davi-logo.svg"
-                alt="DAVI - Desenvolvimento Assistivo para vida Independente"
-                width={900}
-                height={506}
-                priority
-                className="h-auto w-full"
-              />
-            </div>
             <p className="mt-6 max-w-3xl text-xl leading-8 text-zinc-700">
               Plataforma inteligente para avaliação, aprendizagem, comunicação,
               recomendação de dispositivos e criação de soluções assistivas
@@ -45,24 +35,36 @@ export default function Home() {
               </LinkButton>
             </div>
           </div>
-          <div className="relative min-h-[360px] overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
-            <Image
-              src="/hero.jpg"
-              alt="Ambiente de tecnologia assistiva com computador e dispositivo de apoio"
-              fill
-              priority
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/35 to-transparent" />
-            <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-white/90 p-4 text-zinc-950 shadow-lg backdrop-blur">
-              <p className="text-sm font-black text-blue-700">
-                Plataforma DAVI
-              </p>
-              <p className="mt-1 text-sm leading-6 text-zinc-700">
-                Avaliação, acesso assistivo, tecnologias abertas e soluções
-                personalizadas em um ecossistema único.
-              </p>
+          <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
+            <div className="bg-white px-6 py-8">
+              <Image
+                src="/davi-logo.svg"
+                alt="DAVI - Desenvolvimento Assistivo para vida Independente"
+                width={760}
+                height={428}
+                priority
+                className="mx-auto h-auto w-full max-w-[520px]"
+              />
+            </div>
+            <div className="relative min-h-[240px] overflow-hidden border-t border-zinc-100">
+              <Image
+                src="/hero.jpg"
+                alt="Ambiente de tecnologia assistiva com computador e dispositivo de apoio"
+                fill
+                priority
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/35 to-transparent" />
+              <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-white/90 p-4 text-zinc-950 shadow-lg backdrop-blur">
+                <p className="text-sm font-black text-blue-700">
+                  Plataforma DAVI
+                </p>
+                <p className="mt-1 text-sm leading-6 text-zinc-700">
+                  Avaliação, acesso assistivo, tecnologias abertas e soluções
+                  personalizadas em um ecossistema único.
+                </p>
+              </div>
             </div>
           </div>
         </div>
