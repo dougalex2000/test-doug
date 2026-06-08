@@ -1,19 +1,23 @@
-<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Símbolo DAVI</title>
-  <desc id="desc">Símbolo do projeto DAVI com forma de D, cérebro e conexão assistiva.</desc>
-  <rect width="180" height="180" rx="36" fill="#FFFFFF"/>
-  <rect x="3" y="3" width="174" height="174" rx="33" stroke="#E4E7EC" stroke-width="6"/>
-  <g transform="translate(23 18)" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M44 9H82C116 9 140 33 140 66C140 99 116 123 82 123H44V9Z" stroke="#082B63" stroke-width="8"/>
-    <path d="M44 29C27 29 14 42 14 59C14 76 27 89 44 89" stroke="#082B63" stroke-width="8"/>
-    <path d="M82 123C90 99 109 94 118 72" stroke="#082B63" stroke-width="8"/>
-    <path d="M116 81C105 91 92 88 92 77C92 66 105 62 105 52" stroke="#082B63" stroke-width="8"/>
-    <path d="M43 58C44 45 57 42 66 48C73 34 94 39 96 55C106 59 108 75 96 82" stroke="#082B63" stroke-width="6"/>
-    <path d="M44 75C54 65 68 65 76 75" stroke="#082B63" stroke-width="6"/>
-    <path d="M74 91C82 84 94 85 101 92" stroke="#082B63" stroke-width="6"/>
-    <path d="M40 110L60 90" stroke="#1DA1F2" stroke-width="6"/>
-    <path d="M26 126L40 110" stroke="#1DA1F2" stroke-width="6"/>
-    <circle cx="40" cy="110" r="8" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="5"/>
-    <circle cx="26" cy="126" r="8" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="5"/>
+  <desc id="desc">Símbolo compacto DAVI com letra A e mão robótica assistiva.</desc>
+  <rect width="220" height="220" rx="44" fill="#FFFFFF"/>
+  <rect x="4" y="4" width="212" height="212" rx="40" stroke="#E4E7EC" stroke-width="8"/>
+  <path d="M48 180L110 36L172 180H136L124 150H76L64 180H48Z" fill="#082B63"/>
+  <path d="M88 120L110 68L132 120H88Z" fill="#FFFFFF"/>
+  <g transform="translate(70 91)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M42 74C29 74 20 66 18 54L15 35C14 28 18 23 25 22C30 21 34 23 36 27C37 21 42 17 48 17C53 17 58 21 59 27C61 22 65 20 70 20C76 21 80 25 80 31V42C83 38 86 37 90 38C97 39 101 45 99 51L93 69C90 78 82 84 72 84H49C46 84 43 81 43 78V74H42Z" fill="white" stroke="#082B63" stroke-width="5"/>
+    <path d="M36 54V29" stroke="#082B63" stroke-width="5"/>
+    <path d="M59 54V29" stroke="#082B63" stroke-width="5"/>
+    <path d="M80 55V33" stroke="#082B63" stroke-width="5"/>
+    <path d="M25 49V36" stroke="#082B63" stroke-width="5"/>
+    <path d="M49 84V101C49 106 53 110 58 110H72C77 110 81 106 81 101V84" fill="white"/>
+    <path d="M49 84V101C49 106 53 110 58 110H72C77 110 81 106 81 101V84" stroke="#082B63" stroke-width="5"/>
+    <path d="M65 92V104" stroke="#1DA1F2" stroke-width="4"/>
+    <circle cx="49" cy="64" r="7" fill="white" stroke="#1DA1F2" stroke-width="5"/>
+    <circle cx="66" cy="58" r="6" fill="white" stroke="#1DA1F2" stroke-width="4"/>
+    <path d="M53 60L62 52" stroke="#1DA1F2" stroke-width="4"/>
+    <path d="M47 17V7C47 1 52 -4 58 -4C64 -4 68 1 68 7V40" fill="white"/>
+    <path d="M47 17V7C47 1 52 -4 58 -4C64 -4 68 1 68 7V40" stroke="#082B63" stroke-width="5"/>
   </g>
 </svg>
