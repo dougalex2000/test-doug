@@ -6,6 +6,7 @@ export const mainNav = [
   { label: "Oficina", href: "/oficina" },
   { label: "Relatórios", href: "/relatorios" },
   { label: "Impacto", href: "/impacto" },
+  { label: "Nova Versão (Exp)", href: "/nova-versao" },
 ];
 
 export const ecosystemItems = [
