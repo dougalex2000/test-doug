@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
@@ -33,9 +34,14 @@ export function SiteHeader() {
           href="/"
           className={`flex w-fit items-center gap-3 rounded-2xl ${focusRing}`}
         >
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-xl font-black text-white shadow-lg shadow-blue-600/20">
-            D
-          </span>
+          <Image
+            src="/davi-mark.svg"
+            alt=""
+            width={48}
+            height={48}
+            className="h-12 w-12 rounded-2xl shadow-lg shadow-blue-600/20"
+            priority
+          />
           <span>
             <span className="block text-xl font-black tracking-tight text-zinc-950">
               DAVI

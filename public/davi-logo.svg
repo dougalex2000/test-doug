@@ -1,0 +1,18 @@
+<svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Logo DAVI</title>
+  <desc id="desc">Marca do projeto DAVI, Desenvolvimento Assistivo para Vida Independente.</desc>
+  <rect width="720" height="220" rx="36" fill="#F6F8FB"/>
+  <g transform="translate(52 34)">
+    <rect x="0" y="0" width="152" height="152" rx="34" fill="#155EEF"/>
+    <path d="M42 76C42 57.2 57.2 42 76 42C94.8 42 110 57.2 110 76C110 94.8 94.8 110 76 110C57.2 110 42 94.8 42 76Z" fill="white"/>
+    <path d="M76 56C87.046 56 96 64.954 96 76C96 87.046 87.046 96 76 96C64.954 96 56 87.046 56 76C56 64.954 64.954 56 76 56Z" fill="#155EEF"/>
+    <path d="M122 76C122 101.405 101.405 122 76 122C50.595 122 30 101.405 30 76" stroke="#12B76A" stroke-width="12" stroke-linecap="round"/>
+    <path d="M108 26L126 44L108 62" stroke="#12B76A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M126 44H95" stroke="#12B76A" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(240 53)">
+    <text x="0" y="72" fill="#101828" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="900" letter-spacing="2">DAVI</text>
+    <text x="2" y="112" fill="#155EEF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800">Desenvolvimento Assistivo para Vida Independente</text>
+    <text x="2" y="146" fill="#475467" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">Tecnologia assistiva, autonomia e acessibilidade</text>
+  </g>
+</svg>

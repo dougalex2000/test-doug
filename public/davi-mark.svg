@@ -1,0 +1,10 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Símbolo DAVI</title>
+  <desc id="desc">Símbolo do projeto DAVI com olho, acesso e autonomia.</desc>
+  <rect width="160" height="160" rx="36" fill="#155EEF"/>
+  <path d="M44 80C44 60.118 60.118 44 80 44C99.882 44 116 60.118 116 80C116 99.882 99.882 116 80 116C60.118 116 44 99.882 44 80Z" fill="white"/>
+  <path d="M80 58C92.15 58 102 67.85 102 80C102 92.15 92.15 102 80 102C67.85 102 58 92.15 58 80C58 67.85 67.85 58 80 58Z" fill="#155EEF"/>
+  <path d="M128 80C128 106.51 106.51 128 80 128C53.49 128 32 106.51 32 80" stroke="#12B76A" stroke-width="12" stroke-linecap="round"/>
+  <path d="M112 28L132 48L112 68" stroke="#12B76A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M132 48H98" stroke="#12B76A" stroke-width="10" stroke-linecap="round"/>
+</svg>
