@@ -1,18 +1,24 @@
-<svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="760" height="420" viewBox="0 0 760 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Logo DAVI</title>
-  <desc id="desc">Marca do projeto DAVI, Desenvolvimento Assistivo para Vida Independente.</desc>
-  <rect width="720" height="220" rx="36" fill="#F6F8FB"/>
-  <g transform="translate(52 34)">
-    <rect x="0" y="0" width="152" height="152" rx="34" fill="#155EEF"/>
-    <path d="M42 76C42 57.2 57.2 42 76 42C94.8 42 110 57.2 110 76C110 94.8 94.8 110 76 110C57.2 110 42 94.8 42 76Z" fill="white"/>
-    <path d="M76 56C87.046 56 96 64.954 96 76C96 87.046 87.046 96 76 96C64.954 96 56 87.046 56 76C56 64.954 64.954 56 76 56Z" fill="#155EEF"/>
-    <path d="M122 76C122 101.405 101.405 122 76 122C50.595 122 30 101.405 30 76" stroke="#12B76A" stroke-width="12" stroke-linecap="round"/>
-    <path d="M108 26L126 44L108 62" stroke="#12B76A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M126 44H95" stroke="#12B76A" stroke-width="10" stroke-linecap="round"/>
+  <desc id="desc">Marca do projeto DAVI com símbolo de tecnologia assistiva, cérebro, conexão e vida independente.</desc>
+  <rect x="28" y="24" width="704" height="372" rx="34" fill="#FFFFFF"/>
+  <rect x="28" y="24" width="704" height="372" rx="34" stroke="#E4E7EC" stroke-width="2"/>
+  <g transform="translate(254 52)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M88 18H160C226 18 274 64 274 122C274 180 226 226 160 226H88V18Z" stroke="#082B63" stroke-width="14"/>
+    <path d="M88 54C58 54 35 78 35 107C35 136 58 160 88 160" stroke="#082B63" stroke-width="14"/>
+    <path d="M157 226C170 184 206 173 220 137" stroke="#082B63" stroke-width="14"/>
+    <path d="M217 151C197 171 171 166 171 143C171 124 194 116 194 98" stroke="#082B63" stroke-width="14"/>
+    <path d="M90 103C91 78 116 72 133 83C145 57 184 67 188 96C207 103 210 134 188 146" stroke="#082B63" stroke-width="11"/>
+    <path d="M93 132C112 113 138 113 153 132" stroke="#082B63" stroke-width="11"/>
+    <path d="M128 158C142 145 164 146 178 160" stroke="#082B63" stroke-width="11"/>
+    <path d="M86 190L124 151" stroke="#1DA1F2" stroke-width="9"/>
+    <path d="M62 216L86 190" stroke="#1DA1F2" stroke-width="9"/>
+    <circle cx="86" cy="190" r="13" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="8"/>
+    <circle cx="62" cy="216" r="13" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="8"/>
   </g>
-  <g transform="translate(240 53)">
-    <text x="0" y="72" fill="#101828" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="900" letter-spacing="2">DAVI</text>
-    <text x="2" y="112" fill="#155EEF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="800">Desenvolvimento Assistivo para Vida Independente</text>
-    <text x="2" y="146" fill="#475467" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">Tecnologia assistiva, autonomia e acessibilidade</text>
+  <g transform="translate(176 278)">
+    <text x="0" y="0" fill="#082B63" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="900" letter-spacing="8">DAVI</text>
+    <text x="76" y="48" fill="#101828" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="500">Tecnologia Assistiva</text>
+    <text x="54" y="82" fill="#101828" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="500">para Vida Independente</text>
   </g>
 </svg>

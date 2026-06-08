@@ -1,10 +1,19 @@
-<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">Símbolo DAVI</title>
-  <desc id="desc">Símbolo do projeto DAVI com olho, acesso e autonomia.</desc>
-  <rect width="160" height="160" rx="36" fill="#155EEF"/>
-  <path d="M44 80C44 60.118 60.118 44 80 44C99.882 44 116 60.118 116 80C116 99.882 99.882 116 80 116C60.118 116 44 99.882 44 80Z" fill="white"/>
-  <path d="M80 58C92.15 58 102 67.85 102 80C102 92.15 92.15 102 80 102C67.85 102 58 92.15 58 80C58 67.85 67.85 58 80 58Z" fill="#155EEF"/>
-  <path d="M128 80C128 106.51 106.51 128 80 128C53.49 128 32 106.51 32 80" stroke="#12B76A" stroke-width="12" stroke-linecap="round"/>
-  <path d="M112 28L132 48L112 68" stroke="#12B76A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M132 48H98" stroke="#12B76A" stroke-width="10" stroke-linecap="round"/>
+  <desc id="desc">Símbolo do projeto DAVI com forma de D, cérebro e conexão assistiva.</desc>
+  <rect width="180" height="180" rx="36" fill="#FFFFFF"/>
+  <rect x="3" y="3" width="174" height="174" rx="33" stroke="#E4E7EC" stroke-width="6"/>
+  <g transform="translate(23 18)" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M44 9H82C116 9 140 33 140 66C140 99 116 123 82 123H44V9Z" stroke="#082B63" stroke-width="8"/>
+    <path d="M44 29C27 29 14 42 14 59C14 76 27 89 44 89" stroke="#082B63" stroke-width="8"/>
+    <path d="M82 123C90 99 109 94 118 72" stroke="#082B63" stroke-width="8"/>
+    <path d="M116 81C105 91 92 88 92 77C92 66 105 62 105 52" stroke="#082B63" stroke-width="8"/>
+    <path d="M43 58C44 45 57 42 66 48C73 34 94 39 96 55C106 59 108 75 96 82" stroke="#082B63" stroke-width="6"/>
+    <path d="M44 75C54 65 68 65 76 75" stroke="#082B63" stroke-width="6"/>
+    <path d="M74 91C82 84 94 85 101 92" stroke="#082B63" stroke-width="6"/>
+    <path d="M40 110L60 90" stroke="#1DA1F2" stroke-width="6"/>
+    <path d="M26 126L40 110" stroke="#1DA1F2" stroke-width="6"/>
+    <circle cx="40" cy="110" r="8" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="5"/>
+    <circle cx="26" cy="126" r="8" fill="#FFFFFF" stroke="#1DA1F2" stroke-width="5"/>
+  </g>
 </svg>
