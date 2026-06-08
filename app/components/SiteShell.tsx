@@ -1,33 +1,70 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
 
+const focusRing =
+  "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
+
 export function SiteHeader() {
+  const pathname = usePathname();
+
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-lg font-black text-white">
+    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/95 shadow-sm backdrop-blur">
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-blue-600 focus:px-4 focus:py-2 focus:font-bold focus:text-white"
+      >
+        Pular para o conteúdo
+      </a>
+      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+        <Link
+          href="/"
+          className={`flex w-fit items-center gap-3 rounded-2xl ${focusRing}`}
+        >
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 text-xl font-black text-white shadow-lg shadow-blue-600/20">
             D
           </span>
           <span>
-            <span className="block text-lg font-black text-zinc-950">DAVI</span>
-            <span className="block text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            <span className="block text-xl font-black tracking-tight text-zinc-950">
+              DAVI
+            </span>
+            <span className="block text-xs font-bold uppercase tracking-wide text-zinc-500">
               Vida Independente
             </span>
           </span>
         </Link>
-        <nav className="flex flex-wrap gap-2" aria-label="Menu principal">
-          {mainNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="rounded-full px-3 py-2 text-sm font-bold text-zinc-700 transition hover:bg-blue-50 hover:text-blue-700"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <nav className="flex flex-wrap gap-1" aria-label="Menu principal">
+            {mainNav.map((item) => {
+              const isActive = pathname === item.href;
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`rounded-full px-3 py-2 text-sm font-bold transition ${focusRing} ${
+                    isActive
+                      ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
+                      : "text-zinc-700 hover:bg-zinc-100 hover:text-blue-700"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <Link
+            href="/rastreamento"
+            className={`w-fit rounded-full bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 active:translate-y-0 ${focusRing}`}
+          >
+            Testar rastreamento
+          </Link>
+        </div>
       </div>
     </header>
   );
@@ -50,7 +87,7 @@ export function SiteFooter() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 transition hover:border-blue-400 hover:text-white"
+              className={`rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 transition hover:border-blue-400 hover:text-white ${focusRing}`}
             >
               {item.label}
             </Link>
@@ -65,7 +102,7 @@ export function PageShell({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen bg-white text-zinc-950">
       <SiteHeader />
-      {children}
+      <div id="conteudo">{children}</div>
       <SiteFooter />
     </main>
   );
@@ -83,9 +120,9 @@ export function PageHero({
   actions?: ReactNode;
 }) {
   return (
-    <section className="border-b border-zinc-200 bg-zinc-950 px-6 py-16 text-white sm:py-20">
+    <section className="border-b border-zinc-800 bg-zinc-950 px-6 py-16 text-white sm:py-20">
       <div className="mx-auto max-w-7xl">
-        <p className="text-sm font-bold uppercase tracking-wide text-blue-300">
+        <p className="text-sm font-black uppercase tracking-wide text-blue-300">
           {eyebrow}
         </p>
         <h1 className="mt-4 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">
@@ -111,10 +148,10 @@ export function SectionHeader({
 }) {
   return (
     <div className="max-w-3xl">
-      <p className="text-sm font-bold uppercase tracking-wide text-blue-700">
+      <p className="text-sm font-black uppercase tracking-wide text-blue-700">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl">
+      <h2 className="mt-3 text-3xl font-black tracking-tight text-zinc-950 sm:text-4xl">
         {title}
       </h2>
       {description ? (
@@ -130,7 +167,7 @@ export function TagList({ items }: { items: string[] }) {
       {items.map((item) => (
         <span
           key={item}
-          className="rounded-full border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-800"
+          className="rounded-full border border-zinc-300 bg-white px-3 py-2 text-sm font-bold text-zinc-800"
         >
           {item}
         </span>
@@ -150,8 +187,8 @@ export function LinkButton({
 }) {
   const className =
     variant === "primary"
-      ? "rounded-full bg-blue-600 px-5 py-3 font-bold text-white transition hover:bg-blue-700"
-      : "rounded-full border border-zinc-300 bg-white px-5 py-3 font-bold text-zinc-950 transition hover:border-blue-400 hover:text-blue-700";
+      ? `rounded-full bg-blue-600 px-5 py-3 font-black text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 active:translate-y-0 ${focusRing}`
+      : `rounded-full border border-zinc-300 bg-white px-5 py-3 font-black text-zinc-950 transition hover:-translate-y-0.5 hover:border-blue-400 hover:text-blue-700 active:translate-y-0 ${focusRing}`;
 
   return (
     <Link href={href} className={className}>
@@ -171,16 +208,27 @@ export function InfoGrid({
     <div className={`grid gap-5 md:grid-cols-2 ${columns}`}>
       {items.map((item) => {
         const content = (
-          <div className="h-full rounded-2xl border border-zinc-200 bg-zinc-50 p-6 transition hover:border-blue-300 hover:bg-white hover:shadow-lg">
-            <h3 className="text-xl font-bold text-zinc-950">{item.title}</h3>
+          <div className="group h-full rounded-2xl border border-zinc-200 bg-zinc-50 p-6 transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:bg-white hover:shadow-xl hover:shadow-blue-950/10">
+            <h3 className="text-xl font-black text-zinc-950 transition group-hover:text-blue-700">
+              {item.title}
+            </h3>
             <p className="mt-3 text-sm leading-6 text-zinc-600">
               {item.description}
             </p>
+            {item.href ? (
+              <p className="mt-5 text-sm font-black text-blue-700">
+                Acessar página
+              </p>
+            ) : null}
           </div>
         );
 
         return item.href ? (
-          <Link key={item.title} href={item.href}>
+          <Link
+            key={item.title}
+            href={item.href}
+            className={`block rounded-2xl ${focusRing}`}
+          >
             {content}
           </Link>
         ) : (
