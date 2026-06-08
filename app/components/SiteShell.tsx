@@ -36,11 +36,11 @@ export function SiteHeader() {
           aria-label="DAVI - Desenvolvimento Assistivo para vida Independente"
         >
           <Image
-            src="/davi-logo.svg"
+            src="/davi-logo-header.svg"
             alt="DAVI - Desenvolvimento Assistivo para vida Independente"
-            width={360}
-            height={125}
-            className="h-auto w-56 sm:w-72 lg:w-80"
+            width={260}
+            height={89}
+            className="h-auto w-44 sm:w-56 lg:w-64"
             priority
           />
         </Link>

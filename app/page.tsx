@@ -17,9 +17,19 @@ export default function Home() {
             <p className="w-fit rounded-full bg-blue-50 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-700 ring-1 ring-blue-200">
               Tecnologia assistiva para autonomia
             </p>
-            <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight text-zinc-950 sm:text-6xl">
+            <h1 className="sr-only">
               DAVI — Desenvolvimento Assistivo para Vida Independente
             </h1>
+            <div className="mt-6 max-w-4xl">
+              <Image
+                src="/davi-logo.svg"
+                alt="DAVI - Desenvolvimento Assistivo para vida Independente"
+                width={900}
+                height={506}
+                priority
+                className="h-auto w-full"
+              />
+            </div>
             <p className="mt-6 max-w-3xl text-xl leading-8 text-zinc-700">
               Plataforma inteligente para avaliação, aprendizagem, comunicação,
               recomendação de dispositivos e criação de soluções assistivas
