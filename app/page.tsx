@@ -1,144 +1,402 @@
 import EyeTrackingDemo from "./components/EyeTrackingDemo";
 
+const ecosystemItems = [
+  "Plataforma digital",
+  "Rastreamento visual assistivo",
+  "Inteligência artificial",
+  "Métodos de acesso assistivo",
+  "Avaliação funcional",
+  "Relatórios inteligentes",
+  "Galeria de tecnologias assistivas",
+  "Projetos abertos",
+  "Oficina maker assistiva",
+  "Possibilidade futura de loja social",
+  "Apoio a escolas, famílias, ONGs, OSCIPs e instituições",
+];
+
+const aiSupports = [
+  "avaliação funcional",
+  "personalização de atividades",
+  "rastreamento visual com calibração personalizada",
+  "recomendação de dispositivos assistivos",
+  "análise de progresso",
+  "geração de relatórios inteligentes",
+  "apoio à oficina maker",
+];
+
+const accessMethods = [
+  "Olhar",
+  "Toque",
+  "Acionadores físicos",
+  "Sopro",
+  "Movimento da cabeça",
+  "Joystick",
+  "Pedal",
+  "Varredura automática",
+  "Entrada multimodal",
+];
+
+const reportItems = [
+  "tempo de atividade",
+  "erros e acertos",
+  "método de acesso utilizado",
+  "evolução funcional",
+  "autonomia",
+  "progresso educacional",
+];
+
+const assistiveTechItems = [
+  "Botão adaptado",
+  "Sensor de sopro",
+  "Base Visual DAVI",
+  "Teclado ampliado",
+  "Keyguard",
+  "Joystick acessível",
+  "Pedal adaptado",
+  "Suporte de câmera",
+  "Mouse de cabeça",
+  "Kits maker",
+];
+
+const futureCatalogFeatures = [
+  "descrição",
+  "indicação de uso",
+  "projeto aberto para baixar",
+  "arquivos para fabricação",
+  "solicitação de adaptação",
+  "opção futura de compra pela loja social",
+];
+
+const impactAudiences = [
+  "escolas",
+  "salas de recursos",
+  "famílias",
+  "ONGs",
+  "OSCIPs",
+  "clínicas",
+  "universidades",
+  "prefeituras",
+  "centros de reabilitação",
+  "espaços maker",
+];
+
+const principles = [
+  "Inclusão",
+  "Autonomia",
+  "Acessibilidade",
+  "Personalização",
+  "Privacidade",
+  "Segurança",
+  "Colaboração",
+  "Baixo custo",
+  "Tecnologia aberta",
+];
+
+function SectionHeader({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <div className="max-w-3xl">
+      <p className="text-sm font-bold uppercase tracking-wide text-blue-700">
+        {eyebrow}
+      </p>
+      <h2 className="mt-3 text-3xl font-bold tracking-tight text-zinc-950 sm:text-4xl">
+        {title}
+      </h2>
+      {description ? (
+        <p className="mt-4 text-lg leading-8 text-zinc-700">{description}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function TagList({ items }: { items: string[] }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((item) => (
+        <span
+          key={item}
+          className="rounded-full border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-800"
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 dark:from-black dark:to-zinc-900">
-      {/* HERO COM IMAGEM */}
+    <main className="min-h-screen bg-white text-zinc-950">
       <section
-        className="relative flex min-h-[80vh] items-center justify-center text-white"
+        className="relative min-h-[88vh] overflow-hidden text-white"
         style={{
           backgroundImage: "url('/hero.jpg')",
-          backgroundSize: "cover",
           backgroundPosition: "center",
+          backgroundSize: "cover",
         }}
       >
-        <div className="absolute inset-0 bg-black/60"></div>
-
-        <div className="relative z-10 max-w-4xl text-center px-6">
-          <h1 className="text-5xl font-bold leading-tight sm:text-6xl">
-            Projeto DAVI
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="relative z-10 mx-auto flex min-h-[88vh] max-w-6xl flex-col justify-center px-6 py-20">
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-200">
+            Tecnologia assistiva, aprendizagem e autonomia
+          </p>
+          <h1 className="mt-5 max-w-5xl text-4xl font-black leading-tight sm:text-6xl">
+            DAVI — Desenvolvimento Assistivo para Vida Independente
           </h1>
-
-          <p className="mt-4 text-xl text-zinc-200">
-            Dispositivo Assistivo de Visão e Interação
+          <p className="mt-6 max-w-4xl text-xl leading-8 text-zinc-100">
+            Plataforma inteligente de tecnologia assistiva para avaliação,
+            aprendizagem, comunicação, recomendação de dispositivos e criação de
+            soluções personalizadas.
           </p>
-
-          <p className="mt-6 text-lg text-zinc-300">
-            Plataforma inteligente para conectar atividades digitais,
-            comunicação alternativa e dispositivos de tecnologia assistiva em um
-            ecossistema acessível, flexível e mensurável.
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-200">
+            Um ecossistema para transformar necessidades reais em recursos
+            acessíveis, mensuráveis e adaptáveis, apoiando inclusão, autonomia e
+            participação social.
           </p>
-
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="mt-9 flex flex-wrap gap-4">
             <a
-              href="#sobre"
-              className="rounded-full bg-blue-600 px-6 py-3 font-semibold transition hover:bg-blue-700"
+              href="#origem"
+              className="rounded-full bg-blue-600 px-6 py-3 font-bold text-white transition hover:bg-blue-700"
             >
-              Conhecer o Projeto
+              Conhecer o projeto
             </a>
-
             <a
-              href="#modulos"
-              className="rounded-full border border-white px-6 py-3 font-semibold transition hover:bg-white hover:text-black"
+              href="#tecnologias"
+              className="rounded-full border border-white px-6 py-3 font-bold text-white transition hover:bg-white hover:text-zinc-950"
             >
-              Ver Módulos
+              Ver tecnologias assistivas
             </a>
-
             <a
               href="#rastreamento"
-              className="rounded-full border border-blue-300 px-6 py-3 font-semibold text-blue-100 transition hover:bg-blue-100 hover:text-blue-950"
+              className="rounded-full border border-blue-200 px-6 py-3 font-bold text-blue-100 transition hover:bg-blue-100 hover:text-blue-950"
             >
-              Testar Câmera
+              Testar rastreamento visual
             </a>
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO SOBRE */}
-      <section id="sobre" className="py-20 px-6">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2">
+      <section id="origem" className="px-6 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
-            <h2 className="text-3xl font-bold text-zinc-900 dark:text-white">
-              Tecnologia Assistiva de Alto Impacto
-            </h2>
-
-            <p className="mt-6 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-              O Projeto DAVI conecta software, dispositivos assistivos e
-              inteligência artificial para permitir que pessoas com limitações
-              motoras severas possam interagir, aprender e se comunicar de forma
-              acessível e eficiente.
-            </p>
-
-            <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-              A plataforma foi pensada para trabalhar com diferentes interfaces
-              de acesso, como botões adaptados, sensores de sopro, toque,
-              pressão, movimento, presença, rastreamento ocular,
-              microcontroladores e outros hardwares assistivos.
-            </p>
+            <SectionHeader
+              eyebrow="Origem do Projeto DAVI"
+              title="Uma experiência real que virou plataforma"
+              description="O projeto nasceu a partir do acompanhamento de um aluno chamado Davi, de 9 anos, com limitações motoras e dificuldade para ler e escrever por não conseguir usar lápis e papel de forma convencional."
+            />
+            <div className="mt-6 space-y-4 text-lg leading-8 text-zinc-700">
+              <p>
+                Ao perceber que Davi conseguia pressionar algumas teclas do
+                computador, foi criada uma ferramenta educacional adaptada para
+                alfabetização, respeitando sua forma possível de acesso.
+              </p>
+              <p>
+                Em aproximadamente 40 dias, houve avanço importante na autonomia,
+                no uso das teclas e na participação social. A professora
+                Alessandra del Castillo teve papel essencial no acompanhamento
+                pedagógico e na observação da evolução.
+              </p>
+            </div>
           </div>
-
           <div
-            className="h-[350px] rounded-2xl shadow-lg"
+            className="min-h-[360px] rounded-2xl border border-zinc-200 bg-zinc-100 shadow-lg"
             style={{
               backgroundImage: "url('/robot.jpg')",
-              backgroundSize: "cover",
               backgroundPosition: "center",
+              backgroundSize: "cover",
             }}
-          ></div>
+          />
         </div>
       </section>
 
-      {/* MÓDULOS */}
-      <section id="modulos" className="bg-white py-20 px-6 dark:bg-zinc-900">
-        <div className="mx-auto max-w-6xl">
-          <h2 className="mb-12 text-center text-3xl font-bold">
-            Módulos do Sistema
-          </h2>
-
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                title: "Comunicação com Dispositivos",
-                description:
-                  "Conexão com hardwares assistivos por USB, Bluetooth, Wi-Fi ou comunicação serial.",
-              },
-              {
-                title: "Sensores e Acionadores",
-                description:
-                  "Suporte a botões adaptados, sensores de sopro, toque, pressão, movimento e presença.",
-              },
-              {
-                title: "Rastreamento Ocular",
-                description:
-                  "Interação por olhar para seleção, navegação, resposta e comunicação alternativa.",
-              },
-              {
-                title: "Perfis de Acessibilidade",
-                description:
-                  "Configurações individuais por usuário, tipo de acionamento, tempo de resposta e modo de interação.",
-              },
-              {
-                title: "Atividades Assistivas",
-                description:
-                  "Atividades de alfabetização, matemática, linguagem e comunicação integradas aos dispositivos conectados.",
-              },
-              {
-                title: "Relatórios Funcionais",
-                description:
-                  "Registro de uso, respostas, tempo de interação, evolução e indicadores para acompanhamento.",
-              },
-            ].map((module) => (
+      <section id="sobre" className="bg-zinc-950 px-6 py-20 text-white">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-300">
+              O que é o DAVI
+            </p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Não é apenas um site. É uma plataforma integrada.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-zinc-300">
+              O DAVI integra avaliação, personalização, acompanhamento e criação
+              de soluções assistivas. A proposta é aproximar software, hardware,
+              educação, comunicação alternativa e fabricação personalizada.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {ecosystemItems.map((item) => (
               <div
-                key={module.title}
-                className="group rounded-xl border border-zinc-200 bg-zinc-50 p-6 shadow-sm transition hover:-translate-y-1 hover:border-blue-300 hover:bg-white hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-blue-500 dark:hover:bg-zinc-900"
+                key={item}
+                className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm font-semibold text-zinc-100"
               >
-                <h3 className="text-xl font-semibold text-zinc-950 dark:text-white">
-                  {module.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-                  {module.description}
-                </p>
+                {item}
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader
+            eyebrow="Inteligência Artificial no DAVI"
+            title="IA como apoio, não como promessa fechada"
+            description="A inteligência artificial poderá apoiar decisões, organização de dados e personalização, sempre como recurso assistivo em desenvolvimento e com validação humana."
+          />
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {aiSupports.map((item) => (
+              <div
+                key={item}
+                className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 text-base font-semibold text-zinc-800"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-blue-50 px-6 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
+          <div>
+            <SectionHeader
+              eyebrow="Rastreamento Visual Assistivo"
+              title="Seleção por olhar com webcam e calibração personalizada"
+              description="O DAVI poderá utilizar webcam, calibração de 9 pontos, captura de múltiplos frames, aprendizagem personalizada e seleção por zonas."
+            />
+            <p className="mt-5 text-lg leading-8 text-zinc-700">
+              A proposta não substitui um eye tracker profissional. Ela explora
+              uma solução assistiva de baixo custo para permitir seleção por
+              olhar em contextos educacionais, comunicacionais e experimentais.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-blue-200 bg-white p-6">
+            <h3 className="text-2xl font-bold text-zinc-950">
+              Módulo de Captura Visual Assistiva
+            </h3>
+            <p className="mt-4 text-lg leading-8 text-zinc-700">
+              A Base Visual DAVI considera câmera, iluminação difusa, suporte de
+              posicionamento, distância adequada, orientação de postura e
+              calibração personalizada para melhorar a estabilidade do acesso
+              visual.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader
+            eyebrow="Métodos de Acesso Assistivo"
+            title="Diferentes formas de entrada para diferentes necessidades"
+          />
+          <div className="mt-8">
+            <TagList items={accessMethods} />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-zinc-100 px-6 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
+          <div>
+            <SectionHeader
+              eyebrow="Avaliação e Relatórios"
+              title="Dados para acompanhar autonomia e aprendizagem"
+              description="O DAVI poderá registrar indicadores funcionais e educacionais para apoiar professores, terapeutas, famílias e instituições."
+            />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {reportItems.map((item) => (
+              <div
+                key={item}
+                className="rounded-xl border border-zinc-200 bg-white p-4 font-semibold text-zinc-800"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="tecnologias" className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader
+            eyebrow="Galeria de Tecnologias Assistivas"
+            title="Catálogo de equipamentos, adaptações e projetos abertos"
+            description="A galeria poderá reunir equipamentos e soluções assistivas, com orientações de uso e caminhos para adaptação personalizada."
+          />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {assistiveTechItems.map((item) => (
+              <div
+                key={item}
+                className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 text-center font-bold text-zinc-900"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+            <h3 className="text-xl font-bold">Cada item poderá oferecer</h3>
+            <div className="mt-4">
+              <TagList items={futureCatalogFeatures} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-zinc-950 px-6 py-20 text-white">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-wide text-blue-300">
+              Oficina Maker Assistiva
+            </p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Criar, adaptar e documentar soluções personalizadas
+            </h2>
+          </div>
+          <p className="text-lg leading-8 text-zinc-300">
+            O DAVI poderá contar com uma oficina maker para adaptar, criar e
+            fabricar soluções de hardware e software. Isso inclui impressão 3D,
+            eletrônica, sensores, suportes, software, testes funcionais e
+            documentação aberta para reprodução e melhoria contínua.
+          </p>
+        </div>
+      </section>
+
+      <section className="px-6 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[0.95fr_1.05fr]">
+          <div>
+            <SectionHeader
+              eyebrow="Impacto Social"
+              title="Uma rede para apoiar quem ensina, cuida, pesquisa e inclui"
+              description="A plataforma poderá apoiar diferentes contextos institucionais e comunitários, criando pontes entre necessidades, tecnologia e acompanhamento."
+            />
+          </div>
+          <TagList items={impactAudiences} />
+        </div>
+      </section>
+
+      <section className="bg-blue-600 px-6 py-16 text-white">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-100">
+            Princípios do Projeto
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {principles.map((principle) => (
+              <span
+                key={principle}
+                className="rounded-full border border-white/40 bg-white/15 px-4 py-2 text-sm font-bold"
+              >
+                {principle}
+              </span>
             ))}
           </div>
         </div>
@@ -146,24 +404,22 @@ export default function Home() {
 
       <EyeTrackingDemo />
 
-      {/* FOOTER / CTA */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-600 py-16 text-center text-white">
+      <section className="bg-zinc-950 px-6 py-16 text-center text-white">
         <h2 className="text-3xl font-bold">
           Construindo o futuro da inclusão tecnológica
         </h2>
-
-        <p className="mt-4 text-lg text-blue-100">
+        <p className="mx-auto mt-4 max-w-3xl text-lg text-zinc-300">
           Projeto em desenvolvimento no contexto de tecnologia assistiva,
-          robótica e inteligência artificial.
+          robótica, educação inclusiva, fabricação digital e inteligência
+          artificial aplicada.
         </p>
-
         <a
           href="#rastreamento"
-          className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-200"
+          className="mt-8 inline-block rounded-full bg-white px-6 py-3 font-bold text-zinc-950 transition hover:bg-zinc-200"
         >
-          Testar Rastreamento Ocular
+          Testar Rastreamento Visual
         </a>
       </section>
-    </div>
+    </main>
   );
 }
