@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
@@ -32,17 +31,9 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
         <Link
           href="/"
-          className={`flex w-fit items-center gap-3 rounded-2xl ${focusRing}`}
+          className={`flex w-fit items-center rounded-2xl ${focusRing}`}
           aria-label="DAVI - Desenvolvimento Assistivo para Vida Independente"
         >
-          <Image
-            src="/davi-mark.svg"
-            alt=""
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-2xl shadow-lg shadow-blue-600/20"
-            priority
-          />
           <span>
             <span className="block text-xl font-black tracking-tight text-zinc-950">
               DAVI

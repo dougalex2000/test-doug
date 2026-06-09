@@ -1,8 +1,0 @@
-<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Símbolo DAVI</title>
-  <desc id="desc">Símbolo compacto DAVI com letra A.</desc>
-  <rect width="220" height="220" rx="44" fill="#FFFFFF"/>
-  <rect x="4" y="4" width="212" height="212" rx="40" stroke="#E4E7EC" stroke-width="8"/>
-  <path d="M48 180L110 36L172 180H136L124 150H76L64 180H48Z" fill="#082B63"/>
-  <path d="M88 120L110 68L132 120H88Z" fill="#FFFFFF"/>
-</svg>
