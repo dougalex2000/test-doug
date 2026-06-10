@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
@@ -34,14 +35,14 @@ export function SiteHeader() {
           className={`flex w-fit items-center rounded-2xl ${focusRing}`}
           aria-label="DAVI - Desenvolvimento Assistivo para Vida Independente"
         >
-          <span>
-            <span className="block text-xl font-black tracking-tight text-zinc-950">
-              DAVI
-            </span>
-            <span className="block text-xs font-bold uppercase tracking-wide text-zinc-500">
-              Vida Independente
-            </span>
-          </span>
+          <Image
+            src="/davi-logo.png"
+            alt="Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
+            width={1226}
+            height={367}
+            className="h-auto w-44 sm:w-60 lg:w-72"
+            priority
+          />
         </Link>
 
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
