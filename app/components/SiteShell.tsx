@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
@@ -25,14 +25,14 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/95 shadow-sm backdrop-blur">
       <a
         href="#conteudo"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-blue-600 focus:px-4 focus:py-2 focus:font-bold focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-blue-700 focus:px-4 focus:py-2 focus:font-bold focus:text-white"
       >
         Pular para o conteúdo
       </a>
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
         <Link
           href="/"
-          className={`flex w-fit items-center rounded-2xl ${focusRing}`}
+          className={`flex w-fit items-center rounded-lg ${focusRing}`}
           aria-label="DAVI - Desenvolvimento Assistivo para Vida Independente"
         >
           <Image
@@ -48,17 +48,17 @@ export function SiteHeader() {
         <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
           <nav className="flex flex-wrap gap-1" aria-label="Menu principal">
             {mainNav.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = item.href === "/" ? pathname === "/" : pathname === item.href;
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={`rounded-full px-3 py-2 text-sm font-bold transition ${focusRing} ${
+                  className={`rounded-lg px-3 py-2 text-sm font-bold transition ${focusRing} ${
                     isActive
-                      ? "bg-blue-50 text-blue-700 ring-1 ring-blue-200"
-                      : "text-zinc-700 hover:bg-zinc-100 hover:text-blue-700"
+                      ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
+                      : "text-zinc-700 hover:bg-zinc-100 hover:text-blue-800"
                   }`}
                 >
                   {item.label}
@@ -68,9 +68,9 @@ export function SiteHeader() {
           </nav>
           <Link
             href="/rastreamento"
-            className={`w-fit rounded-full bg-blue-600 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 active:translate-y-0 ${focusRing}`}
+            className={`w-fit rounded-lg bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-700/20 transition hover:-translate-y-0.5 hover:bg-blue-800 active:translate-y-0 ${focusRing}`}
           >
-            Testar rastreamento
+            Acessar plataforma
           </Link>
         </div>
       </div>
@@ -101,10 +101,10 @@ export function SiteHeader() {
               type="button"
               aria-pressed={control.pressed}
               onClick={control.action}
-              className={`rounded-full border px-3 py-1.5 transition ${focusRing} ${
+              className={`rounded-lg border px-3 py-1.5 transition ${focusRing} ${
                 control.pressed
-                  ? "border-blue-600 bg-blue-600 text-white"
-                  : "border-zinc-300 bg-white text-zinc-700 hover:border-blue-400 hover:text-blue-700"
+                  ? "border-green-700 bg-green-700 text-white"
+                  : "border-zinc-300 bg-white text-zinc-700 hover:border-green-600 hover:text-green-800"
               }`}
             >
               {control.label}
@@ -121,11 +121,15 @@ export function SiteFooter() {
     <footer className="border-t border-zinc-800 bg-zinc-950 px-6 py-12 text-white">
       <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_1.2fr]">
         <div>
-          <p className="text-2xl font-black">DAVI</p>
+          <p className="text-2xl font-black">Projeto DAVI</p>
           <p className="mt-3 max-w-lg text-sm leading-6 text-zinc-400">
             Desenvolvimento Assistivo para Vida Independente. Projeto em
             desenvolvimento no contexto de tecnologia assistiva, educação
             inclusiva, fabricação digital e inteligência artificial aplicada.
+          </p>
+          <p className="mt-4 max-w-lg text-xs leading-5 text-zinc-500">
+            O DAVI é uma iniciativa independente de tecnologia assistiva e não
+            representa serviço oficial de governo.
           </p>
         </div>
         <div className="flex flex-wrap gap-2 md:justify-end">
@@ -138,6 +142,19 @@ export function SiteFooter() {
               {item.label}
             </Link>
           ))}
+          <a
+            id="contato"
+            href="mailto:contato@projetodavi.local"
+            className={`rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 transition hover:border-green-400 hover:text-white ${focusRing}`}
+          >
+            E-mail
+          </a>
+          <Link
+            href="/impacto"
+            className={`rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 transition hover:border-green-400 hover:text-white ${focusRing}`}
+          >
+            Privacidade
+          </Link>
         </div>
       </div>
     </footer>
@@ -233,8 +250,8 @@ export function LinkButton({
 }) {
   const className =
     variant === "primary"
-      ? `rounded-full bg-blue-600 px-5 py-3 font-black text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 active:translate-y-0 ${focusRing}`
-      : `rounded-full border border-zinc-300 bg-white px-5 py-3 font-black text-zinc-950 transition hover:-translate-y-0.5 hover:border-blue-400 hover:text-blue-700 active:translate-y-0 ${focusRing}`;
+      ? `rounded-lg bg-blue-700 px-5 py-3 font-black text-white shadow-lg shadow-blue-700/20 transition hover:-translate-y-0.5 hover:bg-blue-800 active:translate-y-0 ${focusRing}`
+      : `rounded-lg border border-zinc-300 bg-white px-5 py-3 font-black text-zinc-950 transition hover:-translate-y-0.5 hover:border-green-600 hover:text-green-800 active:translate-y-0 ${focusRing}`;
 
   return (
     <Link href={href} className={className}>
@@ -254,16 +271,16 @@ export function InfoGrid({
     <div className={`grid gap-5 md:grid-cols-2 ${columns}`}>
       {items.map((item) => {
         const content = (
-          <div className="group h-full rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-950/10">
-            <div className="mb-5 h-1.5 w-12 rounded-full bg-blue-600 transition group-hover:w-16" />
-            <h3 className="text-xl font-black text-zinc-950 transition group-hover:text-blue-700">
+          <div className="group h-full rounded-lg border border-zinc-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-950/10">
+            <div className="mb-5 h-1.5 w-12 rounded-full bg-green-600 transition group-hover:w-16" />
+            <h3 className="text-xl font-black text-zinc-950 transition group-hover:text-blue-800">
               {item.title}
             </h3>
             <p className="mt-3 text-sm leading-6 text-zinc-600">
               {item.description}
             </p>
             {item.href ? (
-              <p className="mt-5 text-sm font-black text-blue-700">
+              <p className="mt-5 text-sm font-black text-blue-800">
                 Acessar página
               </p>
             ) : null}
@@ -274,7 +291,7 @@ export function InfoGrid({
           <Link
             key={item.title}
             href={item.href}
-            className={`block rounded-2xl ${focusRing}`}
+            className={`block rounded-lg ${focusRing}`}
           >
             {content}
           </Link>
@@ -285,4 +302,3 @@ export function InfoGrid({
     </div>
   );
 }
-

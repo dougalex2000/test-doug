@@ -6,7 +6,61 @@ import {
   SectionHeader,
   TagList,
 } from "./components/SiteShell";
-import { ecosystemItems, pageCards, principles } from "./lib/siteContent";
+import { principles } from "./lib/siteContent";
+
+const moduleCards = [
+  {
+    title: "Rastreamento ocular",
+    href: "/rastreamento",
+    description:
+      "Protótipo por webcam para estimar o ponto de atenção na tela, com calibração e seleção por permanência.",
+  },
+  {
+    title: "Mouse assistivo",
+    href: "/tecnologias",
+    description:
+      "Alternativas de controle para pessoas com limitações motoras, incluindo olhar, cabeça, acionadores e varredura.",
+  },
+  {
+    title: "Comunicação alternativa",
+    href: "/projeto",
+    description:
+      "Recursos para apoiar expressão, escolhas, atividades educacionais e comunicação funcional.",
+  },
+  {
+    title: "Integração com hardware",
+    href: "/oficina",
+    description:
+      "Conexão futura com sensores, acionadores, dispositivos maker e soluções assistivas personalizadas.",
+  },
+  {
+    title: "Calibração",
+    href: "/rastreamento",
+    description:
+      "Configurações para adaptar tempo de resposta, precisão, sensibilidade e forma de interação.",
+  },
+  {
+    title: "Relatórios",
+    href: "/relatorios",
+    description:
+      "Acompanhamento de uso, respostas, evolução funcional e indicadores para profissionais e instituições.",
+  },
+  {
+    title: "Configurações de acessibilidade",
+    href: "/rastreamento",
+    description:
+      "Controles de contraste, legibilidade, botões maiores e modos de navegação mais simples.",
+  },
+];
+
+const accessibilityItems = [
+  "Alto contraste",
+  "Navegação por teclado",
+  "Textos legíveis",
+  "Botões grandes",
+  "Compatibilidade com leitores de tela",
+  "Interface simples para limitações motoras",
+];
 
 export default function Home() {
   return (
@@ -14,28 +68,25 @@ export default function Home() {
       <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16 sm:py-20">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
-            <p className="w-fit rounded-full bg-blue-50 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-700 ring-1 ring-blue-200">
+            <p className="w-fit rounded-lg bg-blue-50 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-800 ring-1 ring-blue-200">
               Tecnologia assistiva para autonomia
             </p>
             <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight text-zinc-950 sm:text-6xl">
-              DAVI — Desenvolvimento Assistivo para Vida Independente
+              Tecnologia assistiva para ampliar autonomia, comunicação e inclusão
             </h1>
             <p className="mt-6 max-w-3xl text-xl leading-8 text-zinc-700">
-              Plataforma inteligente para avaliação, aprendizagem, comunicação,
-              recomendação de dispositivos e criação de soluções assistivas
-              personalizadas.
+              O DAVI é uma plataforma modular para apoiar pessoas com
+              deficiência, familiares, profissionais, educadores e instituições
+              com recursos digitais, acessíveis e personalizáveis.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <LinkButton href="/projeto">Conhecer o projeto</LinkButton>
+              <LinkButton href="/tecnologias">Conhecer módulos</LinkButton>
               <LinkButton href="/rastreamento" variant="secondary">
-                Testar rastreamento
-              </LinkButton>
-              <LinkButton href="/tecnologias" variant="secondary">
-                Ver tecnologias
+                Acessar plataforma
               </LinkButton>
             </div>
           </div>
-          <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
+          <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
             <div className="bg-white px-6 py-8">
               <Image
                 src="/davi-logo.png"
@@ -56,13 +107,13 @@ export default function Home() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/35 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/30 bg-white/90 p-4 text-zinc-950 shadow-lg backdrop-blur">
-                <p className="text-sm font-black text-blue-700">
-                  Plataforma DAVI
+              <div className="absolute bottom-5 left-5 right-5 rounded-lg border border-white/30 bg-white/90 p-4 text-zinc-950 shadow-lg backdrop-blur">
+                <p className="text-sm font-black text-blue-800">
+                  Plataforma modular
                 </p>
                 <p className="mt-1 text-sm leading-6 text-zinc-700">
-                  Avaliação, acesso assistivo, tecnologias abertas e soluções
-                  personalizadas em um ecossistema único.
+                  Organização por módulos para evoluir recursos assistivos sem
+                  misturar demonstrações, relatórios e configurações.
                 </p>
               </div>
             </div>
@@ -70,21 +121,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-zinc-50 px-6 py-16">
+      <section className="border-b border-zinc-200 bg-white px-6 py-16" id="modulos">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Portal DAVI"
-            title="Acesse as áreas do ecossistema"
-            description="A página inicial funciona como um portal: apresenta o projeto e conduz para páginas secundárias com conteúdos, exemplos e ferramentas separados por tema."
+            eyebrow="Módulos"
+            title="Áreas iniciais da plataforma DAVI"
+            description="Cards grandes, legíveis e separados por função para facilitar o acesso por usuários, familiares, profissionais e gestores."
           />
           <div className="mt-10">
-            <InfoGrid
-              items={pageCards.map((card) => ({
-                title: card.title,
-                description: card.description,
-                href: card.href,
-              }))}
-            />
+            <InfoGrid items={moduleCards} />
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16" id="acessibilidade">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <SectionHeader
+            eyebrow="Acessibilidade"
+            title="Interface simples para diferentes formas de acesso"
+            description="A experiência deve priorizar clareza, previsibilidade e controles grandes, evitando excesso de animações e mantendo contraste adequado."
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            {accessibilityItems.map((item) => (
+              <div
+                key={item}
+                className="rounded-lg border border-zinc-200 bg-white p-4 text-base font-bold text-zinc-900 shadow-sm"
+              >
+                {item}
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -92,22 +157,31 @@ export default function Home() {
       <section className="bg-zinc-950 px-6 py-16 text-white">
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr]">
           <div>
-            <p className="text-sm font-black uppercase tracking-wide text-blue-300">
-              Ecossistema
+            <p className="text-sm font-black uppercase tracking-wide text-green-300">
+              Identidade própria
             </p>
             <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              Um projeto organizado por serviços, tecnologias e impacto social
+              Inspirado por boas práticas de portais públicos, sem copiar
+              identidade institucional
             </h2>
             <p className="mt-5 text-lg leading-8 text-zinc-300">
-              A estrutura foi pensada para crescer sem misturar conteúdo
-              institucional, demonstrações técnicas e recursos assistivos.
+              O DAVI usa organização clara, linguagem simples, contraste e
+              navegação acessível, mantendo marca, cores e comunicação próprias
+              do projeto.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            {ecosystemItems.map((item) => (
+            {[
+              "Informação organizada",
+              "Caminhos de navegação simples",
+              "Cards de serviços",
+              "Botões grandes",
+              "Rodapé informativo",
+              "Sem elementos oficiais de governo",
+            ].map((item) => (
               <div
                 key={item}
-                className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm font-bold text-zinc-100 transition hover:border-blue-500 hover:bg-zinc-800"
+                className="rounded-lg border border-zinc-800 bg-zinc-900 p-4 text-sm font-bold text-zinc-100 transition hover:border-green-500 hover:bg-zinc-800"
               >
                 {item}
               </div>

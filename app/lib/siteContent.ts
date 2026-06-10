@@ -1,11 +1,10 @@
 export const mainNav = [
-  { label: "Projeto", href: "/projeto" },
-  { label: "IA", href: "/inteligencia-artificial" },
-  { label: "Rastreamento", href: "/rastreamento" },
-  { label: "Tecnologias", href: "/tecnologias" },
-  { label: "Oficina", href: "/oficina" },
+  { label: "Início", href: "/" },
+  { label: "Sobre", href: "/projeto" },
+  { label: "Módulos", href: "/tecnologias" },
+  { label: "Acessibilidade", href: "/rastreamento" },
   { label: "Relatórios", href: "/relatorios" },
-  { label: "Impacto", href: "/impacto" },
+  { label: "Contato", href: "#contato" },
 ];
 
 export const ecosystemItems = [
