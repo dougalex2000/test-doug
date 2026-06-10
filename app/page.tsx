@@ -38,7 +38,7 @@ export default function Home() {
           <div className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
             <div className="bg-white px-6 py-8">
               <Image
-                src="/davi-logo.svg"
+                src="/davi-logo.png"
                 alt="Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
                 width={1226}
                 height={367}
