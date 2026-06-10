@@ -36,7 +36,7 @@ export function SiteHeader() {
           aria-label="DAVI - Desenvolvimento Assistivo para Vida Independente"
         >
           <Image
-            src="/davi-logo.png"
+            src="/davi-logo.svg"
             alt="Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
             width={1226}
             height={367}
