@@ -21,7 +21,13 @@ export function SiteHeader() {
   }, [highContrast, largeText, reducedMotion]);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 24);
+    const handleScroll = () => {
+      setScrolled((current) => {
+        if (!current && window.scrollY > 96) return true;
+        if (current && window.scrollY < 24) return false;
+        return current;
+      });
+    };
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -39,9 +45,10 @@ export function SiteHeader() {
       </a>
 
       <div
-        className={`mx-auto flex max-w-7xl flex-col gap-4 px-6 transition-all duration-200 lg:flex-row lg:items-center lg:justify-between ${
-          scrolled ? "py-2" : "py-4"
+        className={`mx-auto flex max-w-7xl flex-col gap-4 overflow-hidden px-6 transition-all duration-300 lg:flex-row lg:items-center lg:justify-between ${
+          scrolled ? "max-h-0 py-0 opacity-0" : "max-h-40 py-4 opacity-100"
         }`}
+        aria-hidden={scrolled}
       >
         <Link
           href="/"
@@ -53,9 +60,7 @@ export function SiteHeader() {
             alt="Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
             width={1226}
             height={367}
-            className={`h-auto transition-all duration-200 ${
-              scrolled ? "w-36 sm:w-48 lg:w-56" : "w-44 sm:w-60 lg:w-72"
-            }`}
+            className="h-auto w-44 sm:w-60 lg:w-72"
             priority
           />
         </Link>
@@ -128,7 +133,7 @@ export function SiteHeader() {
       </div>
 
       <div
-        className={`border-t border-zinc-100 bg-white transition-all duration-200 ${
+        className={`border-t border-zinc-100 bg-white transition-all duration-300 ${
           scrolled ? "py-2" : "py-4"
         }`}
       >
