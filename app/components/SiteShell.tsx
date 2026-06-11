@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
 
@@ -10,16 +9,25 @@ const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
 
 export function SiteHeader() {
-  const pathname = usePathname();
   const [largeText, setLargeText] = useState(false);
   const [highContrast, setHighContrast] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle("davi-large-text", largeText);
     document.documentElement.classList.toggle("davi-high-contrast", highContrast);
     document.documentElement.classList.toggle("davi-reduce-motion", reducedMotion);
   }, [highContrast, largeText, reducedMotion]);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 24);
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white/95 shadow-sm backdrop-blur">
@@ -29,7 +37,12 @@ export function SiteHeader() {
       >
         Pular para o conteúdo
       </a>
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
+
+      <div
+        className={`mx-auto flex max-w-7xl flex-col gap-4 px-6 transition-all duration-200 lg:flex-row lg:items-center lg:justify-between ${
+          scrolled ? "py-2" : "py-4"
+        }`}
+      >
         <Link
           href="/"
           className={`flex w-fit items-center rounded-lg ${focusRing}`}
@@ -40,76 +53,103 @@ export function SiteHeader() {
             alt="Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
             width={1226}
             height={367}
-            className="h-auto w-44 sm:w-60 lg:w-72"
+            className={`h-auto transition-all duration-200 ${
+              scrolled ? "w-36 sm:w-48 lg:w-56" : "w-44 sm:w-60 lg:w-72"
+            }`}
             priority
           />
         </Link>
 
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-          <nav className="flex flex-wrap gap-1" aria-label="Menu principal">
-            {mainNav.map((item) => {
-              const isActive = item.href === "/" ? pathname === "/" : pathname === item.href;
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`rounded-lg px-3 py-2 text-sm font-bold transition ${focusRing} ${
-                    isActive
-                      ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
-                      : "text-zinc-700 hover:bg-zinc-100 hover:text-blue-800"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+        <div className="flex flex-wrap items-center gap-2 text-sm font-semibold text-blue-800 lg:justify-end">
+          <nav className="hidden flex-wrap items-center gap-1 md:flex" aria-label="Links institucionais">
+            {[
+              { label: "Sobre o DAVI", href: "/projeto" },
+              { label: "Módulos", href: "/tecnologias" },
+              { label: "Relatórios", href: "/relatorios" },
+              { label: "Acessibilidade", href: "/rastreamento" },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-lg px-3 py-2 transition hover:bg-blue-50 ${focusRing}`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
+          <span className="hidden h-8 w-px bg-zinc-200 lg:block" aria-hidden="true" />
+          <button
+            type="button"
+            className={`rounded-lg px-2 py-2 font-black transition hover:bg-blue-50 ${focusRing}`}
+            aria-label="Idioma da interface: português"
+          >
+            PT⌄
+          </button>
+          <button
+            type="button"
+            aria-label="Aumentar texto"
+            aria-pressed={largeText}
+            onClick={() => setLargeText((current) => !current)}
+            className={`rounded-lg px-2 py-2 transition ${focusRing} ${
+              largeText ? "bg-green-700 text-white" : "hover:bg-blue-50"
+            }`}
+          >
+            A+
+          </button>
+          <button
+            type="button"
+            aria-label="Alternar alto contraste"
+            aria-pressed={highContrast}
+            onClick={() => setHighContrast((current) => !current)}
+            className={`rounded-lg px-2 py-2 transition ${focusRing} ${
+              highContrast ? "bg-green-700 text-white" : "hover:bg-blue-50"
+            }`}
+          >
+            ◐
+          </button>
+          <button
+            type="button"
+            aria-label="Reduzir movimento"
+            aria-pressed={reducedMotion}
+            onClick={() => setReducedMotion((current) => !current)}
+            className={`rounded-lg px-2 py-2 transition ${focusRing} ${
+              reducedMotion ? "bg-green-700 text-white" : "hover:bg-blue-50"
+            }`}
+          >
+            ▦
+          </button>
           <Link
             href="/rastreamento"
-            className={`w-fit rounded-lg bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-700/20 transition hover:-translate-y-0.5 hover:bg-blue-800 active:translate-y-0 ${focusRing}`}
+            className={`rounded-full bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-700/20 transition hover:-translate-y-0.5 hover:bg-blue-800 active:translate-y-0 ${focusRing}`}
           >
-            Acessar plataforma
+            Entrar no DAVI
           </Link>
         </div>
       </div>
-      <div className="border-t border-zinc-100 bg-zinc-50/90">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-6 py-2 text-xs font-bold text-zinc-700">
-          <span className="mr-1 uppercase tracking-wide text-zinc-500">
-            Acessibilidade
-          </span>
-          {[
-            {
-              label: "A+",
-              pressed: largeText,
-              action: () => setLargeText((current) => !current),
-            },
-            {
-              label: "Alto contraste",
-              pressed: highContrast,
-              action: () => setHighContrast((current) => !current),
-            },
-            {
-              label: "Reduzir movimento",
-              pressed: reducedMotion,
-              action: () => setReducedMotion((current) => !current),
-            },
-          ].map((control) => (
-            <button
-              key={control.label}
-              type="button"
-              aria-pressed={control.pressed}
-              onClick={control.action}
-              className={`rounded-lg border px-3 py-1.5 transition ${focusRing} ${
-                control.pressed
-                  ? "border-green-700 bg-green-700 text-white"
-                  : "border-zinc-300 bg-white text-zinc-700 hover:border-green-600 hover:text-green-800"
-              }`}
-            >
-              {control.label}
-            </button>
-          ))}
+
+      <div
+        className={`border-t border-zinc-100 bg-white transition-all duration-200 ${
+          scrolled ? "py-2" : "py-4"
+        }`}
+      >
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-6 text-zinc-950">
+          <button
+            type="button"
+            className={`flex h-11 w-11 items-center justify-center rounded-lg text-blue-800 transition hover:bg-blue-50 ${focusRing}`}
+            aria-label="Abrir menu de navegação"
+          >
+            <span className="text-4xl leading-none" aria-hidden="true">
+              ≡
+            </span>
+          </button>
+          <div>
+            <p className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Serviços e Informações do DAVI
+            </p>
+            <p className="mt-1 hidden text-sm font-medium text-zinc-600 sm:block">
+              Desenvolvimento Assistivo para Vida Independente
+            </p>
+          </div>
         </div>
       </div>
     </header>
