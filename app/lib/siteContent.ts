@@ -1,10 +1,15 @@
 export const mainNav = [
   { label: "Início", href: "/" },
-  { label: "Sobre", href: "/projeto" },
-  { label: "Módulos", href: "/tecnologias" },
-  { label: "Acessibilidade", href: "/rastreamento" },
+  { label: "Sobre", href: "/sobre" },
+  { label: "Usuários", href: "/usuarios/alunos" },
+  { label: "Módulos", href: "/modulos/rastreamento-ocular" },
+  { label: "Dispositivos", href: "/dispositivos" },
+  { label: "Catálogo", href: "/catalogo" },
+  { label: "Galeria", href: "/galeria" },
   { label: "Relatórios", href: "/relatorios" },
-  { label: "Contato", href: "#contato" },
+  { label: "Acessibilidade", href: "/acessibilidade" },
+  { label: "Configurações", href: "/configuracoes" },
+  { label: "Contato", href: "/contato" },
 ];
 
 export const ecosystemItems = [

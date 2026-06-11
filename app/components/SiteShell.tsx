@@ -133,15 +133,71 @@ export function SiteHeader() {
         }`}
       >
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-6 text-zinc-950">
-          <button
-            type="button"
-            className={`flex h-11 w-11 items-center justify-center rounded-lg text-blue-800 transition hover:bg-blue-50 ${focusRing}`}
-            aria-label="Abrir menu de navegação"
-          >
-            <span className="text-4xl leading-none" aria-hidden="true">
-              ≡
-            </span>
-          </button>
+          <details className="relative">
+            <summary
+              className={`flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-lg text-blue-800 transition hover:bg-blue-50 ${focusRing}`}
+              aria-label="Abrir menu de navegação"
+            >
+              <span className="text-4xl leading-none" aria-hidden="true">
+                ≡
+              </span>
+            </summary>
+            <div className="absolute left-0 top-14 z-50 w-[min(92vw,420px)] rounded-lg border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/15">
+              <p className="text-sm font-black uppercase tracking-wide text-blue-800">
+                Navegação DAVI
+              </p>
+              <div className="mt-4 grid gap-4">
+                {[
+                  {
+                    title: "Usuários",
+                    links: [
+                      { label: "Alunos", href: "/usuarios/alunos" },
+                      { label: "Profissionais", href: "/usuarios/profissionais" },
+                      { label: "Responsáveis", href: "/usuarios/responsaveis" },
+                    ],
+                  },
+                  {
+                    title: "Módulos",
+                    links: [
+                      { label: "Comunicação com Hardware", href: "/modulos/hardware" },
+                      { label: "Varredura Ocular", href: "/modulos/rastreamento-ocular" },
+                      { label: "Mouse Assistivo", href: "/modulos/mouse-assistivo" },
+                      { label: "Calibração", href: "/modulos/calibracao" },
+                      { label: "Comunicação Alternativa", href: "/modulos/comunicacao-alternativa" },
+                      { label: "Inteligência Artificial", href: "/modulos/inteligencia-artificial" },
+                    ],
+                  },
+                  {
+                    title: "Relatórios",
+                    links: [
+                      { label: "Relatórios e Métricas", href: "/relatorios" },
+                      { label: "Relatório do Aluno", href: "/relatorios/aluno" },
+                      { label: "Relatório de Hardware", href: "/relatorios/hardware" },
+                      { label: "Relatório de Varredura Ocular", href: "/relatorios/rastreamento-ocular" },
+                      { label: "Relatório Institucional", href: "/relatorios/institucional" },
+                    ],
+                  },
+                ].map((group) => (
+                  <div key={group.title}>
+                    <p className="text-xs font-black uppercase tracking-wide text-zinc-500">
+                      {group.title}
+                    </p>
+                    <div className="mt-2 grid gap-1">
+                      {group.links.map((item) => (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`rounded-lg px-3 py-2 text-sm font-bold text-zinc-800 transition hover:bg-blue-50 hover:text-blue-800 ${focusRing}`}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </details>
           <div>
             <p className="text-2xl font-semibold tracking-tight sm:text-3xl">
               Serviços e Informações do DAVI
