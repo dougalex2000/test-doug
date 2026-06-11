@@ -11,31 +11,31 @@ import { principles } from "./lib/siteContent";
 const moduleCards = [
   {
     title: "Rastreamento ocular",
-    href: "/rastreamento",
+    href: "/modulos/rastreamento-ocular",
     description:
       "Protótipo por webcam para estimar o ponto de atenção na tela, com calibração e seleção por permanência.",
   },
   {
     title: "Mouse assistivo",
-    href: "/tecnologias",
+    href: "/modulos/mouse-assistivo",
     description:
       "Alternativas de controle para pessoas com limitações motoras, incluindo olhar, cabeça, acionadores e varredura.",
   },
   {
     title: "Comunicação alternativa",
-    href: "/projeto",
+    href: "/modulos/comunicacao-alternativa",
     description:
       "Recursos para apoiar expressão, escolhas, atividades educacionais e comunicação funcional.",
   },
   {
     title: "Integração com hardware",
-    href: "/oficina",
+    href: "/modulos/hardware",
     description:
       "Conexão futura com sensores, acionadores, dispositivos maker e soluções assistivas personalizadas.",
   },
   {
     title: "Calibração",
-    href: "/rastreamento",
+    href: "/modulos/calibracao",
     description:
       "Configurações para adaptar tempo de resposta, precisão, sensibilidade e forma de interação.",
   },
@@ -47,7 +47,7 @@ const moduleCards = [
   },
   {
     title: "Configurações de acessibilidade",
-    href: "/rastreamento",
+    href: "/configuracoes",
     description:
       "Controles de contraste, legibilidade, botões maiores e modos de navegação mais simples.",
   },
@@ -80,9 +80,12 @@ export default function Home() {
               com recursos digitais, acessíveis e personalizáveis.
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <LinkButton href="/tecnologias">Conhecer módulos</LinkButton>
-              <LinkButton href="/rastreamento" variant="secondary">
+              <LinkButton href="/modulos/rastreamento-ocular">Conhecer módulos</LinkButton>
+              <LinkButton href="/modulos/rastreamento-ocular" variant="secondary">
                 Acessar plataforma
+              </LinkButton>
+              <LinkButton href="/catalogo" variant="secondary">
+                Ver catálogo
               </LinkButton>
             </div>
           </div>
