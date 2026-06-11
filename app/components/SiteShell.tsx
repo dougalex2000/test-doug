@@ -3,11 +3,22 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { mainNav } from "../lib/siteContent";
+import { mockUser, mockNotifications } from "../lib/userData";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
 
+const unreadCount = mockNotifications.filter((n) => !n.read).length;
+
 const menuGroups = [
+  {
+    title: "Minha conta",
+    links: [
+      { label: "Meu Painel", href: "/dashboard" },
+      { label: "Meu Perfil", href: "/perfil" },
+      { label: "Notificações", href: "/notificacoes" },
+    ],
+  },
   {
     title: "Acesso rápido",
     links: [
@@ -155,11 +166,33 @@ export function SiteHeader() {
             >
               ▦
             </button>
+
             <Link
-              href="/modulos/rastreamento-ocular"
+              href="/notificacoes"
+              aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ""}`}
+              className={`relative rounded-lg px-2 py-2 hover:bg-blue-50 ${focusRing}`}
+            >
+              <span aria-hidden="true">🔔</span>
+              {unreadCount > 0 && (
+                <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white">
+                  {unreadCount}
+                </span>
+              )}
+            </Link>
+
+            <Link
+              href="/perfil"
+              aria-label="Meu perfil"
+              className={`ml-1 flex h-9 w-9 items-center justify-center rounded-full bg-blue-700 text-sm font-black text-white hover:bg-blue-800 ${focusRing}`}
+            >
+              {mockUser.initials}
+            </Link>
+
+            <Link
+              href="/dashboard"
               className={`ml-2 rounded-full bg-blue-700 px-5 py-3 font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 ${focusRing}`}
             >
-              Entrar no DAVI
+              Meu Painel
             </Link>
           </div>
         </div>
