@@ -384,10 +384,14 @@ export default function PareamentoPage() {
 
   function disconnect() {
     intentionalRef.current = true;
-    addLog("Desconectando…");
-    deviceRef.current?.gatt?.connected
-      ? deviceRef.current.gatt.disconnect()
-      : handleDisconnect();
+    addLog("Desconectando...");
+
+    if (deviceRef.current?.gatt?.connected) {
+      deviceRef.current.gatt.disconnect();
+      return;
+    }
+
+    handleDisconnect();
   }
 
   const isConnected = status === "connected";
