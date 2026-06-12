@@ -49,8 +49,13 @@ const communicationOptions = [
 
 const DWELL_TIME_MS = 1400;
 const CALIBRATION_INSTRUCTIONS_MS = 7000;
-const CALIBRATION_POINT_MS = 2000;
+const CALIBRATION_POINT_MS = 3000;
 const MIN_CALIBRATION_SAMPLES = 9;
+// Captura de múltiplos frames por ponto (~90 frames em câmera de 30 FPS).
+const MAX_POINT_FRAMES = 120;
+const MIN_VALID_POINT_FRAMES = 5;
+// Fração dos frames mantidos após o descarte dos mais distantes da mediana.
+const POINT_FRAMES_KEEP_RATIO = 0.7;
 const GAZE_DEAD_ZONE = 10;
 const GAZE_SMOOTHING = 0.12;
 const CALIBRATED_HORIZONTAL_EDGE_GAIN = 1.12;
@@ -150,6 +155,38 @@ function getRawGazeFromFaceLandmarks(landmarks: NormalizedLandmark[]) {
   return {
     x: irisCenter.x - eyeCenter.x,
     y: irisCenter.y - eyeCenter.y,
+  };
+}
+
+function median(values: number[]) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const middle = Math.floor(sorted.length / 2);
+
+  return sorted.length % 2 === 0
+    ? (sorted[middle - 1] + sorted[middle]) / 2
+    : sorted[middle];
+}
+
+/**
+ * Reduz os frames capturados em um ponto de calibração a uma única amostra
+ * robusta: descarta os frames mais distantes da mediana (olhares desviados,
+ * piscadas, ruído de detecção) e tira a média dos restantes.
+ */
+function getRobustRawGaze(frames: RawGaze[]): RawGaze {
+  const medianX = median(frames.map((frame) => frame.x));
+  const medianY = median(frames.map((frame) => frame.y));
+  const kept = frames
+    .map((frame) => ({
+      frame,
+      distance: Math.hypot(frame.x - medianX, frame.y - medianY),
+    }))
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, Math.max(1, Math.ceil(frames.length * POINT_FRAMES_KEEP_RATIO)))
+    .map((item) => item.frame);
+
+  return {
+    x: kept.reduce((sum, frame) => sum + frame.x, 0) / kept.length,
+    y: kept.reduce((sum, frame) => sum + frame.y, 0) / kept.length,
   };
 }
 
@@ -353,6 +390,7 @@ export default function EyeTrackingDemo() {
   const selectedDuringDwellRef = useRef(false);
   const manualPointUntilRef = useRef(0);
   const calibrationSamplesRef = useRef<CalibrationSample[]>([]);
+  const calibrationFrameBufferRef = useRef<RawGaze[]>([]);
   const calibrationClicksRef = useRef(0);
   const activeCalibrationIndexRef = useRef(0);
   const calibrationPointStartedAtRef = useRef(0);
@@ -406,6 +444,7 @@ export default function EyeTrackingDemo() {
 
     showCalibrationInstructionsRef.current = false;
     setShowCalibrationInstructions(false);
+    calibrationFrameBufferRef.current = [];
     calibrationPointStartedAtRef.current = performance.now();
   }, []);
 
@@ -478,7 +517,16 @@ export default function EyeTrackingDemo() {
       y: (window.innerHeight * point.y) / 100,
     };
 
-    if (!lastRawGazeRef.current) {
+    // Reduz os frames capturados durante o ponto a uma amostra robusta,
+    // descartando frames ruins. Com poucos frames válidos, reinicia o ponto.
+    const frames = calibrationFrameBufferRef.current;
+    calibrationFrameBufferRef.current = [];
+    const robustRaw =
+      frames.length >= MIN_VALID_POINT_FRAMES
+        ? getRobustRawGaze(frames)
+        : lastRawGazeRef.current;
+
+    if (!robustRaw) {
       calibrationPointStartedAtRef.current = performance.now();
       setCalibrationHoldProgress(0);
       return;
@@ -487,7 +535,7 @@ export default function EyeTrackingDemo() {
     calibrationSamplesRef.current = [
       ...calibrationSamplesRef.current,
       {
-        raw: lastRawGazeRef.current,
+        raw: robustRaw,
         target,
       },
     ];
@@ -735,6 +783,16 @@ export default function EyeTrackingDemo() {
           if (rawGaze) {
             lastRawGazeRef.current = rawGaze;
             nextPoint = scaleRawGaze(rawGaze, calibrationSamplesRef.current);
+
+            // Durante a calibração, acumula frames do ponto atual para a
+            // amostra robusta (validação e descarte acontecem na captura).
+            if (
+              calibrationClicksRef.current < MIN_CALIBRATION_SAMPLES &&
+              !showCalibrationInstructionsRef.current &&
+              calibrationFrameBufferRef.current.length < MAX_POINT_FRAMES
+            ) {
+              calibrationFrameBufferRef.current.push(rawGaze);
+            }
           }
         } catch {
           nextPoint = lastPointRef.current;
@@ -840,6 +898,7 @@ export default function EyeTrackingDemo() {
 
   const resetCalibration = useCallback(() => {
     calibrationSamplesRef.current = [];
+    calibrationFrameBufferRef.current = [];
     calibrationClicksRef.current = 0;
     activeCalibrationIndexRef.current = 0;
     setCalibrationClicks(0);
@@ -852,6 +911,21 @@ export default function EyeTrackingDemo() {
       y: window.innerHeight / 2,
     };
   }, [startCalibrationInstructions]);
+
+  // Privacidade: apaga todas as amostras de calibração da memória.
+  // Nada é enviado a servidores — o processamento é 100% local.
+  const clearCalibrationData = useCallback(() => {
+    calibrationSamplesRef.current = [];
+    calibrationFrameBufferRef.current = [];
+    calibrationClicksRef.current = 0;
+    activeCalibrationIndexRef.current = 0;
+    lastRawGazeRef.current = null;
+    setCalibrationClicks(0);
+    setCalibrationHoldProgress(0);
+    setSelectedOption("Nenhuma seleção ainda");
+    setActiveOption(null);
+    setDwellProgress(0);
+  }, []);
 
   const aimAtOption = useCallback(
     (optionId: string) => {
@@ -890,8 +964,10 @@ export default function EyeTrackingDemo() {
           </h2>
           <p className="mt-5 text-lg leading-8 text-zinc-300">
             Um protótipo para testar câmera, calibração e seleção por
-            permanência. Olhe para cada ponto antes de clicar em calibrar; depois
-            a bolinha usa essas amostras para alcançar melhor os cantos.
+            permanência. Olhe para cada um dos 9 pontos por cerca de 3
+            segundos: vários frames são capturados por ponto e os de baixa
+            qualidade são descartados automaticamente para uma calibração mais
+            estável.
           </p>
 
           <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4">
@@ -969,6 +1045,14 @@ export default function EyeTrackingDemo() {
             >
               {debugMode ? "Fechar diagnóstico" : "Ver face"}
             </button>
+
+            <button
+              type="button"
+              onClick={clearCalibrationData}
+              className="rounded-full border border-red-400/60 px-5 py-3 font-semibold text-red-200 transition hover:border-red-300 hover:bg-red-500/20"
+            >
+              Apagar dados de calibração
+            </button>
           </div>
 
           <div className="mt-8">
@@ -994,6 +1078,13 @@ export default function EyeTrackingDemo() {
             {landmarkerReady
               ? `MediaPipe ativo com ${calibrationSamplesRef.current.length} amostras`
               : "aguardando câmera e modelo de landmarks"}
+          </p>
+
+          <p className="mt-3 rounded-lg border border-green-400/30 bg-green-500/10 p-3 text-sm text-green-100">
+            🔒 Privacidade: as imagens da câmera são processadas localmente no
+            seu navegador e nunca saem do dispositivo. A calibração guarda
+            apenas números (posição relativa de olhos e íris) na memória — ao
+            fechar a página, tudo é descartado.
           </p>
 
           {lastError ? (

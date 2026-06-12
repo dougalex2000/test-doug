@@ -84,8 +84,8 @@ function GlobeCanvas({ quatRef }: { quatRef: React.RefObject<QuatRef | null> }) 
     el.appendChild(renderer.domElement);
 
     // Luzes
-    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
-    const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+    const sun = new THREE.DirectionalLight(0xffffff, 2.0);
     sun.position.set(5, 3, 5);
     scene.add(sun);
 
@@ -98,11 +98,9 @@ function GlobeCanvas({ quatRef }: { quatRef: React.RefObject<QuatRef | null> }) 
     );
     const globe = new THREE.Mesh(
       new THREE.SphereGeometry(1, 64, 64),
-      new THREE.MeshPhongMaterial({
+      new THREE.MeshBasicMaterial({
         map: texture,
-        color: 0x2266aa,      // azul como fallback enquanto textura carrega
-        specular: new THREE.Color(0x222222),
-        shininess: 15,
+        color: 0x2266aa,
       })
     );
     scene.add(globe);
@@ -145,8 +143,15 @@ function GlobeCanvas({ quatRef }: { quatRef: React.RefObject<QuatRef | null> }) 
 
       const q = quatRef.current;
       if (q && globeMeshRef.current) {
+        // Remapeamento de eixos MPU6050 → Three.js:
+        //   Sensor X=direita, Y=frente, Z=cima
+        //   Three.js X=direita, Y=cima,  Z=tela
+        //
+        //   Sensor qy (pitch: inclinar frente/trás) → Three.js X
+        //   Sensor qz (yaw: girar horizontal)       → Three.js Y  (negado: horário=horário)
+        //   Sensor qx (roll: inclinar esq/dir)      → Three.js Z  (negado: inclinar direita=direita)
         globeMeshRef.current.setRotationFromQuaternion(
-          new THREE.Quaternion(q.quat_x, q.quat_y, q.quat_z, q.quat_w)
+          new THREE.Quaternion(q.quat_y, -q.quat_z, -q.quat_x, q.quat_w)
         );
       }
 

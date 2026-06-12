@@ -1,29 +1,28 @@
 export const mainNav = [
   { label: "Início", href: "/" },
-  { label: "Sobre", href: "/sobre" },
-  { label: "Usuários", href: "/usuarios/alunos" },
-  { label: "Módulos", href: "/modulos/rastreamento-ocular" },
-  { label: "Dispositivos", href: "/dispositivos" },
-  { label: "Catálogo", href: "/catalogo" },
+  { label: "Origem", href: "/origem" },
+  { label: "Plataforma", href: "/plataforma" },
   { label: "Galeria", href: "/galeria" },
+  { label: "Oficina Maker", href: "/oficina-maker" },
   { label: "Relatórios", href: "/relatorios" },
   { label: "Acessibilidade", href: "/acessibilidade" },
-  { label: "Configurações", href: "/configuracoes" },
   { label: "Contato", href: "/contato" },
 ];
 
 export const ecosystemItems = [
   "Plataforma digital",
+  "Ambiente físico de avaliação assistiva",
   "Rastreamento visual assistivo",
   "Inteligência artificial",
+  "Comunicação alternativa",
   "Métodos de acesso assistivo",
   "Avaliação funcional",
   "Relatórios inteligentes",
   "Galeria de tecnologias assistivas",
   "Projetos abertos",
   "Oficina maker assistiva",
-  "Possibilidade futura de loja social",
-  "Apoio a escolas, famílias, ONGs, OSCIPs e instituições",
+  "Futura loja social",
+  "Apoio a escolas, famílias, ONGs, OSCIPs, profissionais, pesquisadores, prefeituras e instituições",
 ];
 
 export const aiSupports = [

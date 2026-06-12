@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
-import { mainNav } from "../lib/siteContent";
+import { footerNav, institutionalNav, platformNav } from "../lib/navigation";
 import { mockUser, mockNotifications } from "../lib/userData";
 
 const focusRing =
@@ -12,56 +12,15 @@ const unreadCount = mockNotifications.filter((n) => !n.read).length;
 
 const menuGroups = [
   {
-    title: "Minha conta",
+    title: "Início",
     links: [
-      { label: "Meu Painel", href: "/dashboard" },
-      { label: "Meu Perfil", href: "/perfil" },
-      { label: "Notificações", href: "/notificacoes" },
-    ],
-  },
-  {
-    title: "Acesso rápido",
-    links: [
-      { label: "Início", href: "/" },
-      { label: "Sobre o DAVI", href: "/sobre" },
-      { label: "Dispositivos", href: "/dispositivos" },
-      { label: "Pareamento Bluetooth", href: "/dispositivos/pareamento" },
-      { label: "Catálogo", href: "/catalogo" },
-      { label: "Galeria", href: "/galeria" },
-      { label: "Acessibilidade", href: "/acessibilidade" },
-      { label: "Configurações", href: "/configuracoes" },
+      { label: "Página inicial", href: "/" },
       { label: "Contato", href: "/contato" },
+      { label: "Acessibilidade do site", href: "/acessibilidade" },
     ],
   },
-  {
-    title: "Usuários",
-    links: [
-      { label: "Alunos", href: "/usuarios/alunos" },
-      { label: "Profissionais", href: "/usuarios/profissionais" },
-      { label: "Responsáveis", href: "/usuarios/responsaveis" },
-    ],
-  },
-  {
-    title: "Módulos",
-    links: [
-      { label: "Comunicação com hardware", href: "/modulos/hardware" },
-      { label: "Rastreamento ocular", href: "/modulos/rastreamento-ocular" },
-      { label: "Mouse assistivo", href: "/modulos/mouse-assistivo" },
-      { label: "Calibração", href: "/modulos/calibracao" },
-      { label: "Comunicação alternativa", href: "/modulos/comunicacao-alternativa" },
-      { label: "Inteligência artificial", href: "/modulos/inteligencia-artificial" },
-    ],
-  },
-  {
-    title: "Relatórios",
-    links: [
-      { label: "Relatórios e métricas", href: "/relatorios" },
-      { label: "Relatório do aluno", href: "/relatorios/aluno" },
-      { label: "Relatório de hardware", href: "/relatorios/hardware" },
-      { label: "Relatório de rastreamento ocular", href: "/relatorios/rastreamento-ocular" },
-      { label: "Relatório institucional", href: "/relatorios/institucional" },
-    ],
-  },
+  ...institutionalNav,
+  ...platformNav,
 ];
 
 export function SiteHeader() {
@@ -219,7 +178,7 @@ export function SiteFooter() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2 md:justify-end">
-          {mainNav.map((item) => (
+          {footerNav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -235,12 +194,6 @@ export function SiteFooter() {
           >
             E-mail
           </a>
-          <Link
-            href="/impacto"
-            className={`rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 hover:border-green-400 hover:text-white ${focusRing}`}
-          >
-            Privacidade
-          </Link>
         </div>
       </div>
     </footer>
@@ -343,6 +296,115 @@ export function LinkButton({
     <Link href={href} className={className}>
       {children}
     </Link>
+  );
+}
+
+const sectionTones = {
+  white: "bg-white",
+  soft: "bg-[#F6F8FB]",
+  dark: "bg-zinc-950 text-white",
+} as const;
+
+/** Seção de página com largura máxima, espaçamento e fundo padronizados. */
+export function Section({
+  id,
+  tone = "white",
+  bordered = true,
+  children,
+}: {
+  id?: string;
+  tone?: keyof typeof sectionTones;
+  bordered?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      className={`${sectionTones[tone]} ${
+        bordered ? "border-b border-zinc-200" : ""
+      } scroll-mt-24 px-6 py-16`}
+    >
+      <div className="mx-auto max-w-7xl">{children}</div>
+    </section>
+  );
+}
+
+export function Breadcrumb({
+  items,
+}: {
+  items: Array<{ label: string; href?: string }>;
+}) {
+  return (
+    <nav aria-label="Trilha de navegação" className="bg-zinc-50 px-6 py-3">
+      <ol className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 text-sm font-semibold text-zinc-600">
+        <li>
+          <Link href="/" className={`rounded px-1 hover:text-blue-800 hover:underline ${focusRing}`}>
+            Início
+          </Link>
+        </li>
+        {items.map((item, index) => (
+          <li key={item.label} className="flex items-center gap-2">
+            <span aria-hidden="true" className="text-zinc-400">
+              ›
+            </span>
+            {item.href && index < items.length - 1 ? (
+              <Link
+                href={item.href}
+                className={`rounded px-1 hover:text-blue-800 hover:underline ${focusRing}`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <span aria-current="page" className="px-1 text-zinc-950">
+                {item.label}
+              </span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+const placeholderTones = {
+  blue: "from-blue-100 via-sky-50 to-white text-blue-800 border-blue-200",
+  green: "from-green-100 via-emerald-50 to-white text-green-800 border-green-200",
+  amber: "from-amber-100 via-orange-50 to-white text-amber-800 border-amber-200",
+  zinc: "from-zinc-100 via-zinc-50 to-white text-zinc-700 border-zinc-200",
+} as const;
+
+/**
+ * Placeholder elegante para imagens ilustrativas ainda não adicionadas.
+ * Quando a imagem real existir em /public/images/davi/, basta substituir
+ * este componente por <Image src={`/images/davi/${imageName}`} ... />.
+ */
+export function MediaPlaceholder({
+  icon,
+  label,
+  imageName,
+  tone = "blue",
+  minHeight = "min-h-[260px]",
+}: {
+  icon: string;
+  label: string;
+  imageName?: string;
+  tone?: keyof typeof placeholderTones;
+  minHeight?: string;
+}) {
+  return (
+    <figure
+      className={`flex ${minHeight} flex-col items-center justify-center gap-4 rounded-2xl border bg-gradient-to-br p-8 text-center shadow-sm ${placeholderTones[tone]}`}
+      role="img"
+      aria-label={`Imagem ilustrativa: ${label}`}
+      data-image-slot={imageName}
+    >
+      <span aria-hidden="true" className="text-6xl">
+        {icon}
+      </span>
+      <figcaption className="max-w-xs text-sm font-bold leading-6">
+        {label}
+      </figcaption>
+    </figure>
   );
 }
 
