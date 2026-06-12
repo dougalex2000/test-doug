@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: kit maker com microcontrolador, sensores e acionadores">
+  <defs>
+    <linearGradient id="gk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0fdf4"/>
+      <stop offset="1" stop-color="#d1fae5"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#gk)"/>
+  <circle cx="100" cy="80" r="46" fill="#a7f3d0" opacity="0.6"/>
+  <circle cx="556" cy="286" r="52" fill="#bfdbfe" opacity="0.5"/>
+  <ellipse cx="320" cy="300" rx="200" ry="18" fill="#1e293b" opacity="0.12"/>
+  <!-- maleta do kit -->
+  <rect x="130" y="120" width="380" height="180" rx="18" fill="#15803d"/>
+  <rect x="130" y="120" width="380" height="20" rx="10" fill="#166534"/>
+  <rect x="280" y="96" width="80" height="34" rx="12" fill="#166534"/>
+  <!-- divisórias internas -->
+  <rect x="150" y="156" width="160" height="124" rx="10" fill="#dcfce7"/>
+  <rect x="322" y="156" width="80" height="58" rx="10" fill="#dcfce7"/>
+  <rect x="412" y="156" width="78" height="58" rx="10" fill="#dcfce7"/>
+  <rect x="322" y="222" width="168" height="58" rx="10" fill="#dcfce7"/>
+  <!-- microcontrolador -->
+  <rect x="170" y="180" width="120" height="76" rx="8" fill="#1d4ed8"/>
+  <rect x="190" y="198" width="44" height="40" rx="4" fill="#172554"/>
+  <path d="M170 192h-10M170 210h-10M170 228h-10M290 192h10M290 210h10M290 228h10" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>
+  <!-- botão -->
+  <circle cx="362" cy="184" r="17" fill="#dc2626"/>
+  <circle cx="362" cy="180" r="11" fill="#f87171"/>
+  <!-- sensor -->
+  <rect x="430" y="170" width="44" height="30" rx="6" fill="#0ea5e9"/>
+  <circle cx="444" cy="185" r="6" fill="#e0f2fe"/>
+  <circle cx="462" cy="185" r="6" fill="#e0f2fe"/>
+  <!-- fios -->
+  <path d="M340 252 q 20 -14 44 0 q 22 12 44 0 q 22 -12 42 0" stroke="#f59e0b" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

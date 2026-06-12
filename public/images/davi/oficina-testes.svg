@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Ilustração: mesa de testes com tablet em suporte articulado e acionador adaptado">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eff6ff"/>
+      <stop offset="1" stop-color="#e0e7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg3)"/>
+  <circle cx="690" cy="110" r="56" fill="#c7d2fe" opacity="0.55"/>
+  <circle cx="110" cy="420" r="64" fill="#bbf7d0" opacity="0.5"/>
+  <!-- mesa -->
+  <rect x="90" y="380" width="620" height="22" rx="8" fill="#94a3b8"/>
+  <rect x="130" y="402" width="20" height="68" rx="6" fill="#64748b"/>
+  <rect x="650" y="402" width="20" height="68" rx="6" fill="#64748b"/>
+  <!-- suporte articulado -->
+  <rect x="200" y="300" width="90" height="14" rx="7" fill="#475569" transform="rotate(-40 200 300)"/>
+  <rect x="252" y="216" width="110" height="14" rx="7" fill="#475569" transform="rotate(20 252 216)"/>
+  <circle cx="252" cy="252" r="13" fill="#1e293b"/>
+  <rect x="180" y="356" width="70" height="24" rx="8" fill="#334155"/>
+  <!-- tablet -->
+  <g transform="rotate(-6 420 220)">
+    <rect x="330" y="150" width="240" height="170" rx="16" fill="#0f172a"/>
+    <rect x="344" y="164" width="212" height="142" rx="8" fill="#eff6ff"/>
+    <!-- prancha de comunicação na tela -->
+    <rect x="358" y="178" width="56" height="50" rx="8" fill="#3b82f6"/>
+    <rect x="422" y="178" width="56" height="50" rx="8" fill="#22c55e"/>
+    <rect x="486" y="178" width="56" height="50" rx="8" fill="#f59e0b"/>
+    <rect x="358" y="240" width="56" height="50" rx="8" fill="#ef4444"/>
+    <rect x="422" y="240" width="56" height="50" rx="8" fill="#8b5cf6"/>
+    <rect x="486" y="240" width="56" height="50" rx="8" fill="#0ea5e9"/>
+  </g>
+  <!-- acionador grande -->
+  <ellipse cx="600" cy="372" rx="86" ry="16" fill="#1e293b" opacity="0.15"/>
+  <rect x="524" y="338" width="152" height="36" rx="14" fill="#b91c1c"/>
+  <ellipse cx="600" cy="338" rx="76" ry="26" fill="#dc2626"/>
+  <ellipse cx="600" cy="332" rx="60" ry="19" fill="#f87171"/>
+  <!-- cabo -->
+  <path d="M524 354 Q 470 360 440 330" stroke="#334155" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

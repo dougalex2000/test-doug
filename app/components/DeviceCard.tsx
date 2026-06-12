@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { AssistiveDevice } from "../lib/devices";
+import { getDeviceIllustration, type AssistiveDevice } from "../lib/devices";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
@@ -25,7 +25,15 @@ export function DeviceStatusBadge({ status }: { status: string }) {
 
 export function DeviceCard({ device }: { device: AssistiveDevice }) {
   return (
-    <article className="flex h-full flex-col rounded-lg border border-zinc-200 bg-white p-6 shadow-sm hover:border-blue-300 hover:shadow-xl hover:shadow-blue-950/10">
+    <article className="flex h-full flex-col overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-sm hover:border-blue-300 hover:shadow-xl hover:shadow-blue-950/10">
+      {/* eslint-disable-next-line @next/next/no-img-element -- SVG vetorial local; otimização do next/image não se aplica */}
+      <img
+        src={getDeviceIllustration(device)}
+        alt=""
+        loading="lazy"
+        className="h-44 w-full border-b border-zinc-100 object-cover"
+      />
+      <div className="flex flex-1 flex-col p-6">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <h3 className="text-xl font-black text-zinc-950">{device.name}</h3>
         <DeviceStatusBadge status={device.status} />
@@ -84,6 +92,7 @@ export function DeviceCard({ device }: { device: AssistiveDevice }) {
         >
           Solicitar adaptação
         </Link>
+      </div>
       </div>
     </article>
   );

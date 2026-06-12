@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: prancha de comunicação alternativa com símbolos coloridos">
+  <defs>
+    <linearGradient id="gc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#faf5ff"/>
+      <stop offset="1" stop-color="#ede9fe"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#gc)"/>
+  <circle cx="100" cy="80" r="44" fill="#ddd6fe" opacity="0.6"/>
+  <circle cx="560" cy="290" r="52" fill="#bbf7d0" opacity="0.5"/>
+  <ellipse cx="320" cy="298" rx="190" ry="18" fill="#1e293b" opacity="0.1"/>
+  <!-- prancha -->
+  <rect x="130" y="70" width="380" height="230" rx="18" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="130" y="70" width="380" height="48" rx="18" fill="#7c3aed"/>
+  <rect x="150" y="84" width="160" height="20" rx="10" fill="#ddd6fe"/>
+  <g>
+    <rect x="152" y="134" width="104" height="70" rx="10" fill="#3b82f6"/>
+    <rect x="268" y="134" width="104" height="70" rx="10" fill="#22c55e"/>
+    <rect x="384" y="134" width="104" height="70" rx="10" fill="#f59e0b"/>
+    <rect x="152" y="214" width="104" height="70" rx="10" fill="#ef4444"/>
+    <rect x="268" y="214" width="104" height="70" rx="10" fill="#0ea5e9"/>
+    <rect x="384" y="214" width="104" height="70" rx="10" fill="#8b5cf6"/>
+  </g>
+  <!-- símbolos simples -->
+  <g fill="#ffffff">
+    <circle cx="204" cy="160" r="12"/>
+    <path d="M192 192c0-10 24-10 24 0z"/>
+    <path d="M320 152l14 24h-28z"/>
+    <rect x="306" y="180" width="28" height="12" rx="4"/>
+    <circle cx="436" cy="168" r="16" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <path d="M188 248h32M204 232v32" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+    <path d="M306 262l12-20 12 12 10-16" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M422 262q14-26 28 0" stroke="#ffffff" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- balão de fala -->
+  <path d="M520 60c26 0 46 16 46 36s-20 36-46 36c-5 0-10-.6-14-1.8L490 140l6-18c-8-6-12-15-12-26 0-20 20-36 36-36z" fill="#22c55e"/>
+  <circle cx="508" cy="96" r="5" fill="#ffffff"/>
+  <circle cx="524" cy="96" r="5" fill="#ffffff"/>
+  <circle cx="540" cy="96" r="5" fill="#ffffff"/>
+</svg>

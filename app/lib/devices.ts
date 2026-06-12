@@ -300,6 +300,32 @@ export function getDeviceBySlug(slug: string): AssistiveDevice | undefined {
   return assistiveDevices.find((device) => device.slug === slug);
 }
 
+/**
+ * Ilustração vetorial de cada dispositivo (arquivos em /public/images/davi).
+ * Quando houver foto real do dispositivo, basta trocar o arquivo apontado aqui.
+ */
+const deviceIllustrations: Record<string, string> = {
+  "botao-adaptado-grande": "device-acionador",
+  "sensor-de-sopro": "device-sopro",
+  "teclado-ampliado": "device-toque",
+  "base-visual-davi": "device-olhar",
+  "suporte-webcam-iluminacao": "device-olhar",
+  "joystick-acessivel": "device-acionador",
+  "pedal-adaptado": "device-acionador",
+  keyguard: "device-toque",
+  "acionador-capacitivo": "device-acionador",
+  "mouse-de-cabeca": "device-olhar",
+  "kit-entrada-multimodal": "device-kit",
+  "prancha-comunicacao": "device-comunicacao",
+  "suporte-tablet": "device-suporte",
+  "apoio-de-cabeca": "device-suporte",
+  "interface-de-varredura": "device-software",
+};
+
+export function getDeviceIllustration(device: AssistiveDevice): string {
+  return `/images/davi/${deviceIllustrations[device.slug] ?? "device-kit"}.svg`;
+}
+
 export const deviceStatuses: DeviceStatus[] = [
   "Projeto aberto",
   "Em desenvolvimento",

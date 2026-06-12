@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: sensor de sopro com tubo flexível">
+  <defs>
+    <linearGradient id="gs" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0fdf4"/>
+      <stop offset="1" stop-color="#dcfce7"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#gs)"/>
+  <circle cx="110" cy="80" r="44" fill="#bbf7d0" opacity="0.6"/>
+  <circle cx="560" cy="290" r="52" fill="#bfdbfe" opacity="0.5"/>
+  <!-- caixa do sensor -->
+  <ellipse cx="430" cy="268" rx="120" ry="18" fill="#1e293b" opacity="0.12"/>
+  <rect x="330" y="180" width="200" height="84" rx="18" fill="#15803d"/>
+  <rect x="330" y="180" width="200" height="38" rx="18" fill="#16a34a"/>
+  <circle cx="494" cy="222" r="13" fill="#4ade80"/>
+  <rect x="354" y="226" width="70" height="16" rx="8" fill="#dcfce7"/>
+  <!-- tubo flexível -->
+  <path d="M330 214 Q 240 200 196 158 Q 170 132 178 108" stroke="#94a3b8" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <!-- bocal -->
+  <rect x="160" y="78" width="38" height="34" rx="10" fill="#3b82f6" transform="rotate(-18 160 78)"/>
+  <!-- sopro -->
+  <path d="M128 76q-10 9 0 18M110 64q-16 16 0 36M94 54q-22 22 0 50" stroke="#60a5fa" stroke-width="6" fill="none" stroke-linecap="round"/>
+</svg>

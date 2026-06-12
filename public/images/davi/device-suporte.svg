@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: suporte articulado de posicionamento para tablet">
+  <defs>
+    <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#e2e8f0"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#gp)"/>
+  <circle cx="540" cy="80" r="46" fill="#bfdbfe" opacity="0.55"/>
+  <circle cx="100" cy="300" r="50" fill="#bbf7d0" opacity="0.5"/>
+  <ellipse cx="300" cy="304" rx="150" ry="18" fill="#1e293b" opacity="0.12"/>
+  <!-- base presa à mesa -->
+  <rect x="210" y="270" width="120" height="34" rx="10" fill="#334155"/>
+  <rect x="240" y="252" width="60" height="22" rx="8" fill="#475569"/>
+  <!-- braços articulados -->
+  <rect x="256" y="170" width="104" height="18" rx="9" fill="#475569" transform="rotate(-50 256 170)"/>
+  <rect x="300" y="120" width="120" height="18" rx="9" fill="#475569" transform="rotate(14 300 120)"/>
+  <circle cx="306" cy="138" r="15" fill="#1e293b"/>
+  <circle cx="268" cy="252" r="13" fill="#1e293b"/>
+  <!-- tablet -->
+  <g transform="rotate(-8 470 150)">
+    <rect x="380" y="92" width="180" height="126" rx="14" fill="#0f172a"/>
+    <rect x="392" y="104" width="156" height="102" rx="8" fill="#dbeafe"/>
+    <rect x="404" y="116" width="60" height="36" rx="6" fill="#3b82f6"/>
+    <rect x="474" y="116" width="60" height="36" rx="6" fill="#22c55e"/>
+    <rect x="404" y="160" width="60" height="36" rx="6" fill="#f59e0b"/>
+    <rect x="474" y="160" width="60" height="36" rx="6" fill="#ef4444"/>
+  </g>
+</svg>

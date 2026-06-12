@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: software assistivo de varredura em tela de computador">
+  <defs>
+    <linearGradient id="gw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eff6ff"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#gw)"/>
+  <circle cx="556" cy="80" r="46" fill="#bfdbfe" opacity="0.6"/>
+  <circle cx="90" cy="296" r="50" fill="#bbf7d0" opacity="0.5"/>
+  <!-- monitor -->
+  <ellipse cx="320" cy="306" rx="160" ry="14" fill="#1e293b" opacity="0.12"/>
+  <rect x="150" y="60" width="340" height="210" rx="16" fill="#0f172a"/>
+  <rect x="164" y="74" width="312" height="182" rx="8" fill="#f8fafc"/>
+  <rect x="284" y="270" width="72" height="22" fill="#334155"/>
+  <rect x="244" y="292" width="152" height="14" rx="7" fill="#475569"/>
+  <!-- interface de varredura -->
+  <rect x="180" y="90" width="280" height="34" rx="8" fill="#1d4ed8"/>
+  <rect x="190" y="98" width="120" height="18" rx="9" fill="#93c5fd"/>
+  <g>
+    <rect x="180" y="136" width="86" height="52" rx="8" fill="#e2e8f0"/>
+    <rect x="276" y="136" width="86" height="52" rx="8" fill="#22c55e" stroke="#15803d" stroke-width="5"/>
+    <rect x="372" y="136" width="86" height="52" rx="8" fill="#e2e8f0"/>
+    <rect x="180" y="196" width="86" height="52" rx="8" fill="#e2e8f0"/>
+    <rect x="276" y="196" width="86" height="52" rx="8" fill="#e2e8f0"/>
+    <rect x="372" y="196" width="86" height="52" rx="8" fill="#e2e8f0"/>
+  </g>
+  <!-- acionador conectado -->
+  <path d="M490 270 Q 540 250 540 210" stroke="#334155" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <ellipse cx="540" cy="196" rx="34" ry="14" fill="#dc2626"/>
+  <rect x="506" y="196" width="68" height="16" rx="8" fill="#b91c1c"/>
+</svg>

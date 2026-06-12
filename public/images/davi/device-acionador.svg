@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: acionador adaptado de grande área">
+  <defs>
+    <linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eff6ff"/>
+      <stop offset="1" stop-color="#dbeafe"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#ga)"/>
+  <circle cx="540" cy="70" r="40" fill="#bfdbfe" opacity="0.6"/>
+  <circle cx="90" cy="300" r="50" fill="#bbf7d0" opacity="0.5"/>
+  <ellipse cx="320" cy="282" rx="160" ry="24" fill="#1e293b" opacity="0.12"/>
+  <rect x="180" y="216" width="280" height="62" rx="20" fill="#b91c1c"/>
+  <ellipse cx="320" cy="216" rx="140" ry="46" fill="#dc2626"/>
+  <ellipse cx="320" cy="206" rx="110" ry="33" fill="#f87171"/>
+  <ellipse cx="294" cy="196" rx="44" ry="14" fill="#fca5a5"/>
+  <path d="M460 250 Q 520 258 548 226" stroke="#334155" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <circle cx="552" cy="222" r="10" fill="#334155"/>
+</svg>

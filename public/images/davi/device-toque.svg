@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Ilustração: teclado ampliado de alto contraste com keyguard">
+  <defs>
+    <linearGradient id="gt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffbeb"/>
+      <stop offset="1" stop-color="#fef3c7"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#gt)"/>
+  <circle cx="550" cy="80" r="44" fill="#fde68a" opacity="0.6"/>
+  <circle cx="90" cy="290" r="52" fill="#bfdbfe" opacity="0.5"/>
+  <ellipse cx="320" cy="290" rx="190" ry="20" fill="#1e293b" opacity="0.12"/>
+  <!-- teclado -->
+  <rect x="130" y="110" width="380" height="180" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="4"/>
+  <g fill="#1e293b">
+    <rect x="158" y="138" width="64" height="52" rx="10"/>
+    <rect x="234" y="138" width="64" height="52" rx="10"/>
+    <rect x="310" y="138" width="64" height="52" rx="10"/>
+    <rect x="158" y="204" width="64" height="52" rx="10"/>
+    <rect x="234" y="204" width="64" height="52" rx="10"/>
+    <rect x="310" y="204" width="64" height="52" rx="10"/>
+  </g>
+  <rect x="390" y="138" width="92" height="118" rx="10" fill="#15803d"/>
+  <g fill="#ffffff" font-family="Arial, sans-serif" font-weight="bold" text-anchor="middle">
+    <text x="190" y="172" font-size="34">A</text>
+    <text x="266" y="172" font-size="34">B</text>
+    <text x="342" y="172" font-size="34">C</text>
+    <text x="190" y="238" font-size="34">1</text>
+    <text x="266" y="238" font-size="34">2</text>
+    <text x="342" y="238" font-size="34">3</text>
+    <text x="436" y="204" font-size="26">OK</text>
+  </g>
+</svg>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { footerNav, institutionalNav, platformNav } from "../lib/navigation";
 import { mockUser, mockNotifications } from "../lib/userData";
+import { IconBell, IconContrast, IconMenu, IconMotion } from "./icons";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
@@ -51,9 +52,7 @@ export function SiteHeader() {
                 className={`flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-lg text-blue-800 hover:bg-blue-50 ${focusRing}`}
                 aria-label="Abrir menu de navegação"
               >
-                <span className="text-4xl leading-none" aria-hidden="true">
-                  ≡
-                </span>
+                <IconMenu className="h-7 w-7" />
               </summary>
               <div className="absolute left-0 top-14 z-50 max-h-[calc(100vh-7rem)] w-[min(92vw,460px)] overflow-y-auto rounded-lg border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/15">
                 <p className="text-sm font-black uppercase tracking-wide text-blue-800">
@@ -113,7 +112,7 @@ export function SiteHeader() {
                 highContrast ? "bg-green-700 text-white" : "hover:bg-blue-50"
               }`}
             >
-              ◐
+              <IconContrast className="h-5 w-5" />
             </button>
             <button
               type="button"
@@ -124,7 +123,7 @@ export function SiteHeader() {
                 reducedMotion ? "bg-green-700 text-white" : "hover:bg-blue-50"
               }`}
             >
-              ▦
+              <IconMotion className="h-5 w-5" />
             </button>
 
             <Link
@@ -132,7 +131,7 @@ export function SiteHeader() {
               aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ""}`}
               className={`relative rounded-lg px-2 py-2 hover:bg-blue-50 ${focusRing}`}
             >
-              <span aria-hidden="true">🔔</span>
+              <IconBell className="h-5 w-5" />
               {unreadCount > 0 && (
                 <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white">
                   {unreadCount}
@@ -200,9 +199,25 @@ export function SiteFooter() {
   );
 }
 
+export function UnderConstructionBanner() {
+  return (
+    <div
+      role="status"
+      className="border-b border-amber-300 bg-amber-100 px-6 py-2.5 text-center"
+    >
+      <p className="mx-auto max-w-7xl text-sm font-bold leading-6 text-amber-950">
+        <span aria-hidden="true">🚧 </span>
+        Site em construção — as páginas mostram como a plataforma ficará quando
+        estiver pronta. Alguns recursos ainda estão em desenvolvimento.
+      </p>
+    </div>
+  );
+}
+
 export function PageShell({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen bg-white text-zinc-950">
+      <UnderConstructionBanner />
       <SiteHeader />
       <div id="conteudo">{children}</div>
       <SiteFooter />
@@ -404,6 +419,35 @@ export function MediaPlaceholder({
       <figcaption className="max-w-xs text-sm font-bold leading-6">
         {label}
       </figcaption>
+    </figure>
+  );
+}
+
+/**
+ * Ilustração vetorial do site (arquivos SVG em /public/images/davi).
+ * Substitui o MediaPlaceholder nas páginas já ilustradas; quando houver
+ * foto real autorizada, basta trocar o arquivo mantendo o mesmo nome.
+ */
+export function Illustration({
+  name,
+  alt,
+  className = "",
+}: {
+  name: string;
+  alt: string;
+  className?: string;
+}) {
+  return (
+    <figure
+      className={`overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm ${className}`}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element -- SVG vetorial local; otimização do next/image não se aplica */}
+      <img
+        src={`/images/davi/${name}.svg`}
+        alt={alt}
+        loading="lazy"
+        className="h-full w-full object-cover"
+      />
     </figure>
   );
 }
