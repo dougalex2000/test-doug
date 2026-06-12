@@ -1,203 +1,281 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PageHero, PageShell } from "../../components/SiteShell";
+import Link from "next/link";
+import * as THREE from "three";
 
-// ─── Tipos mínimos para Web Bluetooth (não incluídos no lib.dom desta config) ─
+// ─── Tipos mínimos Web Bluetooth ──────────────────────────────────────────────
 interface BLECharacteristic extends EventTarget {
   value?: DataView;
   startNotifications(): Promise<BLECharacteristic>;
 }
-
 interface BLEService {
   getCharacteristic(uuid: string): Promise<BLECharacteristic>;
 }
-
 interface BLEGATTServer {
   connected: boolean;
   connect(): Promise<BLEGATTServer>;
   getPrimaryService(uuid: string): Promise<BLEService>;
   disconnect(): void;
 }
-
 interface BLEDevice extends EventTarget {
   name?: string;
   gatt?: BLEGATTServer;
 }
-
 interface BluetoothAPI {
   requestDevice(options: {
     filters: Array<{ name?: string }>;
     optionalServices?: string[];
   }): Promise<BLEDevice>;
 }
-
 declare global {
   interface Navigator {
     bluetooth?: BluetoothAPI;
   }
 }
 
-// ─── BLE UUIDs do dispositivo GAIA ────────────────────────────────────────────
+// ─── BLE UUIDs ────────────────────────────────────────────────────────────────
 const SERVICE_UUID = "19b10000-e8f2-537e-4f6c-d104768a1214";
-const SENSOR_UUID = "19b10001-e8f2-537e-4f6c-d104768a1214";
-const CO2_UUID = "19b10003-e8f2-537e-4f6c-d104768a1214";
-const ACCESSPAD_UUID = "19b10004-e8f2-537e-4f6c-d104768a1214";
+const SENSOR_UUID  = "19b10001-e8f2-537e-4f6c-d104768a1214";
+const CO2_UUID     = "19b10003-e8f2-537e-4f6c-d104768a1214";
 
-// ─── Tipos ────────────────────────────────────────────────────────────────────
-type ConnectionStatus = "idle" | "scanning" | "connected" | "error" | "cancelled";
+const DEVICE_NAME  = "DAVI_GAIA_ACCESSPAD";
 
-type OrientationData = {
-  roll?: number;
-  pitch?: number;
-  yaw?: number;
-  quat_w?: number;
-  quat_x?: number;
-  quat_y?: number;
-  quat_z?: number;
+// Textura da Terra (Three.js examples — CORS aberto)
+const EARTH_TEXTURE_URL =
+  "https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg";
+
+// ─── Tipos de domínio ─────────────────────────────────────────────────────────
+type Status = "idle" | "scanning" | "connected" | "error" | "cancelled";
+
+type SensorData = {
+  pitch: number;
+  roll:  number;
+  yaw:   number;
+  quat_w: number;
+  quat_x: number;
+  quat_y: number;
+  quat_z: number;
+  acc_x: number;
+  acc_y: number;
+  acc_z: number;
 };
 
-type CommandData = {
-  tipo?: string;
-  valor?: string;
-  comando?: string;
-};
+type QuatRef = Pick<SensorData, "quat_w" | "quat_x" | "quat_y" | "quat_z">;
 
-type LogEntry = {
-  id: number;
-  time: string;
-  source: "Sistema" | "Sensor" | "CO2" | "Accesspad";
-  text: string;
-};
+// ─── Globo 3D ─────────────────────────────────────────────────────────────────
+function GlobeCanvas({ quatRef }: { quatRef: React.RefObject<QuatRef | null> }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const globeMeshRef = useRef<THREE.Mesh | null>(null);
+  const rafRef       = useRef<number>(0);
 
-// ─── Constantes de UI ─────────────────────────────────────────────────────────
-const focusRing =
-  "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
-
-const STATUS_CONFIG: Record<
-  ConnectionStatus,
-  { label: string; color: string; dot: string }
-> = {
-  idle: {
-    label: "Desconectado",
-    color: "text-zinc-600",
-    dot: "bg-zinc-400",
-  },
-  scanning: {
-    label: "Procurando dispositivo…",
-    color: "text-blue-700",
-    dot: "bg-blue-500 animate-pulse",
-  },
-  connected: {
-    label: "Conectado",
-    color: "text-green-700",
-    dot: "bg-green-500",
-  },
-  error: {
-    label: "Erro na conexão",
-    color: "text-red-700",
-    dot: "bg-red-500",
-  },
-  cancelled: {
-    label: "Pareamento cancelado",
-    color: "text-amber-700",
-    dot: "bg-amber-500",
-  },
-};
-
-const LOG_SOURCE_COLOR: Record<LogEntry["source"], string> = {
-  Sistema: "text-blue-400",
-  Sensor: "text-green-400",
-  CO2: "text-red-400",
-  Accesspad: "text-amber-400",
-};
-
-const CO2_ALERT_THRESHOLD = 2000;
-const MAX_LOG_ENTRIES = 100;
-
-// ─── Componente ───────────────────────────────────────────────────────────────
-export default function PareamentoPage() {
-  const [status, setStatus] = useState<ConnectionStatus>("idle");
-  const [deviceName, setDeviceName] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-  const [orientation, setOrientation] = useState<OrientationData>({});
-  const [co2, setCo2] = useState<number | null>(null);
-  const [command, setCommand] = useState<CommandData>({});
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [bluetoothSupported, setBluetoothSupported] = useState<boolean | null>(null);
-
-  const deviceRef = useRef<BLEDevice | null>(null);
-  const logIdRef = useRef(0);
-  const decoder = useRef(new TextDecoder());
-
-  // Verifica suporte a Web Bluetooth após hydration
   useEffect(() => {
-    setBluetoothSupported("bluetooth" in navigator);
-  }, []);
+    const el = containerRef.current;
+    if (!el) return;
 
-  // Desconecta ao desmontar o componente
-  useEffect(() => {
+    // Cena
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(40, el.clientWidth / el.clientHeight, 0.1, 500);
+    camera.position.z = 2.8;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(el.clientWidth, el.clientHeight);
+    el.appendChild(renderer.domElement);
+
+    // Luzes
+    scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.4);
+    sun.position.set(5, 3, 5);
+    scene.add(sun);
+
+    // Terra
+    const texture = new THREE.TextureLoader().load(
+      EARTH_TEXTURE_URL,
+      undefined,
+      undefined,
+      () => { /* fallback: mantém a cor padrão */ }
+    );
+    const globe = new THREE.Mesh(
+      new THREE.SphereGeometry(1, 64, 64),
+      new THREE.MeshPhongMaterial({
+        map: texture,
+        color: 0x2266aa,      // azul como fallback enquanto textura carrega
+        specular: new THREE.Color(0x222222),
+        shininess: 15,
+      })
+    );
+    scene.add(globe);
+    globeMeshRef.current = globe;
+
+    // Atmosfera
+    scene.add(
+      new THREE.Mesh(
+        new THREE.SphereGeometry(1.018, 64, 64),
+        new THREE.MeshPhongMaterial({
+          color: 0x2255cc,
+          transparent: true,
+          opacity: 0.07,
+          side: THREE.FrontSide,
+        })
+      )
+    );
+
+    // Estrelas
+    const positions: number[] = [];
+    for (let i = 0; i < 2500; i++) {
+      positions.push(
+        (Math.random() - 0.5) * 300,
+        (Math.random() - 0.5) * 300,
+        (Math.random() - 0.5) * 300
+      );
+    }
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.15 })));
+
+    // Grade no chão
+    const grid = new THREE.GridHelper(16, 28, 0x112244, 0x0d1a30);
+    grid.position.y = -1.9;
+    scene.add(grid);
+
+    // Loop de animação — aplica quaternion vindo do ref a cada frame
+    function tick() {
+      rafRef.current = requestAnimationFrame(tick);
+
+      const q = quatRef.current;
+      if (q && globeMeshRef.current) {
+        globeMeshRef.current.setRotationFromQuaternion(
+          new THREE.Quaternion(q.quat_x, q.quat_y, q.quat_z, q.quat_w)
+        );
+      }
+
+      renderer.render(scene, camera);
+    }
+    tick();
+
+    // Resize
+    function onResize() {
+      if (!containerRef.current) return;
+      camera.aspect = containerRef.current.clientWidth / containerRef.current.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(containerRef.current.clientWidth, containerRef.current.clientHeight);
+    }
+    window.addEventListener("resize", onResize);
+
     return () => {
-      deviceRef.current?.gatt?.disconnect();
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", onResize);
+      renderer.dispose();
+      el.removeChild(renderer.domElement);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const addLog = useCallback(
-    (source: LogEntry["source"], text: string) => {
-      logIdRef.current += 1;
-      const entry: LogEntry = {
-        id: logIdRef.current,
-        time: new Date().toLocaleTimeString("pt-BR"),
-        source,
-        text,
-      };
-      setLogs((prev) => [entry, ...prev].slice(0, MAX_LOG_ENTRIES));
-    },
-    []
+  return <div ref={containerRef} className="h-full w-full" />;
+}
+
+// ─── Helper: linha de leitura ─────────────────────────────────────────────────
+function Row({
+  label,
+  value,
+  unit = "",
+  color,
+  decimals = 2,
+}: {
+  label: string;
+  value?: number;
+  unit?: string;
+  color: string;
+  decimals?: number;
+}) {
+  return (
+    <div className="flex items-center justify-between rounded px-2 py-1 hover:bg-white/5">
+      <span className="text-xs text-zinc-500">{label}</span>
+      <span className={`text-sm font-black tabular-nums ${color}`}>
+        {value !== undefined ? `${value.toFixed(decimals)}${unit}` : "—"}
+      </span>
+    </div>
   );
+}
 
-  // Interpreta payload JSON recebido por BLE
-  const processData = useCallback(
-    (raw: string, source: LogEntry["source"]) => {
-      addLog(source, raw);
+// ─── Página principal ─────────────────────────────────────────────────────────
+export default function PareamentoPage() {
+  const [status,     setStatus]    = useState<Status>("idle");
+  const [devName,    setDevName]   = useState("");
+  const [errorMsg,   setErrorMsg]  = useState("");
+  const [sensor,     setSensor]    = useState<SensorData | null>(null);
+  const [co2,        setCo2]       = useState(600);
+  const [keyLast,    setKeyLast]   = useState("—");
+  const [keyHistory, setKeyHistory] = useState("");
+  const [logs,       setLogs]      = useState<string[]>([]);
+
+  // Ref de quaternion lido pelo loop Three.js a cada frame
+  const quatRef  = useRef<QuatRef | null>(null);
+  const deviceRef = useRef<BLEDevice | null>(null);
+  const decoder  = useRef(new TextDecoder());
+
+  // Cleanup ao desmontar
+  useEffect(() => () => { deviceRef.current?.gatt?.disconnect(); }, []);
+
+  const addLog = useCallback((msg: string) => {
+    const t = new Date().toLocaleTimeString("pt-BR");
+    setLogs((p) => [`[${t}] ${msg}`, ...p].slice(0, 100));
+  }, []);
+
+  // Interpreta o payload JSON recebido pelo BLE
+  const processPayload = useCallback(
+    (raw: string, src: string) => {
+      addLog(`${src}: ${raw.slice(0, 90)}${raw.length > 90 ? "…" : ""}`);
+
       try {
-        const data = JSON.parse(raw) as Record<string, unknown>;
+        const d = JSON.parse(raw) as Record<string, unknown>;
 
-        if (data.euler && typeof data.euler === "object") {
-          const e = data.euler as Record<string, number>;
-          setOrientation((prev) => ({
-            ...prev,
-            roll: e.roll,
-            pitch: e.pitch,
-            yaw: e.yaw,
-          }));
-        }
+        // Euler
+        const e = d.euler as Record<string, number> | undefined;
+        // Quaternion
+        const q = d.quat  as Record<string, number> | undefined;
+        // Acelerômetro
+        const a = d.acc   as Record<string, number> | undefined;
 
-        if (data.quat && typeof data.quat === "object") {
-          const q = data.quat as Record<string, number>;
-          setOrientation((prev) => ({
-            ...prev,
-            quat_w: q.quat_w,
-            quat_x: q.quat_x,
-            quat_y: q.quat_y,
-            quat_z: q.quat_z,
-          }));
-        }
-
-        if (data.co2 && typeof data.co2 === "object") {
-          const c = data.co2 as Record<string, number>;
-          if (typeof c.ppm === "number") setCo2(c.ppm);
-        }
-
-        if (data.tipo !== undefined || data.valor !== undefined || data.comando !== undefined) {
-          setCommand({
-            tipo: typeof data.tipo === "string" ? data.tipo : undefined,
-            valor: typeof data.valor === "string" ? data.valor : undefined,
-            comando: typeof data.comando === "string" ? data.comando : undefined,
+        if (e || q || a) {
+          setSensor((prev) => {
+            const base: SensorData = prev ?? {
+              pitch: 0, roll: 0, yaw: 0,
+              quat_w: 1, quat_x: 0, quat_y: 0, quat_z: 0,
+              acc_x: 0, acc_y: 0, acc_z: 0,
+            };
+            const next: SensorData = {
+              ...base,
+              ...(e ? { pitch: e.pitch ?? base.pitch, roll: e.roll ?? base.roll, yaw: e.yaw ?? base.yaw } : {}),
+              ...(q ? { quat_w: q.quat_w ?? base.quat_w, quat_x: q.quat_x ?? base.quat_x,
+                        quat_y: q.quat_y ?? base.quat_y, quat_z: q.quat_z ?? base.quat_z } : {}),
+              ...(a ? { acc_x: a.x ?? base.acc_x, acc_y: a.y ?? base.acc_y, acc_z: a.z ?? base.acc_z } : {}),
+            };
+            // Atualiza ref para o loop Three.js sem re-render extra
+            quatRef.current = {
+              quat_w: next.quat_w, quat_x: next.quat_x,
+              quat_y: next.quat_y, quat_z: next.quat_z,
+            };
+            return next;
           });
         }
+
+        // Teclado
+        const k = d.keypad as Record<string, string> | undefined;
+        if (k) {
+          if (k.ultima) setKeyLast(k.ultima);
+          if (k.digitadas !== undefined) setKeyHistory(k.digitadas.trim());
+        }
+
+        // CO2 no payload do sensor
+        if (typeof d.co2_ppm === "number") setCo2(d.co2_ppm);
+
+        // CO2 vindo da característica própria
+        const co2Obj = d.co2 as Record<string, number> | undefined;
+        if (co2Obj && typeof co2Obj.ppm === "number") setCo2(co2Obj.ppm);
       } catch {
-        // JSON inválido — payload bruto já foi registrado no log
+        // JSON inválido — raw já registrado no log
       }
     },
     [addLog]
@@ -205,439 +283,264 @@ export default function PareamentoPage() {
 
   const handleDisconnect = useCallback(() => {
     setStatus("idle");
-    setDeviceName("");
+    setDevName("");
     deviceRef.current = null;
-    addLog("Sistema", "Dispositivo desconectado.");
+    addLog("Dispositivo desconectado.");
   }, [addLog]);
 
   async function connect() {
     if (!navigator.bluetooth) {
       setStatus("error");
-      setErrorMsg(
-        "Web Bluetooth não está disponível. Use Google Chrome ou Microsoft Edge."
-      );
+      setErrorMsg("Web Bluetooth indisponível. Use Chrome ou Edge.");
       return;
     }
-
     setStatus("scanning");
     setErrorMsg("");
 
     try {
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ name: "GAIA_KEYPAD" }, { name: "GAIA_ACCESSPAD" }],
+        filters: [{ name: DEVICE_NAME }],
         optionalServices: [SERVICE_UUID],
       });
 
       deviceRef.current = device;
       device.addEventListener("gattserverdisconnected", handleDisconnect);
 
-      const name = device.name ?? "Dispositivo desconhecido";
-      setDeviceName(name);
-      addLog("Sistema", `Conectando a "${name}"…`);
+      const name = device.name ?? "Dispositivo";
+      setDevName(name);
+      addLog(`Conectando a "${name}"…`);
 
       if (!device.gatt) throw new Error("GATT não disponível neste dispositivo.");
-      const server = await device.gatt.connect();
+      const server  = await device.gatt.connect();
       const service = await server.getPrimaryService(SERVICE_UUID);
 
-      // Tenta assinar notificações em cada característica individualmente
-      const characteristics: Array<{
-        uuid: string;
-        source: LogEntry["source"];
-      }> = [
-        { uuid: SENSOR_UUID, source: "Sensor" },
-        { uuid: CO2_UUID, source: "CO2" },
-        { uuid: ACCESSPAD_UUID, source: "Accesspad" },
-      ];
-
-      for (const { uuid, source } of characteristics) {
+      for (const { uuid, src } of [
+        { uuid: SENSOR_UUID, src: "Sensor" },
+        { uuid: CO2_UUID,    src: "CO2"    },
+      ]) {
         try {
           const char = await service.getCharacteristic(uuid);
           await char.startNotifications();
           char.addEventListener("characteristicvaluechanged", (e: Event) => {
-            const target = e.target as BLECharacteristic;
-            if (!target.value) return;
-            const raw = decoder.current.decode(target.value);
-            processData(raw, source);
+            const t = e.target as BLECharacteristic;
+            if (!t.value) return;
+            processPayload(decoder.current.decode(t.value), src);
           });
-          addLog("Sistema", `Notificações ativas: ${source}`);
+          addLog(`Notificações ativas: ${src}`);
         } catch {
-          addLog("Sistema", `Característica ${source} não disponível — ignorando.`);
+          addLog(`Característica ${src} indisponível — ignorada.`);
         }
       }
 
       setStatus("connected");
-      addLog("Sistema", `Conectado a "${name}" com sucesso.`);
+      addLog(`Conectado a "${name}" com sucesso.`);
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "NotFoundError") {
         setStatus("cancelled");
-        addLog("Sistema", "Pareamento cancelado pelo usuário.");
+        addLog("Pareamento cancelado pelo usuário.");
       } else {
-        const msg =
-          err instanceof Error ? err.message : "Erro desconhecido ao conectar.";
+        const msg = err instanceof Error ? err.message : "Erro desconhecido.";
         setStatus("error");
         setErrorMsg(msg);
-        addLog("Sistema", `Erro: ${msg}`);
+        addLog(`Erro: ${msg}`);
       }
     }
   }
 
   function disconnect() {
-    addLog("Sistema", "Desconectando…");
-    if (deviceRef.current?.gatt?.connected) {
-      deviceRef.current.gatt.disconnect();
-    } else {
-      handleDisconnect();
-    }
+    addLog("Desconectando…");
+    deviceRef.current?.gatt?.connected
+      ? deviceRef.current.gatt.disconnect()
+      : handleDisconnect();
   }
 
   const isConnected = status === "connected";
-  const isScanning = status === "scanning";
-  const co2Alert = co2 !== null && co2 >= CO2_ALERT_THRESHOLD;
+  const isScanning  = status === "scanning";
+  const co2Alert    = co2 >= 2000;
 
+  const ring =
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#060b14]";
+
+  // ── Render ──
   return (
-    <PageShell>
-      <PageHero
-        eyebrow="Dispositivos assistivos · Pareamento Bluetooth"
-        title="Dispositivo Assistivo DAVI"
-        description="Conecte o teclado acessível Bluetooth para testar comandos, orientação e CO₂ em tempo real."
-      />
+    <div className="flex h-screen flex-col overflow-hidden bg-[#060b14] text-white">
 
-      {/* Aviso de navegador sem suporte */}
-      {bluetoothSupported === false && (
-        <div
-          role="alert"
-          className="border-b border-amber-200 bg-amber-50 px-6 py-4"
+      {/* ── Barra superior ── */}
+      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-white/10 px-5 py-3">
+        <Link
+          href="/dispositivos"
+          className={`shrink-0 text-sm font-bold text-zinc-500 hover:text-white ${ring}`}
         >
-          <div className="mx-auto flex max-w-7xl items-center gap-3">
-            <span className="shrink-0 text-xl" aria-hidden="true">
-              ⚠
-            </span>
-            <p className="text-sm font-bold text-amber-900">
-              Web Bluetooth não está disponível neste navegador.{" "}
-              <span className="font-normal">
-                Recomendamos usar o Google Chrome ou Microsoft Edge no
-                computador.
-              </span>
-            </p>
-          </div>
-        </div>
-      )}
+          ← Dispositivos
+        </Link>
 
-      <div className="mx-auto max-w-7xl px-6 py-10">
-        {/* Linha 1: Conexão + Comandos */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Card de conexão */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-black text-zinc-950">
-              Conexão Bluetooth
-            </h2>
-
-            {/* Status */}
-            <div className="mb-5 flex items-center gap-3">
-              <span
-                className={`h-3 w-3 shrink-0 rounded-full ${STATUS_CONFIG[status].dot}`}
-              />
-              <span className={`font-bold ${STATUS_CONFIG[status].color}`}>
-                {STATUS_CONFIG[status].label}
-              </span>
-            </div>
-
-            {/* Nome do dispositivo */}
-            {deviceName && (
-              <div className="mb-4 rounded-lg bg-blue-50 px-4 py-3">
-                <p className="text-xs font-black uppercase tracking-wide text-blue-700">
-                  Dispositivo conectado
-                </p>
-                <p className="mt-0.5 font-bold text-zinc-950">{deviceName}</p>
-              </div>
-            )}
-
-            {/* Mensagem de erro */}
-            {errorMsg && (
-              <div
-                role="alert"
-                className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3"
-              >
-                <p className="text-sm font-bold text-red-800">{errorMsg}</p>
-              </div>
-            )}
-
-            {/* Botões */}
-            <div className="flex flex-wrap gap-3">
-              {!isConnected && (
-                <button
-                  type="button"
-                  onClick={connect}
-                  disabled={isScanning}
-                  className={`rounded-xl bg-blue-700 px-6 py-3 text-base font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50 ${focusRing}`}
-                >
-                  {isScanning ? "Procurando…" : "Conectar dispositivo"}
-                </button>
-              )}
-              {isConnected && (
-                <button
-                  type="button"
-                  onClick={disconnect}
-                  className={`rounded-xl border border-red-200 bg-red-50 px-6 py-3 text-base font-black text-red-700 hover:bg-red-100 ${focusRing}`}
-                >
-                  Desconectar
-                </button>
-              )}
-            </div>
-
-            {/* Dispositivos aceitos */}
-            <div className="mt-5 rounded-lg border border-zinc-100 bg-zinc-50 p-4">
-              <p className="text-xs font-bold text-zinc-500">
-                Dispositivos reconhecidos
-              </p>
-              <p className="mt-1 font-mono text-sm text-zinc-700">
-                GAIA_KEYPAD · GAIA_ACCESSPAD
-              </p>
-            </div>
-          </div>
-
-          {/* Card de comandos */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-black text-zinc-950">
-              Último Comando
-            </h2>
-            <div className="space-y-3">
-              {(
-                [
-                  { label: "Tipo", value: command.tipo },
-                  { label: "Valor", value: command.valor },
-                  { label: "Comando", value: command.comando },
-                ] as const
-              ).map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-lg border border-zinc-100 bg-zinc-50 p-4"
-                >
-                  <p className="text-xs font-black uppercase tracking-wide text-zinc-400">
-                    {item.label}
-                  </p>
-                  <p
-                    className={`mt-1 text-2xl font-black ${
-                      item.value ? "text-blue-800" : "text-zinc-300"
-                    }`}
-                  >
-                    {item.value ?? "—"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="min-w-0 text-center">
+          <h1 className="truncate text-sm font-black tracking-tight sm:text-base">
+            DAVI · Visualizador 3D do Dispositivo Assistivo
+          </h1>
+          <p className="truncate text-xs text-zinc-600">
+            MPU6050 + Teclado 4×4 · BLE · {DEVICE_NAME}
+          </p>
         </div>
 
-        {/* Linha 2: Orientação + CO2 */}
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {/* Card de orientação */}
-          <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-black text-zinc-950">
-              Orientação
-            </h2>
-
-            {/* Euler */}
-            <div className="mb-5 grid grid-cols-3 gap-3">
-              {(
-                [
-                  { label: "Roll", key: "roll" },
-                  { label: "Pitch", key: "pitch" },
-                  { label: "Yaw", key: "yaw" },
-                ] as const
-              ).map(({ label, key }) => (
-                <div
-                  key={key}
-                  className="rounded-lg border border-zinc-100 bg-zinc-50 p-3 text-center"
-                >
-                  <p className="text-xs font-black uppercase tracking-wide text-zinc-400">
-                    {label}
-                  </p>
-                  <p
-                    className={`mt-1 text-xl font-black tabular-nums ${
-                      orientation[key] !== undefined
-                        ? "text-blue-800"
-                        : "text-zinc-300"
-                    }`}
-                  >
-                    {orientation[key] !== undefined
-                      ? (orientation[key] as number).toFixed(1)
-                      : "—"}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Quaternion */}
-            <p className="mb-2 text-xs font-black uppercase tracking-wide text-zinc-400">
-              Quaternion
-            </p>
-            <div className="grid grid-cols-4 gap-2">
-              {(
-                [
-                  { label: "W", key: "quat_w" },
-                  { label: "X", key: "quat_x" },
-                  { label: "Y", key: "quat_y" },
-                  { label: "Z", key: "quat_z" },
-                ] as const
-              ).map(({ label, key }) => (
-                <div
-                  key={key}
-                  className="rounded-lg border border-zinc-100 bg-zinc-50 p-2 text-center"
-                >
-                  <p className="text-[10px] font-black uppercase tracking-wide text-zinc-400">
-                    {label}
-                  </p>
-                  <p
-                    className={`mt-1 text-sm font-black tabular-nums ${
-                      orientation[key] !== undefined
-                        ? "text-zinc-800"
-                        : "text-zinc-300"
-                    }`}
-                  >
-                    {orientation[key] !== undefined
-                      ? (orientation[key] as number).toFixed(2)
-                      : "—"}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Card de CO2 */}
-          <div
-            className={`rounded-xl border p-6 shadow-sm transition-colors ${
-              co2Alert
-                ? "border-red-300 bg-red-50"
-                : "border-zinc-200 bg-white"
+        {/* Status pill */}
+        <div className="flex shrink-0 items-center gap-2">
+          <span
+            className={`h-2.5 w-2.5 rounded-full ${
+              isConnected     ? "bg-green-500" :
+              isScanning      ? "animate-pulse bg-blue-500" :
+              status === "error" ? "bg-red-500" : "bg-zinc-600"
             }`}
-          >
-            <h2 className="mb-2 text-lg font-black text-zinc-950">CO₂</h2>
+          />
+          <span className="hidden text-xs font-bold text-zinc-400 sm:block">
+            {isConnected        ? devName || "Conectado" :
+             isScanning         ? "Procurando…" :
+             status === "error" ? "Erro" :
+             status === "cancelled" ? "Cancelado" : "Desconectado"}
+          </span>
+        </div>
+      </header>
 
-            <div className="flex flex-col items-center justify-center py-8">
-              <p
-                className={`text-7xl font-black tabular-nums leading-none ${
-                  co2Alert
-                    ? "text-red-700"
-                    : co2 !== null
-                    ? "text-green-700"
-                    : "text-zinc-300"
-                }`}
-              >
-                {co2 !== null ? co2.toLocaleString("pt-BR") : "—"}
-              </p>
-              <p className="mt-2 text-sm font-bold text-zinc-500">ppm</p>
+      {/* ── Conteúdo principal ── */}
+      <div className="flex min-h-0 flex-1">
 
-              {co2Alert && (
-                <div
-                  role="alert"
-                  className="mt-5 flex items-center gap-2 rounded-full border border-red-300 bg-red-100 px-5 py-2"
-                >
-                  <span aria-hidden="true">⚠</span>
-                  <span className="text-sm font-black text-red-800">
-                    Evento de CO₂ detectado!
-                  </span>
-                </div>
-              )}
-
-              {co2 !== null && !co2Alert && (
-                <div className="mt-5 flex items-center gap-2 rounded-full border border-green-300 bg-green-100 px-5 py-2">
-                  <span aria-hidden="true" className="text-green-700">
-                    ✓
-                  </span>
-                  <span className="text-sm font-black text-green-800">
-                    Nível normal
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
+        {/* Globo */}
+        <div className="min-h-0 flex-1">
+          <GlobeCanvas quatRef={quatRef} />
         </div>
 
-        {/* Log de eventos */}
-        <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-black text-zinc-950">
-              Log de Eventos
-              {logs.length > 0 && (
-                <span className="ml-2 text-sm font-normal text-zinc-500">
-                  ({logs.length})
-                </span>
-              )}
-            </h2>
-            {logs.length > 0 && (
+        {/* Painel de leituras */}
+        <aside className="flex w-60 shrink-0 flex-col gap-5 overflow-y-auto border-l border-white/10 bg-[#0a1120] p-4">
+
+          {/* Conexão */}
+          <div className="space-y-2">
+            {!isConnected ? (
               <button
                 type="button"
-                onClick={() => setLogs([])}
-                className={`rounded-lg border border-zinc-200 px-4 py-2 text-sm font-bold text-zinc-600 hover:bg-zinc-50 ${focusRing}`}
+                onClick={connect}
+                disabled={isScanning}
+                className={`w-full rounded-xl bg-blue-700 py-3 text-sm font-black text-white hover:bg-blue-600 disabled:opacity-50 ${ring}`}
               >
-                Limpar log
+                {isScanning ? "Procurando…" : "Conectar"}
               </button>
+            ) : (
+              <button
+                type="button"
+                onClick={disconnect}
+                className={`w-full rounded-xl border border-red-900 bg-red-950 py-3 text-sm font-black text-red-400 hover:bg-red-900 ${ring}`}
+              >
+                Desconectar
+              </button>
+            )}
+            {errorMsg && (
+              <p className="rounded-lg bg-red-950/50 px-3 py-2 text-xs text-red-400">
+                {errorMsg}
+              </p>
             )}
           </div>
 
-          {logs.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-zinc-200 py-10 text-center">
-              <p className="text-sm text-zinc-400">
-                Nenhum evento registrado ainda.
+          {/* Orientação (Euler) */}
+          <section>
+            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+              Orientação
+            </h2>
+            <Row label="Pitch (X)" value={sensor?.pitch} unit="°" color="text-rose-400" />
+            <Row label="Roll (Z)"  value={sensor?.roll}  unit="°" color="text-amber-400" />
+            <Row label="Yaw (Y)"   value={sensor?.yaw}   unit="°" color="text-emerald-400" />
+          </section>
+
+          {/* Acelerômetro */}
+          <section>
+            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+              Acelerômetro
+            </h2>
+            <Row label="Accel X" value={sensor?.acc_x} unit=" m/s²" color="text-sky-300" />
+            <Row label="Accel Y" value={sensor?.acc_y} unit=" m/s²" color="text-sky-300" />
+            <Row label="Accel Z" value={sensor?.acc_z} unit=" m/s²" color="text-sky-300" />
+          </section>
+
+          {/* Quaternion */}
+          <section>
+            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+              Quaternion
+            </h2>
+            <Row label="W" value={sensor?.quat_w} decimals={3} color="text-violet-400" />
+            <Row label="X" value={sensor?.quat_x} decimals={3} color="text-violet-400" />
+            <Row label="Y" value={sensor?.quat_y} decimals={3} color="text-violet-400" />
+            <Row label="Z" value={sensor?.quat_z} decimals={3} color="text-violet-400" />
+          </section>
+
+          {/* CO2 */}
+          <section>
+            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+              CO₂
+            </h2>
+            <div
+              className={`rounded-xl p-3 text-center transition-colors ${
+                co2Alert ? "bg-red-950/70" : "bg-white/5"
+              }`}
+            >
+              <p
+                className={`text-4xl font-black tabular-nums leading-none ${
+                  co2Alert ? "text-red-400" : "text-green-400"
+                }`}
+              >
+                {co2.toLocaleString("pt-BR")}
               </p>
-              <p className="mt-1 text-xs text-zinc-300">
-                Conecte um dispositivo para ver os dados em tempo real.
-              </p>
+              <p className="mt-1 text-xs text-zinc-600">ppm</p>
+              {co2Alert && (
+                <p className="mt-2 text-xs font-black text-red-400">⚠ Evento detectado!</p>
+              )}
             </div>
-          ) : (
+          </section>
+
+          {/* Log */}
+          <section className="flex-1">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="text-[10px] font-black uppercase tracking-widest text-zinc-600">
+                Log BLE
+              </h2>
+              {logs.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setLogs([])}
+                  className={`text-[10px] font-bold text-zinc-600 hover:text-zinc-400 ${ring}`}
+                >
+                  Limpar
+                </button>
+              )}
+            </div>
             <div
               aria-live="polite"
-              aria-label="Log de eventos BLE"
-              className="max-h-80 overflow-y-auto rounded-lg bg-zinc-950 p-4 font-mono text-xs"
+              className="h-32 overflow-y-auto rounded-lg bg-black/40 p-2 font-mono text-[10px] leading-4 text-zinc-500"
             >
-              {logs.map((entry) => (
-                <div key={entry.id} className="mb-1 flex gap-3">
-                  <span className="shrink-0 text-zinc-500">{entry.time}</span>
-                  <span
-                    className={`shrink-0 font-bold ${LOG_SOURCE_COLOR[entry.source]}`}
-                  >
-                    [{entry.source}]
-                  </span>
-                  <span className="break-all text-zinc-300">{entry.text}</span>
-                </div>
-              ))}
+              {logs.length === 0 ? (
+                <span className="text-zinc-700">Aguardando dados…</span>
+              ) : (
+                logs.map((l, i) => <p key={i}>{l}</p>)
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Referência de mapeamento de teclas */}
-        <details className="mt-6 rounded-xl border border-zinc-200 bg-white shadow-sm">
-          <summary
-            className={`cursor-pointer px-6 py-4 text-sm font-black text-zinc-700 hover:bg-zinc-50 ${focusRing}`}
-          >
-            Referência: mapeamento de teclas do dispositivo
-          </summary>
-          <div className="border-t border-zinc-100 px-6 py-4">
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { key: "2", action: "Cima / pitch positivo" },
-                { key: "8", action: "Baixo / pitch negativo" },
-                { key: "4", action: "Esquerda / yaw negativo" },
-                { key: "6 / 3", action: "Direita / yaw positivo" },
-                { key: "5", action: "Centralizar" },
-                { key: "D", action: "CO₂ → 2100 ppm" },
-                { key: "0", action: "CO₂ → 600 ppm" },
-              ].map(({ key, action }) => (
-                <div
-                  key={key}
-                  className="flex items-center gap-3 rounded-lg border border-zinc-100 bg-zinc-50 p-3"
-                >
-                  <kbd className="flex h-8 w-10 shrink-0 items-center justify-center rounded-md border border-zinc-300 bg-white font-mono text-sm font-black text-zinc-800">
-                    {key}
-                  </kbd>
-                  <span className="text-sm text-zinc-600">{action}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </details>
+          </section>
+        </aside>
       </div>
-    </PageShell>
+
+      {/* ── Barra de teclas ── */}
+      <footer className="shrink-0 border-t border-white/10 bg-[#0a1120] px-5 py-3">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-xs font-black uppercase tracking-widest text-zinc-600">
+            Teclas digitadas:
+          </span>
+          <span className="flex-1 font-mono text-xl font-black tracking-widest text-white">
+            {keyHistory || "—"}
+          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-600">Última:</span>
+            <kbd className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-700 bg-zinc-800 font-mono text-base font-black text-white shadow">
+              {keyLast}
+            </kbd>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
