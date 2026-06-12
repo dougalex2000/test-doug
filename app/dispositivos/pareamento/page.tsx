@@ -24,7 +24,7 @@ interface BLEDevice extends EventTarget {
 }
 interface BluetoothAPI {
   requestDevice(options: {
-    filters: Array<{ name?: string }>;
+    filters: Array<{ name?: string; services?: string[] }>;
     optionalServices?: string[];
   }): Promise<BLEDevice>;
 }
@@ -210,10 +210,11 @@ export default function PareamentoPage() {
   const [keyHistory, setKeyHistory] = useState("");
   const [logs,       setLogs]      = useState<string[]>([]);
 
-  // Ref de quaternion lido pelo loop Three.js a cada frame
-  const quatRef  = useRef<QuatRef | null>(null);
-  const deviceRef = useRef<BLEDevice | null>(null);
-  const decoder  = useRef(new TextDecoder());
+  // Refs internos
+  const quatRef        = useRef<QuatRef | null>(null);
+  const deviceRef      = useRef<BLEDevice | null>(null);
+  const decoder        = useRef(new TextDecoder());
+  const intentionalRef = useRef(false); // true quando o usuário clica Desconectar
 
   // Cleanup ao desmontar
   useEffect(() => () => { deviceRef.current?.gatt?.disconnect(); }, []);
@@ -281,12 +282,38 @@ export default function PareamentoPage() {
     [addLog]
   );
 
-  const handleDisconnect = useCallback(() => {
-    setStatus("idle");
-    setDevName("");
-    deviceRef.current = null;
-    addLog("Dispositivo desconectado.");
+  // Reconecta automaticamente até 5 tentativas (mesmo comportamento do GAIA Senses)
+  const reconnect = useCallback(async (device: BLEDevice, attempt = 1) => {
+    if (intentionalRef.current || attempt > 5) {
+      setStatus("idle");
+      setDevName("");
+      deviceRef.current = null;
+      return;
+    }
+    addLog(`Reconectando… tentativa ${attempt}/5`);
+    setStatus("scanning");
+    await new Promise((r) => setTimeout(r, 1500));
+    try {
+      if (!device.gatt) throw new Error("sem GATT");
+      await device.gatt.connect();
+      setStatus("connected");
+      addLog("Reconectado.");
+    } catch {
+      reconnect(device, attempt + 1);
+    }
   }, [addLog]);
+
+  const handleDisconnect = useCallback(() => {
+    addLog("Dispositivo desconectado.");
+    const device = deviceRef.current;
+    if (!intentionalRef.current && device) {
+      reconnect(device);
+    } else {
+      setStatus("idle");
+      setDevName("");
+      deviceRef.current = null;
+    }
+  }, [addLog, reconnect]);
 
   async function connect() {
     if (!navigator.bluetooth) {
@@ -294,13 +321,16 @@ export default function PareamentoPage() {
       setErrorMsg("Web Bluetooth indisponível. Use Chrome ou Edge.");
       return;
     }
+    intentionalRef.current = false;
     setStatus("scanning");
     setErrorMsg("");
 
     try {
+      // Filtra por SERVICE UUID — igual ao GAIA Senses.
+      // Qualquer dispositivo anunciando esse serviço aparece no seletor,
+      // independente do nome (GAIA_KEYPAD, GAIA_ACCESSPAD, DAVI_GAIA_ACCESSPAD…)
       const device = await navigator.bluetooth.requestDevice({
-        filters: [{ name: DEVICE_NAME }],
-        optionalServices: [SERVICE_UUID],
+        filters: [{ services: [SERVICE_UUID] }],
       });
 
       deviceRef.current = device;
@@ -348,6 +378,7 @@ export default function PareamentoPage() {
   }
 
   function disconnect() {
+    intentionalRef.current = true;
     addLog("Desconectando…");
     deviceRef.current?.gatt?.connected
       ? deviceRef.current.gatt.disconnect()
