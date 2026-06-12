@@ -158,6 +158,38 @@ export default function OficinaMakerPage() {
       />
 
       <section className="border-b border-zinc-200 bg-white px-6 py-16">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="O espaço"
+            title="Um fablab dedicado à tecnologia assistiva"
+            description="Impressão 3D, corte a laser, eletrônica e testes com usuários no mesmo ambiente — organizado para que cada protótipo saia da bancada e chegue à mão da pessoa no menor caminho possível."
+          />
+          <Illustration
+            name="oficina-fablab"
+            alt="Panorâmica do fablab assistivo: duas impressoras 3D em bancada, cortadora a laser, bancada de eletrônica com monitor, painel de ferramentas, estante de componentes coloridos e mesa central com acionador, keyguard e filamento"
+            className="mt-10"
+          />
+          <div className="mt-6 flex flex-wrap gap-2">
+            {[
+              "Impressão 3D",
+              "Corte a laser",
+              "Bancada de eletrônica",
+              "Painel de ferramentas",
+              "Componentes organizados",
+              "Mesa central de montagem e testes",
+            ].map((item) => (
+              <span
+                key={item}
+                className="rounded-full border border-zinc-300 bg-white px-3 py-2 text-sm font-bold text-zinc-800"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
           <Illustration
             name="oficina-impressao-3d"
@@ -174,7 +206,7 @@ export default function OficinaMakerPage() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16">
+      <section className="border-b border-zinc-200 bg-white px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Como funciona"
@@ -202,7 +234,7 @@ export default function OficinaMakerPage() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-white px-6 py-16">
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Estrutura"
@@ -237,7 +269,7 @@ export default function OficinaMakerPage() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16">
+      <section className="border-b border-zinc-200 bg-white px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="O que a oficina faz"
@@ -249,7 +281,7 @@ export default function OficinaMakerPage() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-white px-6 py-16">
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Projetos abertos"
@@ -269,7 +301,7 @@ export default function OficinaMakerPage() {
         </div>
       </section>
 
-      <section id="solicitar" className="scroll-mt-24 bg-white px-6 pb-16">
+      <section id="solicitar" className="scroll-mt-24 bg-white px-6 py-16">
         <div className="mx-auto max-w-7xl rounded-2xl border border-blue-200 bg-blue-50 p-8">
           <p className="text-sm font-black uppercase tracking-wide text-blue-800">
             Solicitar uma adaptação
