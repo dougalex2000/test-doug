@@ -25,6 +25,7 @@ const menuGroups = [
       { label: "Início", href: "/" },
       { label: "Sobre o DAVI", href: "/sobre" },
       { label: "Dispositivos", href: "/dispositivos" },
+      { label: "Pareamento Bluetooth", href: "/dispositivos/pareamento" },
       { label: "Catálogo", href: "/catalogo" },
       { label: "Galeria", href: "/galeria" },
       { label: "Acessibilidade", href: "/acessibilidade" },
