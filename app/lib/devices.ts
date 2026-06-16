@@ -1,3 +1,5 @@
+import { assetSrc } from "./imageAssets";
+
 export type DeviceCategory =
   | "Acesso por olhar"
   | "Comunicação alternativa"
@@ -323,7 +325,7 @@ const deviceIllustrations: Record<string, string> = {
 };
 
 export function getDeviceIllustration(device: AssistiveDevice): string {
-  return `/images/davi/${deviceIllustrations[device.slug] ?? "device-kit"}.svg`;
+  return assetSrc(deviceIllustrations[device.slug] ?? "device-kit");
 }
 
 export const deviceStatuses: DeviceStatus[] = [

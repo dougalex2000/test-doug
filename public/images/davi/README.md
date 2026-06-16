@@ -30,3 +30,25 @@ o nome de arquivo esperado).
   temporariamente desde que a licença permita.
 - Ao adicionar uma imagem, substitua o `MediaPlaceholder` correspondente por
   `<Image src="/images/davi/NOME.jpg" ... />` (componente `next/image`).
+
+## Como o site escolhe entre foto e ilustração
+
+O arquivo `app/lib/imageAssets.ts` mantém o conjunto `photoSlots`. Cada nome
+listado ali é renderizado como **foto** (`.webp`); os demais usam a **ilustração
+vetorial** (`.svg`). Para promover uma ilustração a foto, salve o `.webp` aqui e
+adicione o nome ao conjunto.
+
+## Créditos das fotos (Pexels)
+
+Fotos reais obtidas via [Pexels](https://www.pexels.com) (licença livre, sem
+atribuição obrigatória — creditadas por cortesia):
+
+| Arquivo | Fotógrafo | Pexels |
+| --- | --- | --- |
+| `oficina-impressao-3d.webp` | Jakub Zerdzicki | foto 31137405 |
+| `oficina-bancada-eletronica.webp` | ThisIsEngineering | foto 3912983 |
+| `oficina-testes.webp` | Kampus Production | foto 8185876 |
+| `catalogo-dispositivos.webp` | Anna Shvets | foto 5614124 |
+
+As demais imagens (`oficina-fablab`, `device-*`) são ilustrações vetoriais
+próprias, mais fiéis aos dispositivos específicos do projeto.

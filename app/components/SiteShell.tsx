@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { footerNav, institutionalNav, platformNav } from "../lib/navigation";
 import { mockUser, mockNotifications } from "../lib/userData";
+import { assetSrc } from "../lib/imageAssets";
 import { IconBell, IconContrast, IconMenu, IconMotion } from "./icons";
 
 const focusRing =
@@ -441,9 +442,9 @@ export function Illustration({
     <figure
       className={`overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm ${className}`}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- SVG vetorial local; otimização do next/image não se aplica */}
+      {/* eslint-disable-next-line @next/next/no-img-element -- asset local (svg/webp); otimização do next/image não se aplica */}
       <img
-        src={`/images/davi/${name}.svg`}
+        src={assetSrc(name)}
         alt={alt}
         loading="lazy"
         className="h-full w-full object-cover"
