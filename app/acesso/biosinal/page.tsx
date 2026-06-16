@@ -22,7 +22,7 @@ export default function BioSinalPage() {
         <div>
           <Illustration
             name="biosinal"
-            alt="Pessoa usando uma faixa de sensor de eletroencefalografia (EEG) com ondas cerebrais estampadas e um eletrodo na orelha, em ambiente de pesquisa"
+            alt="Criança usando uma touca de eletrodos de eletroencefalografia (EEG), com três traçados de ondas cerebrais (azul, roxo e vermelho) ao lado, em ambiente clínico"
             className="mb-8 max-h-[360px]"
           />
           <BioSinalSimulator />
