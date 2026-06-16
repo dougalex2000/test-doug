@@ -478,10 +478,13 @@ export function Illustration({
   name,
   alt,
   className = "",
+  fit = "cover",
 }: {
   name: string;
   alt: string;
   className?: string;
+  /** "cover" preenche e recorta; "contain" mostra a imagem inteira. */
+  fit?: "cover" | "contain";
 }) {
   return (
     <figure
@@ -492,7 +495,7 @@ export function Illustration({
         src={assetSrc(name)}
         alt={alt}
         loading="lazy"
-        className="h-full w-full object-cover"
+        className={fit === "contain" ? "h-auto w-full" : "h-full w-full object-cover"}
       />
     </figure>
   );

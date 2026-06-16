@@ -23,7 +23,8 @@ export default function BioSinalPage() {
           <Illustration
             name="biosinal"
             alt="Criança usando uma touca de eletrodos de eletroencefalografia (EEG), com três traçados de ondas cerebrais (azul, roxo e vermelho) ao lado, em ambiente clínico"
-            className="mb-8 max-h-[360px]"
+            className="mb-8"
+            fit="contain"
           />
           <BioSinalSimulator />
         </div>
