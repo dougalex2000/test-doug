@@ -10,6 +10,7 @@ export const photoSlots = new Set<string>([
   "oficina-bancada-eletronica",
   "catalogo-dispositivos",
   "oficina-testes",
+  "biosinal",
 ]);
 
 export function assetSrc(name: string): string {

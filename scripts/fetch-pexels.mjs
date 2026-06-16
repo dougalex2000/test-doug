@@ -22,6 +22,7 @@ if (!KEY) {
  * `orientation` ajuda a casar o formato com o uso na página.
  */
 const slots = {
+  biosinal: { query: "eeg brain sensor headset", orientation: "landscape" },
   "oficina-fablab": { query: "3d printing laboratory workshop", orientation: "landscape" },
   "oficina-impressao-3d": null,
   "oficina-bancada-eletronica": null,

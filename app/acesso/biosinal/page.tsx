@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ConstructionNotice, ConceptPage } from "../../components/modules";
+import { Illustration } from "../../components/SiteShell";
 import { BioSinalSimulator } from "../../components/demos";
 
 export const metadata: Metadata = {
@@ -17,7 +18,16 @@ export default function BioSinalPage() {
       subtitle="EEG, EMG, EOG, piscadas e movimentos preservados como possíveis métodos de acesso."
       status="Experimental"
       group="Grupo DAVI BioSinal"
-      lead={<BioSinalSimulator />}
+      lead={
+        <div>
+          <Illustration
+            name="biosinal"
+            alt="Pessoa usando uma faixa de sensor de eletroencefalografia (EEG) com ondas cerebrais estampadas e um eletrodo na orelha, em ambiente de pesquisa"
+            className="mb-8 max-h-[360px]"
+          />
+          <BioSinalSimulator />
+        </div>
+      }
       sections={[
         {
           eyebrow: "O que é o DAVI BioSinal",
