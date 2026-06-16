@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
-import { footerNav, institutionalNav, platformNav } from "../lib/navigation";
 import { mockUser, mockNotifications } from "../lib/userData";
 import { assetSrc } from "../lib/imageAssets";
+import { mainNav, footerSections, type ModuleStatus } from "../lib/siteNav";
 import { IconBell, IconContrast, IconMenu, IconMotion } from "./icons";
 
 const focusRing =
@@ -12,18 +12,15 @@ const focusRing =
 
 const unreadCount = mockNotifications.filter((n) => !n.read).length;
 
-const menuGroups = [
-  {
-    title: "Início",
-    links: [
-      { label: "Página inicial", href: "/" },
-      { label: "Contato", href: "/contato" },
-      { label: "Acessibilidade do site", href: "/acessibilidade" },
-    ],
-  },
-  ...institutionalNav,
-  ...platformNav,
-];
+const menuStatusDot: Record<ModuleStatus, string> = {
+  "Em construção": "bg-amber-500",
+  Protótipo: "bg-violet-500",
+  "Testes iniciais": "bg-sky-500",
+  Planejado: "bg-zinc-400",
+  Demonstração: "bg-blue-500",
+  Experimental: "bg-rose-500",
+  "Área logada": "bg-emerald-500",
+};
 
 export function SiteHeader() {
   const [largeText, setLargeText] = useState(false);
@@ -55,28 +52,64 @@ export function SiteHeader() {
               >
                 <IconMenu className="h-7 w-7" />
               </summary>
-              <div className="absolute left-0 top-14 z-50 max-h-[calc(100vh-7rem)] w-[min(92vw,460px)] overflow-y-auto rounded-lg border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/15">
+              <div className="absolute left-0 top-14 z-50 max-h-[calc(100vh-7rem)] w-[min(94vw,520px)] overflow-y-auto rounded-lg border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/15">
                 <p className="text-sm font-black uppercase tracking-wide text-blue-800">
                   Navegação DAVI
                 </p>
-                <div className="mt-4 grid gap-4">
-                  {menuGroups.map((group) => (
-                    <div key={group.title}>
-                      <p className="text-xs font-black uppercase tracking-wide text-zinc-500">
-                        {group.title}
-                      </p>
-                      <div className="mt-2 grid gap-1">
-                        {group.links.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`rounded-lg px-3 py-2 text-sm font-bold text-zinc-800 hover:bg-blue-50 hover:text-blue-800 ${focusRing}`}
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {[
+                    { label: "Início", href: "/" },
+                    { label: "Manual", href: "/manual" },
+                    { label: "Contato", href: "/contato" },
+                    { label: "Acessibilidade", href: "/acessibilidade" },
+                  ].map((quick) => (
+                    <Link
+                      key={quick.href}
+                      href={quick.href}
+                      className={`rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-bold text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
+                    >
+                      {quick.label}
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-3 grid gap-1.5">
+                  {mainNav.map((section) => (
+                    <details key={section.href} className="group rounded-lg border border-zinc-200 bg-white">
+                      <summary
+                        className={`flex cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-black text-zinc-900 hover:bg-blue-50 ${focusRing}`}
+                      >
+                        <span>{section.title}</span>
+                        <span aria-hidden="true" className="text-zinc-400 transition group-open:rotate-90">
+                          ›
+                        </span>
+                      </summary>
+                      <div className="grid gap-0.5 px-2 pb-2">
+                        <Link
+                          href={section.href}
+                          className={`rounded-lg px-3 py-2 text-sm font-bold text-blue-800 hover:bg-blue-50 ${focusRing}`}
+                        >
+                          {section.title}: visão geral
+                        </Link>
+                        {section.items
+                          .filter((item) => item.href !== section.href)
+                          .map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-blue-50 hover:text-blue-800 ${focusRing}`}
+                            >
+                              <span>{item.label}</span>
+                              {item.status ? (
+                                <span
+                                  className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
+                                  title={item.status}
+                                  aria-label={`Status: ${item.status}`}
+                                />
+                              ) : null}
+                            </Link>
+                          ))}
                       </div>
-                    </div>
+                    </details>
                   ))}
                 </div>
               </div>
@@ -164,36 +197,48 @@ export function SiteHeader() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-zinc-800 bg-zinc-950 px-6 py-12 text-white">
-      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[1fr_1.2fr]">
-        <div>
-          <p className="text-2xl font-black">Projeto DAVI</p>
-          <p className="mt-3 max-w-lg text-sm leading-6 text-zinc-400">
-            Desenvolvimento Assistivo para Vida Independente. Projeto em
-            desenvolvimento no contexto de tecnologia assistiva, educação
-            inclusiva, fabricação digital e inteligência artificial aplicada.
-          </p>
-          <p className="mt-4 max-w-lg text-xs leading-5 text-zinc-500">
-            O DAVI é uma iniciativa independente de tecnologia assistiva e não
-            representa serviço oficial de governo.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 md:justify-end">
-          {footerNav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 hover:border-blue-400 hover:text-white ${focusRing}`}
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_2fr]">
+          <div>
+            <p className="text-2xl font-black">Projeto DAVI</p>
+            <p className="mt-3 max-w-lg text-sm leading-6 text-zinc-400">
+              Desenvolvimento Assistivo para Vida Independente. Ecossistema de
+              tecnologia assistiva para comunicação, alfabetização, aprendizagem
+              e autonomia — em construção.
+            </p>
+            <p className="mt-4 max-w-lg text-xs leading-5 text-zinc-500">
+              Iniciativa independente de tecnologia assistiva. Não representa
+              serviço oficial de governo e não realiza diagnóstico clínico.
+            </p>
+            <a
+              id="contato"
+              href="mailto:contato@projetodavi.local"
+              className={`mt-5 inline-flex rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 hover:border-green-400 hover:text-white ${focusRing}`}
             >
-              {item.label}
-            </Link>
-          ))}
-          <a
-            id="contato"
-            href="mailto:contato@projetodavi.local"
-            className={`rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 hover:border-green-400 hover:text-white ${focusRing}`}
-          >
-            E-mail
-          </a>
+              contato@projetodavi.local
+            </a>
+          </div>
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+            {footerSections.map((section) => (
+              <div key={section.title}>
+                <p className="text-xs font-black uppercase tracking-wide text-zinc-500">
+                  {section.title}
+                </p>
+                <ul className="mt-2 grid gap-1">
+                  {section.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className={`rounded text-sm font-semibold text-zinc-300 hover:text-white ${focusRing}`}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

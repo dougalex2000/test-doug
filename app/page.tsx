@@ -1,118 +1,152 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import {
-  InfoGrid,
   LinkButton,
-  MediaPlaceholder,
   PageShell,
   SectionHeader,
-  TagList,
 } from "./components/SiteShell";
 import {
-  ecosystemItems,
-  impactAudiences,
-  principles,
-} from "./lib/siteContent";
-import { assistiveDevices } from "./lib/devices";
+  JourneyDavi,
+  ModuleGrid,
+  type ModuleCard,
+} from "./components/modules";
+import {
+  IconChat,
+  IconChip,
+  IconClipboard,
+  IconCube,
+  IconDocument,
+  IconEye,
+  IconLightbulb,
+  IconSparkles,
+  IconWrench,
+} from "./components/icons";
 
 export const metadata: Metadata = {
   title: "DAVI — Desenvolvimento Assistivo para Vida Independente",
   description:
-    "Plataforma inteligente de tecnologia assistiva para avaliação, aprendizagem, comunicação, recomendação de dispositivos e criação de soluções personalizadas.",
+    "Um ecossistema de tecnologia assistiva para comunicação, alfabetização, aprendizagem e autonomia.",
 };
 
-const howItWorksSteps = [
+const mainModules: ModuleCard[] = [
   {
-    title: "1. Cadastro do usuário",
+    title: "DAVI Escola",
     description:
-      "Registro inicial com dados do aluno ou paciente, instituição e profissional responsável.",
+      "Português, Matemática, videoaulas e tarefas acessíveis — o núcleo pedagógico.",
+    href: "/escola",
+    icon: <IconDocument className="h-6 w-6" />,
+    status: "Demonstração",
   },
   {
-    title: "2. Avaliação funcional",
+    title: "DAVI Comunicação",
     description:
-      "Observação de movimentos preservados, comunicação, atenção, compreensão e fadiga.",
+      "Comunicação alternativa para expressar necessidades, escolhas e respostas.",
+    href: "/comunicacao",
+    icon: <IconChat className="h-6 w-6" />,
+    status: "Demonstração",
   },
   {
-    title: "3. Teste de métodos de acesso",
+    title: "DAVI Vision",
     description:
-      "Experimentação de olhar, toque, acionadores, sopro, joystick, varredura e combinações.",
+      "Rastreamento ocular e interação visual por câmera como método de acesso.",
+    href: "/acesso/vision",
+    icon: <IconEye className="h-6 w-6" />,
+    status: "Protótipo",
   },
   {
-    title: "4. Recomendação de tecnologias",
+    title: "DAVI Conecta",
     description:
-      "Indicação de dispositivos e adaptações com apoio da inteligência artificial e do profissional.",
+      "Integração com botões, sensores, ESP32 e dispositivos sem fio.",
+    href: "/acesso/conecta",
+    icon: <IconChip className="h-6 w-6" />,
+    status: "Testes iniciais",
   },
   {
-    title: "5. Atividades e comunicação",
+    title: "DAVI BioSinal",
     description:
-      "Uso de módulos educacionais e de comunicação alternativa adaptados ao método de acesso.",
+      "Sinais biológicos (EEG, EMG, EOG, piscadas) como caminhos experimentais de acesso.",
+    href: "/acesso/biosinal",
+    icon: <IconLightbulb className="h-6 w-6" />,
+    status: "Experimental",
   },
   {
-    title: "6. Relatórios inteligentes",
+    title: "Assistente DAVI com IA",
     description:
-      "Acompanhamento de evolução, autonomia, engajamento e indicadores por sessão.",
+      "Um guia inteligente para ajudar a usar a plataforma — apoia, não decide.",
+    href: "/ia/assistente",
+    icon: <IconSparkles className="h-6 w-6" />,
+    status: "Demonstração",
   },
   {
-    title: "7. Adaptação em oficina maker",
+    title: "Catálogo de Tecnologias Assistivas",
     description:
-      "Criação, impressão 3D e personalização de dispositivos conforme a necessidade real.",
+      "Prateleira virtual de recursos para comunicação, aprendizagem e autonomia.",
+    href: "/tecnologias-assistivas/catalogo",
+    icon: <IconCube className="h-6 w-6" />,
+  },
+  {
+    title: "Oficina Maker",
+    description:
+      "Adaptar, criar, testar e documentar tecnologias assistivas de baixo custo.",
+    href: "/tecnologias-assistivas/oficina-maker",
+    icon: <IconWrench className="h-6 w-6" />,
+  },
+  {
+    title: "Evolução e Relatórios",
+    description:
+      "Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico.",
+    href: "/evolucao",
+    icon: <IconClipboard className="h-6 w-6" />,
   },
 ];
 
-const galleryHighlights = assistiveDevices.slice(0, 4);
-
-const caaFeatures = [
-  "Respostas simples: sim, não, talvez, quero, não quero",
-  "Frases rápidas: estou com dor, quero água, preciso de ajuda",
-  "Categorias: necessidades, emoções, escola, família, alimentação, saúde",
-  "Botões grandes com ícones e retorno por áudio",
-  "Varredura automática e seleção por permanência",
-  "Uso futuro com olhar, botão, sopro, toque e joystick",
-];
-
-const visualTrackingFeatures = [
-  "Webcam comum, sem equipamento caro",
-  "Calibração guiada de 9 pontos",
-  "Aprendizado personalizado por usuário",
-  "Classificação por zonas da tela",
-  "Seleção por permanência do olhar",
-  "Confirmação por botão, sopro ou outro método assistivo",
+const audiences = [
+  "Alunos",
+  "Famílias",
+  "Escolas",
+  "Professores",
+  "Cuidadores",
+  "Prefeituras",
+  "ONGs",
+  "Comunidades remotas",
+  "Povos indígenas",
+  "Profissionais de educação, saúde e reabilitação",
 ];
 
 export default function Home() {
   return (
     <PageShell>
-      {/* 1. Hero principal */}
+      {/* Hero principal */}
       <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16 sm:py-20">
         <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <p className="w-fit rounded-lg bg-blue-50 px-4 py-2 text-sm font-black uppercase tracking-wide text-blue-800 ring-1 ring-blue-200">
               Ecossistema de tecnologia assistiva
             </p>
-            <h1 className="mt-6 max-w-5xl text-4xl font-black leading-tight text-zinc-950 sm:text-5xl">
+            <h1 className="mt-6 text-4xl font-black leading-tight text-zinc-950 sm:text-5xl">
               DAVI — Desenvolvimento Assistivo para Vida Independente
             </h1>
-            <p className="mt-5 max-w-3xl text-xl font-semibold leading-8 text-zinc-800">
-              Plataforma inteligente de tecnologia assistiva para avaliação,
-              aprendizagem, comunicação, recomendação de dispositivos e criação
-              de soluções personalizadas.
+            <p className="mt-5 max-w-2xl text-xl font-semibold leading-8 text-zinc-800">
+              Um ecossistema de tecnologia assistiva para comunicação,
+              alfabetização, aprendizagem e autonomia.
             </p>
-            <p className="mt-4 max-w-3xl text-lg leading-8 text-zinc-700">
-              O DAVI integra software, inteligência artificial, rastreamento
-              visual, comunicação alternativa, dispositivos assistivos e
-              oficina maker para ampliar autonomia, aprendizagem e participação
-              social de pessoas com deficiência.
+            <p className="mt-6 max-w-2xl rounded-2xl border-l-4 border-green-600 bg-white p-5 text-lg font-bold italic leading-8 text-zinc-800 shadow-sm">
+              “O DAVI transforma tecnologia assistiva em caminho para
+              comunicação, alfabetização, aprendizagem e vida independente.”
             </p>
-            <div className="mt-9 flex flex-wrap gap-4">
-              <LinkButton href="/origem">Conhecer o Projeto</LinkButton>
-              <LinkButton href="/galeria" variant="secondary">
-                Ver Tecnologias Assistivas
+            <div className="mt-9 flex flex-wrap gap-3">
+              <LinkButton href="/projeto">Conhecer o projeto</LinkButton>
+              <LinkButton href="/escola" variant="secondary">
+                Acessar DAVI Escola
               </LinkButton>
-              <LinkButton href="/rastreamento" variant="secondary">
-                Acessar Rastreamento Visual
+              <LinkButton href="/tecnologias-assistivas" variant="secondary">
+                Ver tecnologias assistivas
               </LinkButton>
-              <LinkButton href="/profissionais" variant="secondary">
-                Área do Profissional
+              <LinkButton href="/ia/assistente" variant="secondary">
+                Conhecer o Assistente DAVI
+              </LinkButton>
+              <LinkButton href="/manual" variant="secondary">
+                Ler o manual do projeto
               </LinkButton>
             </div>
           </div>
@@ -137,312 +171,113 @@ export default function Home() {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/35 to-transparent" />
-              <div className="absolute bottom-5 left-5 right-5 rounded-lg border border-white/30 bg-white/90 p-4 text-zinc-950 shadow-lg backdrop-blur">
-                <p className="text-sm font-black text-blue-800">
-                  Mais que um site: um ecossistema
-                </p>
-                <p className="mt-1 text-sm leading-6 text-zinc-700">
-                  Avaliação, métodos de acesso, comunicação, relatórios e
-                  fabricação de soluções em um só lugar.
-                </p>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. O que é o DAVI */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-16" id="o-que-e">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <SectionHeader
-              eyebrow="O que é o DAVI"
-              title="Um ecossistema de tecnologia assistiva"
-              description="O DAVI não é apenas um site ou um módulo de rastreamento ocular. É um ecossistema que integra plataforma digital, ambiente físico de avaliação, inteligência artificial, comunicação alternativa e oficina maker."
-            />
-            <div className="mt-8">
-              <LinkButton href="/plataforma">O que é a Plataforma DAVI</LinkButton>
-            </div>
-          </div>
-          <div className="grid content-start gap-3 sm:grid-cols-2">
-            {ecosystemItems.map((item) => (
-              <div
-                key={item}
-                className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm font-bold leading-6 text-zinc-900"
-              >
-                {item}
-              </div>
-            ))}
+      {/* Aviso transparente */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-12">
+        <div className="mx-auto max-w-7xl rounded-2xl border border-amber-200 bg-amber-50 p-6">
+          <span className="inline-flex items-center gap-2 rounded-full bg-amber-200 px-3 py-1 text-sm font-black text-amber-900">
+            <span aria-hidden="true">🚧</span> Plataforma em construção
+          </span>
+          <p className="mt-3 max-w-4xl text-lg leading-8 text-zinc-800">
+            A plataforma DAVI está em fase inicial de estruturação online.
+            Algumas páginas apresentam a visão do ecossistema e determinados
+            recursos ainda estão em desenvolvimento, prototipagem ou testes
+            iniciais.
+          </p>
+        </div>
+      </section>
+
+      {/* Jornada DAVI */}
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-14">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="A jornada DAVI"
+            title="Da comunicação à vida independente"
+            description="Cada módulo do ecossistema apoia uma etapa desse caminho contínuo."
+          />
+          <div className="mt-8 overflow-x-auto">
+            <JourneyDavi />
           </div>
         </div>
       </section>
 
-      {/* 3. Origem */}
-      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16" id="origem">
+      {/* Cards principais */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-14">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Módulos do ecossistema"
+            title="Tudo o que o DAVI integra"
+            description="Áreas independentes que evoluem por grupos de trabalho, conectadas pela mesma jornada."
+          />
+          <div className="mt-10">
+            <ModuleGrid items={mainModules} />
+          </div>
+        </div>
+      </section>
+
+      {/* Por que o DAVI existe */}
+      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-14">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
           <div>
             <SectionHeader
-              eyebrow="Origem do Projeto DAVI"
-              title="Uma história real de superação na escola"
+              eyebrow="Por que o DAVI existe?"
+              title="Tudo começou com um aluno chamado Davi"
             />
             <div className="mt-6 space-y-4 text-lg leading-8 text-zinc-700">
               <p>
-                O projeto nasceu do acompanhamento de Davi, um aluno de 9 anos
-                do 4º ano do Ensino Fundamental em Valinhos-SP, que ainda não
-                lia nem escrevia por causa de limitações motoras severas que
-                impediam o uso de lápis e papel.
+                O projeto nasceu do acompanhamento de Davi, um aluno de 9 anos em
+                Valinhos-SP que ainda não lia nem escrevia por causa de
+                limitações motoras severas que impediam o uso de lápis e papel.
               </p>
               <p>
-                Ao perceber que ele conseguia pressionar algumas teclas do
-                teclado, foi criada uma ferramenta educacional adaptada — e os
-                resultados em autonomia, confiança e participação mudaram tudo.
+                Ao perceber que ele conseguia pressionar algumas teclas, foi
+                criado um protótipo com comandos simples para controlar
+                videoaulas — pausar, avançar, voltar, repetir conteúdos — e
+                escrever em uma caixa de texto acessível. Os ganhos em autonomia,
+                confiança e participação mudaram tudo.
               </p>
-              <blockquote className="border-l-4 border-blue-700 bg-white p-5 text-base font-bold italic leading-7 text-zinc-800 shadow-sm">
-                “Muitas vezes, a limitação não está na capacidade de aprender,
-                mas na falta de ferramentas adequadas de acesso.”
-              </blockquote>
             </div>
             <div className="mt-8">
-              <LinkButton href="/origem">Ler a história completa</LinkButton>
+              <LinkButton href="/projeto/origem">Ler a história completa</LinkButton>
             </div>
           </div>
-          <MediaPlaceholder
-            icon="🧒💻"
-            label="Criança usando computador adaptado na escola, acompanhada pela professora"
-            imageName="origem-davi-computador.jpg"
-            tone="green"
-            minHeight="min-h-[360px]"
-          />
+          <blockquote className="rounded-2xl border-l-4 border-blue-700 bg-white p-6 text-lg font-bold italic leading-8 text-zinc-800 shadow-sm">
+            “Muitas vezes, a limitação não está na capacidade de aprender, mas na
+            falta de ferramentas adequadas de acesso.”
+          </blockquote>
         </div>
       </section>
 
-      {/* 4. Como funciona */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-16" id="como-funciona">
+      {/* Para quem é */}
+      <section className="bg-white px-6 py-14">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Como funciona"
-            title="Da avaliação à solução personalizada"
-            description="Um fluxo contínuo que conecta avaliação funcional, métodos de acesso, atividades, relatórios e fabricação de adaptações."
+            eyebrow="Para quem é?"
+            title="Um ecossistema para redes inteiras de inclusão"
+            description="Da sala de aula ao centro de reabilitação, da família à prefeitura, da comunidade remota à instituição."
           />
-          <div className="mt-10">
-            <InfoGrid items={howItWorksSteps} columns="lg:grid-cols-4" />
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Tecnologia e IA */}
-      <section className="border-b border-zinc-800 bg-zinc-950 px-6 py-16 text-white" id="ia">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <p className="text-sm font-black uppercase tracking-wide text-green-300">
-              Tecnologia e Inteligência Artificial
-            </p>
-            <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-              IA como apoio ao profissional, nunca como substituta
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-zinc-300">
-              A inteligência artificial do DAVI apoia a avaliação funcional, a
-              personalização de atividades, a calibração do rastreamento
-              visual, a recomendação de dispositivos e a geração de relatórios.
-              As decisões permanecem sempre com profissionais qualificados.
-            </p>
-            <div className="mt-8">
-              <LinkButton href="/inteligencia-artificial">
-                Conhecer a IA do DAVI
-              </LinkButton>
-            </div>
-          </div>
-          <div className="grid content-start gap-3 sm:grid-cols-2">
-            {[
-              "Análise de progresso por sessão",
-              "Personalização de atividades",
-              "Recomendação de dispositivos assistivos",
-              "Resumos inteligentes para relatórios",
-              "Apoio à calibração do olhar",
-              "Sugestão de adaptações para a oficina maker",
-            ].map((item) => (
-              <div
+          <div className="mt-8 flex flex-wrap gap-2">
+            {audiences.map((item) => (
+              <span
                 key={item}
-                className="rounded-lg border border-zinc-800 bg-zinc-900 p-4 text-sm font-bold text-zinc-100"
+                className="rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-bold text-zinc-800"
               >
                 {item}
-              </div>
+              </span>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* 6. Rastreamento Visual Assistivo */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-16" id="rastreamento-visual">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <MediaPlaceholder
-            icon="👁️🖥️"
-            label="Pessoa interagindo com a tela por rastreamento visual com webcam"
-            imageName="rastreamento-visual.jpg"
-            tone="blue"
-            minHeight="min-h-[320px]"
-          />
-          <div>
-            <SectionHeader
-              eyebrow="Rastreamento Visual Assistivo"
-              title="Seleção por olhar com webcam de baixo custo"
-              description="Solução assistiva para seleção por zonas da tela, com calibração personalizada. Não promete a precisão de um eye tracker profissional: o foco é interação acessível e de baixo custo."
-            />
-            <div className="mt-6 grid gap-2 sm:grid-cols-2">
-              {visualTrackingFeatures.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm font-bold text-zinc-900"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <LinkButton href="/rastreamento">Testar a demonstração</LinkButton>
-              <LinkButton href="/rastreamento-visual" variant="secondary">
-                Como funciona
-              </LinkButton>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. Comunicação Alternativa */}
-      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16" id="comunicacao">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <SectionHeader
-              eyebrow="Comunicação Alternativa"
-              title="Dar voz a quem se comunica de outras formas"
-              description="Recursos de comunicação aumentativa e alternativa com botões grandes, símbolos, frases rápidas e retorno por áudio, acessíveis por diferentes métodos."
-            />
-            <div className="mt-6 grid gap-2 sm:grid-cols-2">
-              {caaFeatures.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-lg border border-zinc-200 bg-white p-3 text-sm font-bold leading-6 text-zinc-900"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-            <div className="mt-7">
-              <LinkButton href="/comunicacao-alternativa">
-                Conhecer a Comunicação Alternativa
-              </LinkButton>
-            </div>
-          </div>
-          <MediaPlaceholder
-            icon="💬🖐️"
-            label="Prancha de comunicação alternativa com símbolos e botões grandes"
-            imageName="comunicacao-alternativa.jpg"
-            tone="amber"
-            minHeight="min-h-[320px]"
-          />
-        </div>
-      </section>
-
-      {/* 8. Galeria de Tecnologias Assistivas */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-16" id="galeria">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeader
-            eyebrow="Galeria de Tecnologias Assistivas"
-            title="Dispositivos, adaptações e projetos abertos"
-            description="Catálogo de soluções assistivas com indicação de uso, tipo de acesso, custo estimado e arquivos abertos para fabricação."
-          />
-          <div className="mt-10">
-            <InfoGrid
-              columns="lg:grid-cols-4"
-              items={galleryHighlights.map((device) => ({
-                title: device.name,
-                description: device.shortDescription,
-                href: "/galeria",
-              }))}
-            />
-          </div>
-          <div className="mt-8">
-            <LinkButton href="/galeria">Ver galeria completa</LinkButton>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. Oficina Maker */}
-      <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16" id="oficina-maker">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <MediaPlaceholder
-            icon="🛠️🖨️"
-            label="Oficina maker com impressora 3D produzindo peças assistivas"
-            imageName="oficina-maker.jpg"
-            tone="green"
-            minHeight="min-h-[320px]"
-          />
-          <div>
-            <SectionHeader
-              eyebrow="Oficina Maker Assistiva"
-              title="Quando a solução não existe, ela é criada"
-              description="A oficina maker do DAVI adapta dispositivos, cria acionadores, imprime peças em 3D, integra sensores e documenta projetos abertos para que outras pessoas possam reproduzir as soluções."
-            />
-            <div className="mt-7 flex flex-wrap gap-3">
-              <LinkButton href="/oficina-maker">Conhecer a Oficina Maker</LinkButton>
-              <LinkButton href="/loja-social" variant="secondary">
-                Futura Loja Social
-              </LinkButton>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 10. Impacto Social */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-16" id="impacto">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-          <SectionHeader
-            eyebrow="Impacto Social"
-            title="Para quem o DAVI existe"
-            description="O ecossistema foi pensado para apoiar redes inteiras de inclusão: da sala de aula ao centro de reabilitação, da família à prefeitura."
-          />
-          <div className="content-start">
-            <TagList items={impactAudiences} />
-            <div className="mt-8 flex flex-wrap gap-3">
-              <LinkButton href="/instituicoes">Para Instituições</LinkButton>
-              <LinkButton href="/familias" variant="secondary">
-                Para Famílias
-              </LinkButton>
-              <LinkButton href="/profissionais" variant="secondary">
-                Para Profissionais
-              </LinkButton>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 11. Princípios */}
-      <section className="px-6 py-16" id="principios">
-        <div className="mx-auto max-w-7xl">
-          <SectionHeader
-            eyebrow="Princípios"
-            title="Bases do desenvolvimento assistivo"
-            description="Inclusão, autonomia, acessibilidade, segurança, privacidade, baixo custo, personalização e colaboração guiam cada decisão do projeto."
-          />
-          <div className="mt-8">
-            <TagList items={principles} />
-          </div>
-          <div className="mt-10 rounded-2xl border border-blue-200 bg-blue-50 p-6">
-            <p className="text-sm font-black uppercase tracking-wide text-blue-800">
-              Compromisso com a privacidade
-            </p>
-            <p className="mt-2 max-w-3xl text-base leading-7 text-zinc-800">
-              O DAVI não realiza diagnóstico clínico automatizado, não salva
-              imagens da face por padrão e processa dados da câmera localmente
-              sempre que possível.{" "}
-              <a
-                href="/seguranca-e-privacidade"
-                className="font-bold text-blue-800 underline hover:text-blue-900"
-              >
-                Conheça nossa política de segurança e privacidade
-              </a>
-              .
-            </p>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <LinkButton href="/comunidades/familias">Para Famílias</LinkButton>
+            <LinkButton href="/comunidades/escolas" variant="secondary">
+              Para Escolas
+            </LinkButton>
+            <LinkButton href="/comunidades/profissionais" variant="secondary">
+              Para Profissionais
+            </LinkButton>
           </div>
         </div>
       </section>
