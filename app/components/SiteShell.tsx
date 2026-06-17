@@ -6,6 +6,7 @@ import { mockUser, mockNotifications } from "../lib/userData";
 import { assetSrc } from "../lib/imageAssets";
 import { mainNav, footerSections, type ModuleStatus } from "../lib/siteNav";
 import { IconBell, IconContrast, IconMenu, IconMotion } from "./icons";
+import { VisitCounter } from "./VisitCounter";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
@@ -239,6 +240,12 @@ export function SiteFooter() {
               </div>
             ))}
           </div>
+        </div>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 pt-6">
+          <p className="text-xs text-zinc-500">
+            Projeto DAVI — em construção.
+          </p>
+          <VisitCounter />
         </div>
       </div>
     </footer>
