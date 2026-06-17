@@ -42,6 +42,15 @@ export default function ManualPage() {
       eyebrow="Manual do Projeto DAVI"
       title="Manual do Projeto DAVI"
       subtitle="Guia inicial do ecossistema de tecnologia assistiva para vida independente."
+      actions={
+        <a
+          href="/manual-davi.pdf"
+          download
+          className="rounded-lg bg-blue-700 px-5 py-3 font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
+        >
+          ⬇ Baixar manual em PDF
+        </a>
+      }
       lead={
         <div>
           <p className="max-w-4xl text-xl font-bold leading-9 text-zinc-900">
