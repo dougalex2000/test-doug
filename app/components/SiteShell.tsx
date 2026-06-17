@@ -117,10 +117,10 @@ export function SiteHeader() {
             </details>
 
             <div className="min-w-0">
-              <p className="truncate text-2xl font-semibold tracking-tight sm:text-3xl">
+              <p className="text-base font-semibold leading-tight tracking-tight sm:text-2xl lg:text-3xl">
                 Serviços e Informações do DAVI
               </p>
-              <p className="mt-1 hidden truncate text-sm font-medium text-zinc-600 sm:block">
+              <p className="mt-1 hidden text-sm font-medium leading-snug text-zinc-600 sm:block">
                 Desenvolvimento Assistivo para Vida Independente
               </p>
             </div>
