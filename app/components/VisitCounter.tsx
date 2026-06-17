@@ -13,7 +13,7 @@ export function VisitCounter() {
   useEffect(() => {
     const alreadyCounted = sessionStorage.getItem("davi-visit-counted");
     const method = alreadyCounted ? "GET" : "POST";
-    fetch("/api/visitas", { method })
+    fetch("/api/visitas", { method, cache: "no-store" })
       .then((r) => r.json())
       .then((data: { count: number | null }) => {
         if (typeof data.count === "number") setCount(data.count);
