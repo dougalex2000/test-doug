@@ -63,8 +63,48 @@ type SensorData = {
 
 type QuatRef = Pick<SensorData, "quat_w" | "quat_x" | "quat_y" | "quat_z">;
 
+// Inversão por eixo (checkboxes da interface)
+type AxisInvert = { x: boolean; y: boolean; z: boolean };
+
+/**
+ * Converte o quaternion do sensor (MPU6050 + fusão no ESP32) para um
+ * THREE.Quaternion. MAPEAMENTO DE EIXOS CENTRALIZADO — ajuste só aqui.
+ *
+ * Convenção documentada (ver rótulos do painel "Orientação"):
+ *   Roll → eixo X   |   Pitch → eixo Y   |   Yaw → eixo Z
+ *
+ * - Usa a ordem (x, y, z, w) do quaternion do sensor SEM embaralhar
+ *   componentes. O remapeamento manual antigo —
+ *   new THREE.Quaternion(qy, -qz, -qx, qw) — causava inversões e troca de
+ *   direção, e foi removido.
+ * - `inv` permite inverter o sentido de cada eixo pela interface, sem mexer
+ *   no firmware: nega a componente correspondente do quaternion.
+ * - O resultado é sempre normalizado.
+ */
+function sensorQuaternionToThreeQuaternion(q: QuatRef, inv: AxisInvert): THREE.Quaternion {
+  const x = inv.x ? -q.quat_x : q.quat_x;
+  const y = inv.y ? -q.quat_y : q.quat_y;
+  const z = inv.z ? -q.quat_z : q.quat_z;
+  return new THREE.Quaternion(x, y, z, q.quat_w).normalize();
+}
+
+/** Formata um quaternion para a área de debug. */
+function fmtQuat(q: { w: number; x: number; y: number; z: number } | null): string {
+  if (!q) return "—";
+  const f = (n: number) => (n >= 0 ? " " : "") + n.toFixed(2);
+  return `w${f(q.w)}  x${f(q.x)}  y${f(q.y)}  z${f(q.z)}`;
+}
+
 // ─── Globo 3D ─────────────────────────────────────────────────────────────────
-function GlobeCanvas({ quatRef }: { quatRef: React.RefObject<QuatRef | null> }) {
+function GlobeCanvas({
+  quatRef,
+  invRef,
+  calibRef,
+}: {
+  quatRef: React.RefObject<QuatRef | null>;
+  invRef: React.RefObject<AxisInvert>;
+  calibRef: React.RefObject<THREE.Quaternion | null>;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const globeMeshRef = useRef<THREE.Mesh | null>(null);
   const rafRef       = useRef<number>(0);
@@ -143,16 +183,20 @@ function GlobeCanvas({ quatRef }: { quatRef: React.RefObject<QuatRef | null> }) 
 
       const q = quatRef.current;
       if (q && globeMeshRef.current) {
-        // Remapeamento de eixos MPU6050 → Three.js:
-        //   Sensor X=direita, Y=frente, Z=cima
-        //   Three.js X=direita, Y=cima,  Z=tela
-        //
-        //   Sensor qy (pitch: inclinar frente/trás) → Three.js X
-        //   Sensor qz (yaw: girar horizontal)       → Three.js Y  (negado: horário=horário)
-        //   Sensor qx (roll: inclinar esq/dir)      → Three.js Z  (negado: inclinar direita=direita)
-        globeMeshRef.current.setRotationFromQuaternion(
-          new THREE.Quaternion(q.quat_y, -q.quat_z, -q.quat_x, q.quat_w)
-        );
+        // Fluxo: converter (com mapeamento centralizado) → normalizar →
+        // inversões da interface (dentro do helper) → se calibrado, rotação
+        // relativa → aplicar no mesh. Não usamos Euler para mover o globo.
+        const converted = sensorQuaternionToThreeQuaternion(q, invRef.current);
+
+        let applied = converted;
+        const ref = calibRef.current;
+        if (ref) {
+          // Rotação relativa à referência: qRelativo = inverse(qRef) * qAtual.
+          // Com o físico parado na pose calibrada, o virtual fica imóvel.
+          applied = ref.clone().invert().multiply(converted);
+        }
+
+        globeMeshRef.current.setRotationFromQuaternion(applied);
       }
 
       renderer.render(scene, camera);
@@ -215,11 +259,22 @@ export default function PareamentoPage() {
   const [keyHistory, setKeyHistory] = useState("");
   const [logs,       setLogs]      = useState<string[]>([]);
 
+  // Controle do globo (calibração + inversões), sem comando ao ESP32
+  const [invX, setInvX]           = useState(false);
+  const [invY, setInvY]           = useState(false);
+  const [invZ, setInvZ]           = useState(false);
+  const [calibrated, setCalibrated] = useState(false);
+
   // Refs internos
   const quatRef        = useRef<QuatRef | null>(null);
   const deviceRef      = useRef<BLEDevice | null>(null);
   const decoder        = useRef(new TextDecoder());
   const intentionalRef = useRef(false); // true quando o usuário clica Desconectar
+
+  // Refs lidos pelo loop Three.js (evita re-render por frame)
+  const invRef   = useRef<AxisInvert>({ x: false, y: false, z: false });
+  const calibRef = useRef<THREE.Quaternion | null>(null);
+  useEffect(() => { invRef.current = { x: invX, y: invY, z: invZ }; }, [invX, invY, invZ]);
 
   // Cleanup ao desmontar
   useEffect(() => () => { deviceRef.current?.gatt?.disconnect(); }, []);
@@ -228,6 +283,25 @@ export default function PareamentoPage() {
     const t = new Date().toLocaleTimeString("pt-BR");
     setLogs((p) => [`[${t}] ${msg}`, ...p].slice(0, 100));
   }, []);
+
+  // Calibração: salva o quaternion atual (já convertido + invertido) como
+  // referência. Tudo acontece no site, sem enviar comando ao ESP32.
+  const calibrate = useCallback(() => {
+    const raw = quatRef.current;
+    if (!raw) {
+      addLog("Calibração: aguardando dados do sensor.");
+      return;
+    }
+    calibRef.current = sensorQuaternionToThreeQuaternion(raw, invRef.current).clone();
+    setCalibrated(true);
+    addLog("Orientação calibrada — referência salva.");
+  }, [addLog]);
+
+  const resetCalibration = useCallback(() => {
+    calibRef.current = null;
+    setCalibrated(false);
+    addLog("Calibração zerada.");
+  }, [addLog]);
 
   // Interpreta o payload JSON recebido pelo BLE
   const processPayload = useCallback(
@@ -398,6 +472,23 @@ export default function PareamentoPage() {
   const isScanning  = status === "scanning";
   const co2Alert    = co2 >= 2000;
 
+  // Debug do globo — recomputado a cada atualização do sensor (mesma
+  // matemática do loop Three.js, para refletir o que é aplicado no mesh).
+  const rawQ = sensor
+    ? { w: sensor.quat_w, x: sensor.quat_x, y: sensor.quat_y, z: sensor.quat_z }
+    : null;
+  const convertedQ = sensor
+    ? sensorQuaternionToThreeQuaternion(
+        { quat_w: sensor.quat_w, quat_x: sensor.quat_x, quat_y: sensor.quat_y, quat_z: sensor.quat_z },
+        { x: invX, y: invY, z: invZ },
+      )
+    : null;
+  const appliedQ = convertedQ
+    ? calibRef.current
+      ? calibRef.current.clone().invert().multiply(convertedQ)
+      : convertedQ
+    : null;
+
   const ring =
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#060b14]";
 
@@ -446,7 +537,7 @@ export default function PareamentoPage() {
 
         {/* Globo */}
         <div className="min-h-0 flex-1">
-          <GlobeCanvas quatRef={quatRef} />
+          <GlobeCanvas quatRef={quatRef} invRef={invRef} calibRef={calibRef} />
         </div>
 
         {/* Painel de leituras */}
@@ -479,14 +570,17 @@ export default function PareamentoPage() {
             )}
           </div>
 
-          {/* Orientação (Euler) */}
+          {/* Orientação (Euler) — apenas leitura; o globo usa o quaternion */}
           <section>
-            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+            <h2 className="mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-600">
               Orientação
             </h2>
-            <Row label="Pitch (X)" value={sensor?.pitch} unit="°" color="text-rose-400" />
-            <Row label="Roll (Z)"  value={sensor?.roll}  unit="°" color="text-amber-400" />
-            <Row label="Yaw (Y)"   value={sensor?.yaw}   unit="°" color="text-emerald-400" />
+            <p className="mb-1 text-[10px] leading-3 text-zinc-700">
+              Padrão: Roll→X, Pitch→Y, Yaw→Z. Apenas leitura.
+            </p>
+            <Row label="Roll (X)"  value={sensor?.roll}  unit="°" color="text-amber-400" />
+            <Row label="Pitch (Y)" value={sensor?.pitch} unit="°" color="text-rose-400" />
+            <Row label="Yaw (Z)"   value={sensor?.yaw}   unit="°" color="text-emerald-400" />
           </section>
 
           {/* Acelerômetro */}
@@ -508,6 +602,80 @@ export default function PareamentoPage() {
             <Row label="X" value={sensor?.quat_x} decimals={3} color="text-violet-400" />
             <Row label="Y" value={sensor?.quat_y} decimals={3} color="text-violet-400" />
             <Row label="Z" value={sensor?.quat_z} decimals={3} color="text-violet-400" />
+          </section>
+
+          {/* Controle do globo: calibração e inversões (não envia ao ESP32) */}
+          <section>
+            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+              Globo · Calibração
+            </h2>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={calibrate}
+                  disabled={!isConnected}
+                  className={`flex-1 rounded-lg bg-emerald-700 py-2 text-xs font-black text-white hover:bg-emerald-600 disabled:opacity-40 ${ring}`}
+                >
+                  Calibrar orientação
+                </button>
+                <button
+                  type="button"
+                  onClick={resetCalibration}
+                  className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
+                >
+                  Zerar
+                </button>
+              </div>
+
+              <div
+                className={`rounded-lg px-2 py-1 text-center text-xs font-black ${
+                  calibrated ? "bg-emerald-950/60 text-emerald-400" : "bg-white/5 text-zinc-500"
+                }`}
+              >
+                {calibrated ? "● Calibrado" : "○ Não calibrado"}
+              </div>
+
+              <div className="grid grid-cols-3 gap-1">
+                {([
+                  ["X", invX, setInvX],
+                  ["Y", invY, setInvY],
+                  ["Z", invZ, setInvZ],
+                ] as const).map(([lbl, val, setter]) => (
+                  <label
+                    key={lbl}
+                    className="flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-white/5 py-1.5 text-xs font-bold text-zinc-300 hover:bg-white/10"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={val}
+                      onChange={(e) => setter(e.target.checked)}
+                      className="accent-blue-500"
+                    />
+                    Inv {lbl}
+                  </label>
+                ))}
+              </div>
+
+              <p className="text-[10px] leading-4 text-zinc-600">
+                Inverta os eixos que estiverem ao contrário e clique em
+                “Calibrar orientação” novamente.
+              </p>
+            </div>
+          </section>
+
+          {/* Debug do globo */}
+          <section>
+            <h2 className="mb-2 text-[10px] font-black uppercase tracking-widest text-zinc-600">
+              Debug do globo
+            </h2>
+            <div className="space-y-1 rounded-lg bg-black/40 p-2 font-mono text-[10px] leading-4 text-zinc-500">
+              <p><span className="text-zinc-600">bruto&nbsp;&nbsp;&nbsp;</span>{fmtQuat(rawQ)}</p>
+              <p><span className="text-zinc-600">three&nbsp;&nbsp;&nbsp;</span>{fmtQuat(convertedQ)}</p>
+              <p><span className="text-zinc-600">aplicado</span> {fmtQuat(appliedQ)}</p>
+              <p><span className="text-zinc-600">calib&nbsp;&nbsp;&nbsp;</span>{calibrated ? "sim (relativo)" : "não (absoluto)"}</p>
+              <p><span className="text-zinc-600">inv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{`X:${invX ? "on" : "off"}  Y:${invY ? "on" : "off"}  Z:${invZ ? "on" : "off"}`}</p>
+            </div>
           </section>
 
           {/* CO2 */}
