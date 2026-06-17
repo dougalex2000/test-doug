@@ -63,34 +63,60 @@ type SensorData = {
 
 type QuatRef = Pick<SensorData, "quat_w" | "quat_x" | "quat_y" | "quat_z">;
 
-// Inversão por eixo (checkboxes da interface)
-type AxisInvert = { x: boolean; y: boolean; z: boolean };
+// Opções de remapeamento de eixos (sempre ROTAÇÕES PRÓPRIAS — ver abaixo).
+type RemapOpts = { align: number[][]; reverse: boolean };
 
 /**
- * Converte o quaternion do sensor (MPU6050 + fusão no ESP32) para um
- * THREE.Quaternion. MAPEAMENTO DE EIXOS CENTRALIZADO — ajuste só aqui.
+ * As 24 rotações próprias alinhadas aos eixos (matrizes de permutação com
+ * sinais e det = +1).
  *
- * O sensor e o Three.js usam frames de eixos diferentes, então o quaternion
- * é reexpresso no frame do Three.js. Este mapeamento é o que já deixava o
- * eixo Z correto:
- *   Three.js X ←  sensor  qy
- *   Three.js Y ← -sensor  qz
- *   Three.js Z ← -sensor  qx
- *   Three.js W ←  sensor  qw
- *
- * - `inv` inverte o SENTIDO de cada eixo do Three.js (X/Y/Z) pela interface,
- *   sem mexer no firmware — útil para corrigir um eixo que apareça ao
- *   contrário, sem alterar o mapeamento base acima.
- * - O resultado é sempre normalizado.
+ * POR QUE ISTO IMPORTA: inverter UM eixo isolado (negar uma componente do
+ * quaternion) é uma REFLEXÃO, não uma rotação. Parece corrigir um eixo perto
+ * de uma pose, mas faz os eixos "trocarem entre si" em outras orientações
+ * (o problema relatado: X e Y se invertem na América do Sul). Por isso o
+ * remapeamento só usa rotações próprias — consistentes em TODAS as
+ * orientações. Remapear uma rotação por um frame próprio P é q' = (w, P·v).
  */
-function sensorQuaternionToThreeQuaternion(q: QuatRef, inv: AxisInvert): THREE.Quaternion {
-  let x =  q.quat_y;
-  let y = -q.quat_z;
-  let z = -q.quat_x;
+const PROPER_ALIGNMENTS: number[][][] = (() => {
+  const perms = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+  const out: number[][][] = [];
+  for (const p of perms) {
+    for (let s = 0; s < 8; s++) {
+      const sg = [s & 1 ? -1 : 1, s & 2 ? -1 : 1, s & 4 ? -1 : 1];
+      const M = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+      for (let r = 0; r < 3; r++) M[r][p[r]] = sg[r];
+      const det =
+        M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1]) -
+        M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0]) +
+        M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0]);
+      if (Math.round(det) === 1) out.push(M);
+    }
+  }
+  return out; // 24
+})();
+
+// Alinhamento padrão: o que já deixava o eixo Z correto — q' = (qy, -qz, -qx).
+const DEFAULT_ALIGN = (() => {
+  const base = [[0, 1, 0], [0, 0, -1], [-1, 0, 0]];
+  const i = PROPER_ALIGNMENTS.findIndex((M) =>
+    M.every((row, r) => row.every((v, c) => v === base[r][c])),
+  );
+  return i >= 0 ? i : 0;
+})();
+
+/**
+ * Converte o quaternion do sensor (MPU6050) para THREE.Quaternion.
+ * MAPEAMENTO CENTRALIZADO: aplica o alinhamento (rotação própria) escolhido e,
+ * se `reverse`, inverte o SENTIDO da rotação (handedness). Normaliza no fim.
+ */
+function sensorQuaternionToThreeQuaternion(q: QuatRef, opts: RemapOpts): THREE.Quaternion {
+  let vx = q.quat_x, vy = q.quat_y, vz = q.quat_z;
   const w = q.quat_w;
-  if (inv.x) x = -x;
-  if (inv.y) y = -y;
-  if (inv.z) z = -z;
+  if (opts.reverse) { vx = -vx; vy = -vy; vz = -vz; }
+  const M = opts.align;
+  const x = M[0][0] * vx + M[0][1] * vy + M[0][2] * vz;
+  const y = M[1][0] * vx + M[1][1] * vy + M[1][2] * vz;
+  const z = M[2][0] * vx + M[2][1] * vy + M[2][2] * vz;
   return new THREE.Quaternion(x, y, z, w).normalize();
 }
 
@@ -104,11 +130,11 @@ function fmtQuat(q: { w: number; x: number; y: number; z: number } | null): stri
 // ─── Globo 3D ─────────────────────────────────────────────────────────────────
 function GlobeCanvas({
   quatRef,
-  invRef,
+  optsRef,
   calibRef,
 }: {
   quatRef: React.RefObject<QuatRef | null>;
-  invRef: React.RefObject<AxisInvert>;
+  optsRef: React.RefObject<RemapOpts>;
   calibRef: React.RefObject<THREE.Quaternion | null>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -192,7 +218,7 @@ function GlobeCanvas({
         // Fluxo: converter (com mapeamento centralizado) → normalizar →
         // inversões da interface (dentro do helper) → se calibrado, rotação
         // relativa → aplicar no mesh. Não usamos Euler para mover o globo.
-        const converted = sensorQuaternionToThreeQuaternion(q, invRef.current);
+        const converted = sensorQuaternionToThreeQuaternion(q, optsRef.current);
 
         let applied = converted;
         const ref = calibRef.current;
@@ -265,10 +291,9 @@ export default function PareamentoPage() {
   const [keyHistory, setKeyHistory] = useState("");
   const [logs,       setLogs]      = useState<string[]>([]);
 
-  // Controle do globo (calibração + inversões), sem comando ao ESP32
-  const [invX, setInvX]           = useState(false);
-  const [invY, setInvY]           = useState(false);
-  const [invZ, setInvZ]           = useState(false);
+  // Controle do globo (alinhamento + calibração), sem comando ao ESP32
+  const [alignIndex, setAlignIndex] = useState(DEFAULT_ALIGN);
+  const [reverse,    setReverse]    = useState(false);
   const [calibrated, setCalibrated] = useState(false);
 
   // Refs internos
@@ -278,9 +303,11 @@ export default function PareamentoPage() {
   const intentionalRef = useRef(false); // true quando o usuário clica Desconectar
 
   // Refs lidos pelo loop Three.js (evita re-render por frame)
-  const invRef   = useRef<AxisInvert>({ x: false, y: false, z: false });
+  const optsRef  = useRef<RemapOpts>({ align: PROPER_ALIGNMENTS[DEFAULT_ALIGN], reverse: false });
   const calibRef = useRef<THREE.Quaternion | null>(null);
-  useEffect(() => { invRef.current = { x: invX, y: invY, z: invZ }; }, [invX, invY, invZ]);
+  useEffect(() => {
+    optsRef.current = { align: PROPER_ALIGNMENTS[alignIndex], reverse };
+  }, [alignIndex, reverse]);
 
   // Cleanup ao desmontar
   useEffect(() => () => { deviceRef.current?.gatt?.disconnect(); }, []);
@@ -298,7 +325,7 @@ export default function PareamentoPage() {
       addLog("Calibração: aguardando dados do sensor.");
       return;
     }
-    calibRef.current = sensorQuaternionToThreeQuaternion(raw, invRef.current).clone();
+    calibRef.current = sensorQuaternionToThreeQuaternion(raw, optsRef.current).clone();
     setCalibrated(true);
     addLog("Orientação calibrada — referência salva.");
   }, [addLog]);
@@ -486,7 +513,7 @@ export default function PareamentoPage() {
   const convertedQ = sensor
     ? sensorQuaternionToThreeQuaternion(
         { quat_w: sensor.quat_w, quat_x: sensor.quat_x, quat_y: sensor.quat_y, quat_z: sensor.quat_z },
-        { x: invX, y: invY, z: invZ },
+        { align: PROPER_ALIGNMENTS[alignIndex], reverse },
       )
     : null;
   const appliedQ = convertedQ
@@ -543,7 +570,7 @@ export default function PareamentoPage() {
 
         {/* Globo */}
         <div className="min-h-0 flex-1">
-          <GlobeCanvas quatRef={quatRef} invRef={invRef} calibRef={calibRef} />
+          <GlobeCanvas quatRef={quatRef} optsRef={optsRef} calibRef={calibRef} />
         </div>
 
         {/* Painel de leituras */}
@@ -642,30 +669,56 @@ export default function PareamentoPage() {
                 {calibrated ? "● Calibrado" : "○ Não calibrado"}
               </div>
 
-              <div className="grid grid-cols-3 gap-1">
-                {([
-                  ["X", invX, setInvX],
-                  ["Y", invY, setInvY],
-                  ["Z", invZ, setInvZ],
-                ] as const).map(([lbl, val, setter]) => (
-                  <label
-                    key={lbl}
-                    className="flex cursor-pointer items-center justify-center gap-1 rounded-lg bg-white/5 py-1.5 text-xs font-bold text-zinc-300 hover:bg-white/10"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={val}
-                      onChange={(e) => setter(e.target.checked)}
-                      className="accent-blue-500"
-                    />
-                    Inv {lbl}
-                  </label>
-                ))}
+              {/* Alinhamento de eixos — rotações próprias (consistentes em
+                  qualquer orientação). Avance até o globo bater em TODOS os
+                  eixos, sem trocar de direção ao mudar de posição. */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAlignIndex((i) => (i - 1 + PROPER_ALIGNMENTS.length) % PROPER_ALIGNMENTS.length)
+                  }
+                  className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
+                  aria-label="Alinhamento anterior"
+                >
+                  ◀
+                </button>
+                <span className="flex-1 rounded-lg bg-white/5 py-2 text-center text-xs font-black tabular-nums text-zinc-200">
+                  Alinhamento {alignIndex + 1}/{PROPER_ALIGNMENTS.length}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setAlignIndex((i) => (i + 1) % PROPER_ALIGNMENTS.length)}
+                  className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
+                  aria-label="Próximo alinhamento"
+                >
+                  ▶
+                </button>
+              </div>
+
+              <div className="flex gap-2">
+                <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white/5 py-1.5 text-xs font-bold text-zinc-300 hover:bg-white/10">
+                  <input
+                    type="checkbox"
+                    checked={reverse}
+                    onChange={(e) => setReverse(e.target.checked)}
+                    className="accent-blue-500"
+                  />
+                  Inverter rotação
+                </label>
+                <button
+                  type="button"
+                  onClick={() => { setAlignIndex(DEFAULT_ALIGN); setReverse(false); }}
+                  className={`rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
+                >
+                  Padrão
+                </button>
               </div>
 
               <p className="text-[10px] leading-4 text-zinc-600">
-                Inverta os eixos que estiverem ao contrário e clique em
-                “Calibrar orientação” novamente.
+                Se um eixo girar ao contrário OU os eixos “trocarem” ao mudar de
+                posição, avance o alinhamento (▶) até ficar certo em todas as
+                orientações. “Inverter rotação” troca o sentido do giro.
               </p>
             </div>
           </section>
@@ -680,7 +733,7 @@ export default function PareamentoPage() {
               <p><span className="text-zinc-600">three&nbsp;&nbsp;&nbsp;</span>{fmtQuat(convertedQ)}</p>
               <p><span className="text-zinc-600">aplicado</span> {fmtQuat(appliedQ)}</p>
               <p><span className="text-zinc-600">calib&nbsp;&nbsp;&nbsp;</span>{calibrated ? "sim (relativo)" : "não (absoluto)"}</p>
-              <p><span className="text-zinc-600">inv&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>{`X:${invX ? "on" : "off"}  Y:${invY ? "on" : "off"}  Z:${invZ ? "on" : "off"}`}</p>
+              <p><span className="text-zinc-600">align&nbsp;&nbsp;&nbsp;</span>{`${alignIndex + 1}/${PROPER_ALIGNMENTS.length}  rev:${reverse ? "on" : "off"}`}</p>
             </div>
           </section>
 
