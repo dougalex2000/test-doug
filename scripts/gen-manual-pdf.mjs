@@ -242,11 +242,14 @@ const range = doc.bufferedPageRange();
 for (let i = range.start; i < range.start + range.count; i++) {
   doc.switchToPage(i);
   if (i === range.start) continue; // capa sem rodapé
+  // Zera a margem inferior desta página para escrever na área de rodapé
+  // sem o PDFKit criar uma página em branco extra.
+  doc.page.margins.bottom = 0;
   doc.fillColor(LIGHT).font("Helvetica").fontSize(8);
   doc.text("Manual do Projeto DAVI — Desenvolvimento Assistivo para Vida Independente", LEFT, doc.page.height - 44, {
-    width: WIDTH - 40, align: "left",
+    width: WIDTH - 40, align: "left", lineBreak: false,
   });
-  doc.text(`${i}`, RIGHT - 40, doc.page.height - 44, { width: 40, align: "right" });
+  doc.text(`${i}`, RIGHT - 40, doc.page.height - 44, { width: 40, align: "right", lineBreak: false });
 }
 
 doc.end();
