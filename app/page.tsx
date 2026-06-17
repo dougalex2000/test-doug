@@ -10,6 +10,8 @@ import {
   ModuleGrid,
   type ModuleCard,
 } from "./components/modules";
+import { AssistiveGallery } from "./components/AssistiveGallery";
+import { assistiveGallery } from "./lib/assistiveGallery";
 import {
   IconChat,
   IconChip,
@@ -112,6 +114,15 @@ const audiences = [
   "Povos indígenas",
   "Profissionais de educação, saúde e reabilitação",
 ];
+
+const homeTaHighlights = [
+  "comunicacao-alternativa-tablet-acionador",
+  "interfaces-botao-sopro-sensor",
+  "controle-ambiente-assistivo",
+  "cadeira-rodas-eletrica-tablet",
+]
+  .map((slug) => assistiveGallery.find((item) => item.slug === slug))
+  .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
 export default function Home() {
   return (
@@ -249,6 +260,23 @@ export default function Home() {
             “Muitas vezes, a limitação não está na capacidade de aprender, mas na
             falta de ferramentas adequadas de acesso.”
           </blockquote>
+        </div>
+      </section>
+
+      {/* Tecnologias assistivas em destaque */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-14">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Tecnologias assistivas"
+            title="Recursos que o DAVI conecta"
+            description="Da comunicação alternativa aos métodos de acesso, do controle do ambiente à mobilidade — exemplos do que a plataforma integra."
+          />
+          <div className="mt-10">
+            <AssistiveGallery
+              items={homeTaHighlights}
+              cta={{ label: "Ver galeria", href: "/galeria#equipamentos" }}
+            />
+          </div>
         </div>
       </section>
 

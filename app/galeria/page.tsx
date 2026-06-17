@@ -7,6 +7,7 @@ import {
   SectionHeader,
 } from "../components/SiteShell";
 import { GalleryExplorer } from "../components/GalleryExplorer";
+import { AssistiveGallery } from "../components/AssistiveGallery";
 
 export const metadata: Metadata = {
   title: "Galeria de Tecnologias Assistivas",
@@ -31,6 +32,19 @@ export default function GaleriaPage() {
           </>
         }
       />
+
+      <section className="border-b border-zinc-200 bg-white px-6 py-16 scroll-mt-24" id="equipamentos">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Equipamentos de Tecnologia Assistiva"
+            title="Da baixa à alta tecnologia"
+            description="Recursos de comunicação, acesso ao computador, mobilidade, leitura, audição e automação — organizados por categoria, da escrita adaptada à automação do ambiente."
+          />
+          <div className="mt-10">
+            <AssistiveGallery cta={{ label: "Saiba mais", href: "/tecnologias-assistivas/catalogo" }} />
+          </div>
+        </div>
+      </section>
 
       <section
         className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-16 scroll-mt-24"
