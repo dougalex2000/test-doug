@@ -213,10 +213,10 @@ export function SiteFooter() {
             </p>
             <a
               id="contato"
-              href="mailto:contato@projetodavi.local"
+              href="mailto:contato.plataformadavi@gmail.com"
               className={`mt-5 inline-flex rounded-full border border-zinc-700 px-3 py-2 text-sm font-semibold text-zinc-200 hover:border-green-400 hover:text-white ${focusRing}`}
             >
-              contato@projetodavi.local
+              contato.plataformadavi@gmail.com
             </a>
           </div>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
