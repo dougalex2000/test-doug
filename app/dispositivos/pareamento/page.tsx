@@ -70,22 +70,28 @@ type AxisInvert = { x: boolean; y: boolean; z: boolean };
  * Converte o quaternion do sensor (MPU6050 + fusão no ESP32) para um
  * THREE.Quaternion. MAPEAMENTO DE EIXOS CENTRALIZADO — ajuste só aqui.
  *
- * Convenção documentada (ver rótulos do painel "Orientação"):
- *   Roll → eixo X   |   Pitch → eixo Y   |   Yaw → eixo Z
+ * O sensor e o Three.js usam frames de eixos diferentes, então o quaternion
+ * é reexpresso no frame do Three.js. Este mapeamento é o que já deixava o
+ * eixo Z correto:
+ *   Three.js X ←  sensor  qy
+ *   Three.js Y ← -sensor  qz
+ *   Three.js Z ← -sensor  qx
+ *   Three.js W ←  sensor  qw
  *
- * - Usa a ordem (x, y, z, w) do quaternion do sensor SEM embaralhar
- *   componentes. O remapeamento manual antigo —
- *   new THREE.Quaternion(qy, -qz, -qx, qw) — causava inversões e troca de
- *   direção, e foi removido.
- * - `inv` permite inverter o sentido de cada eixo pela interface, sem mexer
- *   no firmware: nega a componente correspondente do quaternion.
+ * - `inv` inverte o SENTIDO de cada eixo do Three.js (X/Y/Z) pela interface,
+ *   sem mexer no firmware — útil para corrigir um eixo que apareça ao
+ *   contrário, sem alterar o mapeamento base acima.
  * - O resultado é sempre normalizado.
  */
 function sensorQuaternionToThreeQuaternion(q: QuatRef, inv: AxisInvert): THREE.Quaternion {
-  const x = inv.x ? -q.quat_x : q.quat_x;
-  const y = inv.y ? -q.quat_y : q.quat_y;
-  const z = inv.z ? -q.quat_z : q.quat_z;
-  return new THREE.Quaternion(x, y, z, q.quat_w).normalize();
+  let x =  q.quat_y;
+  let y = -q.quat_z;
+  let z = -q.quat_x;
+  const w = q.quat_w;
+  if (inv.x) x = -x;
+  if (inv.y) y = -y;
+  if (inv.z) z = -z;
+  return new THREE.Quaternion(x, y, z, w).normalize();
 }
 
 /** Formata um quaternion para a área de debug. */
