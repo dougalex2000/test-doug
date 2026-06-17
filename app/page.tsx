@@ -19,6 +19,7 @@ import {
   IconCube,
   IconDocument,
   IconEye,
+  IconGamepad,
   IconLightbulb,
   IconSparkles,
   IconWrench,
@@ -78,6 +79,14 @@ const mainModules: ModuleCard[] = [
     href: "/ia/assistente",
     icon: <IconSparkles className="h-6 w-6" />,
     status: "Demonstração",
+  },
+  {
+    title: "DAVI Games",
+    description:
+      "Jogos educativos acessíveis para treinar aprendizagem, comunicação, atenção, decisão e métodos de acesso (toque, botão, olhar, sopro, joystick, varredura).",
+    href: "/davi-games",
+    icon: <IconGamepad className="h-6 w-6" />,
+    status: "Protótipo",
   },
   {
     title: "Catálogo de Tecnologias Assistivas",

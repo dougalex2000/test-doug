@@ -250,6 +250,34 @@ export function IconJoystick(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function IconGamepad(props: SVGProps<SVGSVGElement>) {
+  return (
+    <IconBase {...props}>
+      <path d="M7 9h10a4.5 4.5 0 0 1 4.4 5.4l-.6 3a3 3 0 0 1-5.3 1.2L13.8 16h-3.6l-1.7 2.6a3 3 0 0 1-5.3-1.2l-.6-3A4.5 4.5 0 0 1 7 9Z" />
+      <path d="M7 12v3M5.5 13.5h3M15.5 12.5h.01M18 14.5h.01" />
+    </IconBase>
+  );
+}
+
+export function IconVrGlasses(props: SVGProps<SVGSVGElement>) {
+  return (
+    <IconBase {...props}>
+      <rect x="2.5" y="7.5" width="19" height="9" rx="3" />
+      <path d="M12 16.5v-1M9 11h.01M15 11h.01" />
+    </IconBase>
+  );
+}
+
+export function IconTrophy(props: SVGProps<SVGSVGElement>) {
+  return (
+    <IconBase {...props}>
+      <path d="M7 4h10v4a5 5 0 0 1-10 0V4Z" />
+      <path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3" />
+      <path d="M10 13.5v2.5h4v-2.5M8 20h8M9.5 20l.5-4M14.5 20l-.5-4" />
+    </IconBase>
+  );
+}
+
 export function IconHeartHand(props: SVGProps<SVGSVGElement>) {
   return (
     <IconBase {...props}>

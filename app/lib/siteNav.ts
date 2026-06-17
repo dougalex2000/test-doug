@@ -55,6 +55,7 @@ export const mainNav: NavSection[] = [
       { label: "Língua Portuguesa", href: "/escola/portugues", description: "Comunicação, alfabetização e escrita.", status: "Demonstração", group: "Grupo DAVI Escola — Língua Portuguesa" },
       { label: "Matemática", href: "/escola/matematica", description: "Números, operações e cotidiano.", status: "Demonstração", group: "Grupo DAVI Escola — Matemática" },
       { label: "Videoaulas", href: "/escola/videoaulas", description: "Controle do vídeo no ritmo do aluno.", status: "Demonstração", group: "Grupo Videoaulas e Tarefas" },
+      { label: "DAVI Games", href: "/davi-games", description: "Jogos educativos e gamificação acessível.", status: "Protótipo", group: "Grupo DAVI Games" },
       { label: "Tarefas e Lições", href: "/escola/tarefas", description: "Atividades acessíveis com métricas.", status: "Demonstração", group: "Grupo Videoaulas e Tarefas" },
       { label: "Criar Atividades", href: "/escola/criar-atividades", description: "Montar conteúdos acessíveis.", status: "Em construção" },
       { label: "Subir Vídeo", href: "/escola/subir-video", description: "Envio de videoaulas (demo).", status: "Em construção" },
