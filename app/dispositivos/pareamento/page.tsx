@@ -105,6 +105,20 @@ const DEFAULT_ALIGN = (() => {
 })();
 
 /**
+ * 48 mapas de eixos = 24 rotações próprias × { sentido normal, invertido }.
+ * Cobrem TODOS os casos: alinhamentos onde um único eixo aparece invertido
+ * (operação ímpar) só são corrigidos com o sentido invertido — por isso eles
+ * entram aqui, num único seletor, em vez de dois controles separados.
+ */
+const AXIS_MAPS: RemapOpts[] = PROPER_ALIGNMENTS.flatMap((M) => [
+  { align: M, reverse: false },
+  { align: M, reverse: true },
+]);
+
+// Padrão: alinhamento base, sentido normal.
+const DEFAULT_MAP = DEFAULT_ALIGN * 2;
+
+/**
  * Converte o quaternion do sensor (MPU6050) para THREE.Quaternion.
  * MAPEAMENTO CENTRALIZADO: aplica o alinhamento (rotação própria) escolhido e,
  * se `reverse`, inverte o SENTIDO da rotação (handedness). Normaliza no fim.
@@ -291,9 +305,8 @@ export default function PareamentoPage() {
   const [keyHistory, setKeyHistory] = useState("");
   const [logs,       setLogs]      = useState<string[]>([]);
 
-  // Controle do globo (alinhamento + calibração), sem comando ao ESP32
-  const [alignIndex, setAlignIndex] = useState(DEFAULT_ALIGN);
-  const [reverse,    setReverse]    = useState(false);
+  // Controle do globo (mapa de eixos + calibração), sem comando ao ESP32
+  const [mapIndex,   setMapIndex]   = useState(DEFAULT_MAP);
   const [calibrated, setCalibrated] = useState(false);
 
   // Refs internos
@@ -303,11 +316,11 @@ export default function PareamentoPage() {
   const intentionalRef = useRef(false); // true quando o usuário clica Desconectar
 
   // Refs lidos pelo loop Three.js (evita re-render por frame)
-  const optsRef  = useRef<RemapOpts>({ align: PROPER_ALIGNMENTS[DEFAULT_ALIGN], reverse: false });
+  const optsRef  = useRef<RemapOpts>(AXIS_MAPS[DEFAULT_MAP]);
   const calibRef = useRef<THREE.Quaternion | null>(null);
   useEffect(() => {
-    optsRef.current = { align: PROPER_ALIGNMENTS[alignIndex], reverse };
-  }, [alignIndex, reverse]);
+    optsRef.current = AXIS_MAPS[mapIndex];
+  }, [mapIndex]);
 
   // Cleanup ao desmontar
   useEffect(() => () => { deviceRef.current?.gatt?.disconnect(); }, []);
@@ -513,7 +526,7 @@ export default function PareamentoPage() {
   const convertedQ = sensor
     ? sensorQuaternionToThreeQuaternion(
         { quat_w: sensor.quat_w, quat_x: sensor.quat_x, quat_y: sensor.quat_y, quat_z: sensor.quat_z },
-        { align: PROPER_ALIGNMENTS[alignIndex], reverse },
+        AXIS_MAPS[mapIndex],
       )
     : null;
   const appliedQ = convertedQ
@@ -669,56 +682,43 @@ export default function PareamentoPage() {
                 {calibrated ? "● Calibrado" : "○ Não calibrado"}
               </div>
 
-              {/* Alinhamento de eixos — rotações próprias (consistentes em
-                  qualquer orientação). Avance até o globo bater em TODOS os
-                  eixos, sem trocar de direção ao mudar de posição. */}
+              {/* Mapa de eixos — 48 combinações (rotações próprias × sentido).
+                  Avance ▶ até o globo bater em TODOS os eixos, em qualquer
+                  orientação, sem trocar de direção ao mudar de posição. */}
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() =>
-                    setAlignIndex((i) => (i - 1 + PROPER_ALIGNMENTS.length) % PROPER_ALIGNMENTS.length)
-                  }
+                  onClick={() => setMapIndex((i) => (i - 1 + AXIS_MAPS.length) % AXIS_MAPS.length)}
                   className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
-                  aria-label="Alinhamento anterior"
+                  aria-label="Mapa anterior"
                 >
                   ◀
                 </button>
                 <span className="flex-1 rounded-lg bg-white/5 py-2 text-center text-xs font-black tabular-nums text-zinc-200">
-                  Alinhamento {alignIndex + 1}/{PROPER_ALIGNMENTS.length}
+                  Mapa de eixos {mapIndex + 1}/{AXIS_MAPS.length}
                 </span>
                 <button
                   type="button"
-                  onClick={() => setAlignIndex((i) => (i + 1) % PROPER_ALIGNMENTS.length)}
+                  onClick={() => setMapIndex((i) => (i + 1) % AXIS_MAPS.length)}
                   className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
-                  aria-label="Próximo alinhamento"
+                  aria-label="Próximo mapa"
                 >
                   ▶
                 </button>
               </div>
 
-              <div className="flex gap-2">
-                <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white/5 py-1.5 text-xs font-bold text-zinc-300 hover:bg-white/10">
-                  <input
-                    type="checkbox"
-                    checked={reverse}
-                    onChange={(e) => setReverse(e.target.checked)}
-                    className="accent-blue-500"
-                  />
-                  Inverter rotação
-                </label>
-                <button
-                  type="button"
-                  onClick={() => { setAlignIndex(DEFAULT_ALIGN); setReverse(false); }}
-                  className={`rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
-                >
-                  Padrão
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setMapIndex(DEFAULT_MAP)}
+                className={`w-full rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
+              >
+                Voltar ao padrão
+              </button>
 
               <p className="text-[10px] leading-4 text-zinc-600">
                 Se um eixo girar ao contrário OU os eixos “trocarem” ao mudar de
-                posição, avance o alinhamento (▶) até ficar certo em todas as
-                orientações. “Inverter rotação” troca o sentido do giro.
+                posição, avance ▶ até ficar certo em todas as orientações.
+                Depois, clique em “Calibrar orientação”.
               </p>
             </div>
           </section>
@@ -733,7 +733,7 @@ export default function PareamentoPage() {
               <p><span className="text-zinc-600">three&nbsp;&nbsp;&nbsp;</span>{fmtQuat(convertedQ)}</p>
               <p><span className="text-zinc-600">aplicado</span> {fmtQuat(appliedQ)}</p>
               <p><span className="text-zinc-600">calib&nbsp;&nbsp;&nbsp;</span>{calibrated ? "sim (relativo)" : "não (absoluto)"}</p>
-              <p><span className="text-zinc-600">align&nbsp;&nbsp;&nbsp;</span>{`${alignIndex + 1}/${PROPER_ALIGNMENTS.length}  rev:${reverse ? "on" : "off"}`}</p>
+              <p><span className="text-zinc-600">mapa&nbsp;&nbsp;&nbsp;&nbsp;</span>{`${mapIndex + 1}/${AXIS_MAPS.length}  rev:${AXIS_MAPS[mapIndex].reverse ? "on" : "off"}`}</p>
             </div>
           </section>
 
