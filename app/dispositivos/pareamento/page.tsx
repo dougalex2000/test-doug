@@ -95,15 +95,6 @@ const PROPER_ALIGNMENTS: number[][][] = (() => {
   return out; // 24
 })();
 
-// Alinhamento padrão: o que já deixava o eixo Z correto — q' = (qy, -qz, -qx).
-const DEFAULT_ALIGN = (() => {
-  const base = [[0, 1, 0], [0, 0, -1], [-1, 0, 0]];
-  const i = PROPER_ALIGNMENTS.findIndex((M) =>
-    M.every((row, r) => row.every((v, c) => v === base[r][c])),
-  );
-  return i >= 0 ? i : 0;
-})();
-
 /**
  * 48 mapas de eixos = 24 rotações próprias × { sentido normal, invertido }.
  * Cobrem TODOS os casos: alinhamentos onde um único eixo aparece invertido
@@ -115,8 +106,9 @@ const AXIS_MAPS: RemapOpts[] = PROPER_ALIGNMENTS.flatMap((M) => [
   { align: M, reverse: true },
 ]);
 
-// Padrão: alinhamento base, sentido normal.
-const DEFAULT_MAP = DEFAULT_ALIGN * 2;
+// Mapa padrão: 13/48 — validado com o dispositivo físico (todos os eixos
+// corretos em qualquer orientação). Índice 0-based = 12.
+const DEFAULT_MAP = 12;
 
 /**
  * Converte o quaternion do sensor (MPU6050) para THREE.Quaternion.
