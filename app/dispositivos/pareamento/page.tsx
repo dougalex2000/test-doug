@@ -351,6 +351,25 @@ export default function PareamentoPage() {
     window.setTimeout(() => autoCalibrate(0), AUTO_CALIB_SETTLE_MS);
   }, [autoCalibrate]);
 
+  // Calibração MANUAL (botão): recaptura a referência a qualquer momento.
+  // Essencial para corrigir a deriva (drift) do sensor sem desconectar.
+  const calibrate = useCallback(() => {
+    const raw = quatRef.current;
+    if (!raw) {
+      addLog("Calibração: aguardando dados do sensor.");
+      return;
+    }
+    calibRef.current = sensorQuaternionToThreeQuaternion(raw, optsRef.current).clone();
+    setCalibrated(true);
+    addLog("Orientação calibrada (manual).");
+  }, [addLog]);
+
+  const resetCalibration = useCallback(() => {
+    calibRef.current = null;
+    setCalibrated(false);
+    addLog("Calibração zerada.");
+  }, [addLog]);
+
   // Interpreta o payload JSON recebido pelo BLE
   const processPayload = useCallback(
     (raw: string, src: string) => {
@@ -366,7 +385,21 @@ export default function PareamentoPage() {
         // Acelerômetro
         const a = d.acc   as Record<string, number> | undefined;
 
-        if (e || q || a) {
+        // Valida o quaternion: o firmware calcula w = sqrt(1 - x²-y²-z²) e,
+        // em alguns ângulos, isso vira NaN/null. Descartamos quadros inválidos
+        // (senão o globo "enlouquece"); se só o w faltar, reconstruímos.
+        const isFinite = (v: unknown): v is number =>
+          typeof v === "number" && Number.isFinite(v);
+        let qNext: QuatRef | null = null;
+        if (q && isFinite(q.quat_x) && isFinite(q.quat_y) && isFinite(q.quat_z)) {
+          const x = q.quat_x, y = q.quat_y, z = q.quat_z;
+          const w = isFinite(q.quat_w)
+            ? q.quat_w
+            : Math.sqrt(Math.max(0, 1 - (x * x + y * y + z * z)));
+          qNext = { quat_w: w, quat_x: x, quat_y: y, quat_z: z };
+        }
+
+        if (e || qNext || a) {
           setSensor((prev) => {
             const base: SensorData = prev ?? {
               pitch: 0, roll: 0, yaw: 0,
@@ -376,15 +409,12 @@ export default function PareamentoPage() {
             const next: SensorData = {
               ...base,
               ...(e ? { pitch: e.pitch ?? base.pitch, roll: e.roll ?? base.roll, yaw: e.yaw ?? base.yaw } : {}),
-              ...(q ? { quat_w: q.quat_w ?? base.quat_w, quat_x: q.quat_x ?? base.quat_x,
-                        quat_y: q.quat_y ?? base.quat_y, quat_z: q.quat_z ?? base.quat_z } : {}),
+              ...(qNext ? { quat_w: qNext.quat_w, quat_x: qNext.quat_x,
+                            quat_y: qNext.quat_y, quat_z: qNext.quat_z } : {}),
               ...(a ? { acc_x: a.x ?? base.acc_x, acc_y: a.y ?? base.acc_y, acc_z: a.z ?? base.acc_z } : {}),
             };
-            // Atualiza ref para o loop Three.js sem re-render extra
-            quatRef.current = {
-              quat_w: next.quat_w, quat_x: next.quat_x,
-              quat_y: next.quat_y, quat_z: next.quat_z,
-            };
+            // Atualiza ref para o loop Three.js só com quaternion válido
+            if (qNext) quatRef.current = qNext;
             return next;
           });
         }
@@ -660,20 +690,39 @@ export default function PareamentoPage() {
               Globo · Calibração
             </h2>
             <div className="space-y-2">
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={calibrate}
+                  disabled={!isConnected}
+                  className={`flex-1 rounded-lg bg-emerald-700 py-2 text-xs font-black text-white hover:bg-emerald-600 disabled:opacity-40 ${ring}`}
+                >
+                  Calibrar orientação
+                </button>
+                <button
+                  type="button"
+                  onClick={resetCalibration}
+                  className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
+                >
+                  Zerar
+                </button>
+              </div>
+
               <div
                 className={`rounded-lg px-2 py-1 text-center text-xs font-black ${
                   calibrated ? "bg-emerald-950/60 text-emerald-400" : "bg-white/5 text-zinc-500"
                 }`}
               >
                 {calibrated
-                  ? "● Calibrado (automático)"
+                  ? "● Calibrado"
                   : isConnected
                   ? "○ Calibrando…"
                   : "○ Conecte para calibrar"}
               </div>
               <p className="text-[10px] leading-4 text-zinc-600">
-                A orientação é calibrada automaticamente ~1s após conectar.
-                Deixe o globo parado na posição inicial ao parear.
+                Calibra sozinho ~1s após conectar. Se o globo desalinhar com o
+                tempo (deriva do sensor), deixe-o parado na posição inicial e
+                clique em “Calibrar orientação”.
               </p>
 
               {/* Mapa de eixos — 48 combinações (rotações próprias × sentido).
