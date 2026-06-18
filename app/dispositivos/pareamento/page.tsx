@@ -41,6 +41,9 @@ const CO2_UUID     = "19b10003-e8f2-537e-4f6c-d104768a1214";
 
 const DEVICE_NAME  = "DAVI_GAIA_ACCESSPAD";
 
+// Espera ~1s após conectar antes de calibrar automaticamente (estabilização).
+const AUTO_CALIB_SETTLE_MS = 1000;
+
 // Textura da Terra (Three.js examples — CORS aberto)
 const EARTH_TEXTURE_URL =
   "https://threejs.org/examples/textures/land_ocean_ice_cloud_2048.jpg";
@@ -322,24 +325,31 @@ export default function PareamentoPage() {
     setLogs((p) => [`[${t}] ${msg}`, ...p].slice(0, 100));
   }, []);
 
-  // Calibração: salva o quaternion atual (já convertido + invertido) como
-  // referência. Tudo acontece no site, sem enviar comando ao ESP32.
-  const calibrate = useCallback(() => {
+  // Calibração AUTOMÁTICA (sem botão): captura a orientação atual como
+  // referência. Tenta de novo a cada 200 ms enquanto os dados não chegam.
+  // Tudo acontece no site, sem enviar comando ao ESP32.
+  const autoCalibrate = useCallback((attempt = 0) => {
+    if (intentionalRef.current) return; // usuário desconectou — aborta
     const raw = quatRef.current;
-    if (!raw) {
-      addLog("Calibração: aguardando dados do sensor.");
+    if (raw) {
+      calibRef.current = sensorQuaternionToThreeQuaternion(raw, optsRef.current).clone();
+      setCalibrated(true);
+      addLog("Orientação calibrada automaticamente.");
       return;
     }
-    calibRef.current = sensorQuaternionToThreeQuaternion(raw, optsRef.current).clone();
-    setCalibrated(true);
-    addLog("Orientação calibrada — referência salva.");
+    if (attempt < 25) {
+      window.setTimeout(() => autoCalibrate(attempt + 1), 200);
+    } else {
+      addLog("Calibração automática: sem dados do sensor.");
+    }
   }, [addLog]);
 
-  const resetCalibration = useCallback(() => {
+  // Agenda a calibração automática ~1s após conectar (deixa o sensor estabilizar).
+  const scheduleAutoCalibrate = useCallback(() => {
     calibRef.current = null;
     setCalibrated(false);
-    addLog("Calibração zerada.");
-  }, [addLog]);
+    window.setTimeout(() => autoCalibrate(0), AUTO_CALIB_SETTLE_MS);
+  }, [autoCalibrate]);
 
   // Interpreta o payload JSON recebido pelo BLE
   const processPayload = useCallback(
@@ -415,10 +425,11 @@ export default function PareamentoPage() {
       await device.gatt.connect();
       setStatus("connected");
       addLog("Reconectado.");
+      scheduleAutoCalibrate();
     } catch {
       reconnect(device, attempt + 1);
     }
-  }, [addLog]);
+  }, [addLog, scheduleAutoCalibrate]);
 
   const handleDisconnect = useCallback(() => {
     addLog("Dispositivo desconectado.");
@@ -481,6 +492,7 @@ export default function PareamentoPage() {
 
       setStatus("connected");
       addLog(`Conectado a "${name}" com sucesso.`);
+      scheduleAutoCalibrate();
     } catch (err: unknown) {
       if (err instanceof Error && err.name === "NotFoundError") {
         setStatus("cancelled");
@@ -648,31 +660,21 @@ export default function PareamentoPage() {
               Globo · Calibração
             </h2>
             <div className="space-y-2">
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={calibrate}
-                  disabled={!isConnected}
-                  className={`flex-1 rounded-lg bg-emerald-700 py-2 text-xs font-black text-white hover:bg-emerald-600 disabled:opacity-40 ${ring}`}
-                >
-                  Calibrar orientação
-                </button>
-                <button
-                  type="button"
-                  onClick={resetCalibration}
-                  className={`rounded-lg border border-zinc-700 px-3 py-2 text-xs font-black text-zinc-300 hover:bg-white/5 ${ring}`}
-                >
-                  Zerar
-                </button>
-              </div>
-
               <div
                 className={`rounded-lg px-2 py-1 text-center text-xs font-black ${
                   calibrated ? "bg-emerald-950/60 text-emerald-400" : "bg-white/5 text-zinc-500"
                 }`}
               >
-                {calibrated ? "● Calibrado" : "○ Não calibrado"}
+                {calibrated
+                  ? "● Calibrado (automático)"
+                  : isConnected
+                  ? "○ Calibrando…"
+                  : "○ Conecte para calibrar"}
               </div>
+              <p className="text-[10px] leading-4 text-zinc-600">
+                A orientação é calibrada automaticamente ~1s após conectar.
+                Deixe o globo parado na posição inicial ao parear.
+              </p>
 
               {/* Mapa de eixos — 48 combinações (rotações próprias × sentido).
                   Avance ▶ até o globo bater em TODOS os eixos, em qualquer
