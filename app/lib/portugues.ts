@@ -19,6 +19,12 @@ export type Exercicio =
       tipo: "frase";
       pergunta: string;
       modelo: string;
+    }
+  | {
+      // Resposta livre: sem gabarito, basta o aluno escrever algo para concluir.
+      id: string;
+      tipo: "aberto";
+      pergunta: string;
     };
 
 export type TipoAula = "introducao" | "vogais" | "letra" | "complexo";
@@ -60,10 +66,52 @@ export const COMPLEXOS: ComplexoInfo[] = [
 ];
 
 /* ----------------------------------------------------------------- */
+/* Videoaulas iniciais (placeholders do YouTube — fáceis de trocar)   */
+/* ----------------------------------------------------------------- */
+
+/**
+ * Lista de videoaulas iniciais. Para trocar por um vídeo próprio do DAVI,
+ * basta substituir `videoUrl` (aceita link do YouTube ou caminho .mp4).
+ */
+export const VIDEOAULAS_INICIAIS: Aula[] = [
+  {
+    id: "silaba-por-silaba",
+    titulo: "Aprendendo a ler sílaba por sílaba",
+    subtitulo: "Aula inicial de leitura usando sílabas",
+    tipo: "introducao",
+    silabas: [],
+    palavras: ["SÍLABA", "PALAVRA", "LEITURA"],
+    fraseModelo: "Eu estou aprendendo a ler.",
+    videoUrl: "https://www.youtube.com/watch?v=Fp0zbhc3W18&t=16s",
+    exercicios: [
+      { id: "sps-1", tipo: "aberto", pergunta: "Escreva uma sílaba que apareceu na aula." },
+      { id: "sps-2", tipo: "aberto", pergunta: "Escreva uma palavra simples que você conseguiu ler." },
+      { id: "sps-3", tipo: "aberto", pergunta: "Digite uma frase curta usando uma palavra da aula." },
+    ],
+  },
+  {
+    id: "alfabetizacao-complementar",
+    titulo: "Aula complementar de alfabetização",
+    subtitulo: "Reforço de letras, sons, sílabas e palavras",
+    tipo: "introducao",
+    silabas: [],
+    palavras: ["LETRA", "SOM", "PALAVRA"],
+    fraseModelo: "Cada letra tem o seu som.",
+    videoUrl: "https://www.youtube.com/watch?v=Wn2Tn7KTj7s&t=19s",
+    exercicios: [
+      { id: "ac-1", tipo: "aberto", pergunta: "Qual letra ou sílaba você ouviu na aula?" },
+      { id: "ac-2", tipo: "aberto", pergunta: "Copie uma palavra da aula." },
+    ],
+  },
+];
+
+/* ----------------------------------------------------------------- */
 /* Aulas explícitas                                                   */
 /* ----------------------------------------------------------------- */
 
 const aulasExplicitas: Record<string, Aula> = {
+  ...Object.fromEntries(VIDEOAULAS_INICIAIS.map((a) => [a.id, a])),
+
   introducao: {
     id: "introducao",
     titulo: "Por que aprendemos a escrever?",
@@ -227,6 +275,7 @@ export function getAula(id: string): Aula | undefined {
 
 /** Ordem de navegação para o botão "Próxima aula". */
 export const ORDEM_AULAS: string[] = [
+  ...VIDEOAULAS_INICIAIS.map((a) => a.id),
   "introducao",
   "vogais",
   ...LETRAS.map((l) => l.toLowerCase()),

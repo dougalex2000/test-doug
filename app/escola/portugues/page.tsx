@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumb, PageShell } from "../../components/SiteShell";
-import { COMPLEXOS, LETRAS } from "../../lib/portugues";
+import { COMPLEXOS, LETRAS, VIDEOAULAS_INICIAIS } from "../../lib/portugues";
 
 export const metadata: Metadata = {
   title: "DAVI Escola — Português",
@@ -48,6 +48,53 @@ export default function PortuguesPage() {
             recursos acessíveis. O objetivo é apoiar a alfabetização e também a
             comunicação para a vida diária.
           </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {[
+              "🚧 Em construção",
+              "🧪 Protótipo educacional",
+              "⌨️ Acessível por teclado",
+              "🎯 Compatível com varredura",
+            ].map((b) => (
+              <span
+                key={b}
+                className="rounded-full bg-white px-3 py-1 text-sm font-bold text-zinc-700 shadow-sm ring-1 ring-zinc-200"
+              >
+                {b}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Videoaulas iniciais */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-12">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-2xl font-black text-zinc-900">Videoaulas iniciais</h2>
+          <p className="mt-1 text-base text-zinc-600">
+            Aulas em vídeo para começar a ler. Cada uma abre com exercícios,
+            apoio de voz e botões grandes.
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {VIDEOAULAS_INICIAIS.map((a) => (
+              <Link
+                key={a.id}
+                href={`/escola/portugues/aula/${a.id}`}
+                aria-label={`Videoaula: ${a.titulo}`}
+                className={`group flex flex-col gap-2 rounded-3xl border-2 border-rose-200 bg-rose-50 p-6 shadow-sm transition hover:border-rose-400 hover:shadow-lg ${focusRing}`}
+              >
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-600 text-2xl shadow-md" aria-hidden="true">
+                  ▶️
+                </span>
+                <h3 className="mt-1 text-lg font-black text-zinc-900">{a.titulo}</h3>
+                <p className="text-sm font-semibold leading-6 text-zinc-600">
+                  {a.subtitulo}
+                </p>
+                <span className="mt-2 text-sm font-black text-rose-700 group-hover:underline">
+                  Assistir e praticar →
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
