@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { FlowSteps, ConstructionNotice, ConceptPage } from "../../components/modules";
 import { ConectaPanel } from "../../components/demos";
+import { LinkButton } from "../../components/SiteShell";
 
 export const metadata: Metadata = {
   title: "DAVI Conecta",
@@ -24,6 +25,15 @@ export default function ConectaPage() {
               steps={["Dispositivo físico", "Bluetooth / WebSocket", "DAVI Conecta", "Ação na plataforma"]}
             />
           </div>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <LinkButton href="/dispositivos/pareamento">
+              Abrir o Pareamento de dispositivos →
+            </LinkButton>
+          </div>
+          <p className="mt-3 text-sm text-zinc-600">
+            Conecte e calibre seu dispositivo (GAIA_KEYPAD / GAIA_ACCESSPAD) por
+            Bluetooth e veja a visualização 3D em tempo real.
+          </p>
         </div>
       }
       sections={[
