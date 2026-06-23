@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Aula, Exercicio } from "../../lib/portugues";
 import { registrar } from "../../lib/portuguesMetrics";
-import { isYouTube, youtubeEmbedUrl } from "../../lib/video";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 focus-visible:ring-offset-2";
@@ -285,9 +284,6 @@ export function AulaPortugues({
     comemorar();
   }
 
-  // Vídeo: YouTube (placeholder inicial) ou arquivo próprio do DAVI.
-  const ytEmbed = isYouTube(aula.videoUrl) ? youtubeEmbedUrl(aula.videoUrl) : null;
-
   /* ---------------- render ---------------- */
 
   const btnBig =
@@ -343,46 +339,33 @@ export function AulaPortugues({
       <section className="border-b border-zinc-200 px-6 py-8">
         <div className="mx-auto max-w-4xl">
           <div className="relative aspect-video w-full overflow-hidden rounded-3xl border-2 border-zinc-200 bg-zinc-900 shadow-sm">
-            {ytEmbed ? (
-              <iframe
-                src={ytEmbed}
-                title={`Videoaula: ${aula.titulo}`}
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <>
-                <video
-                  ref={videoRef}
-                  src={aula.videoUrl}
-                  preload="metadata"
-                  playsInline
-                  className="h-full w-full object-cover"
-                  onCanPlay={() => setVideoReady(true)}
-                  onError={() => setVideoReady(false)}
-                  onPlay={() => setPlaying(true)}
-                  onPause={() => setPlaying(false)}
-                />
-                {!videoReady && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blue-600 to-violet-600 p-6 text-center text-white">
-                    <span className="text-6xl" aria-hidden="true">🎬</span>
-                    <p className="text-xl font-black">Vídeo da aula será inserido aqui</p>
-                    <p className="max-w-md text-sm font-semibold text-white/80">
-                      Os vídeos serão produzidos pelo próprio DAVI. Enquanto isso,
-                      use os botões abaixo e o apoio de voz para aprender.
-                    </p>
-                  </div>
-                )}
-              </>
+            <video
+              ref={videoRef}
+              src={aula.videoUrl}
+              preload="metadata"
+              playsInline
+              className="h-full w-full object-cover"
+              onCanPlay={() => setVideoReady(true)}
+              onError={() => setVideoReady(false)}
+              onPlay={() => setPlaying(true)}
+              onPause={() => setPlaying(false)}
+            />
+            {!videoReady && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-blue-600 to-violet-600 p-6 text-center text-white">
+                <span className="text-6xl" aria-hidden="true">🎬</span>
+                <p className="text-xl font-black">
+                  Vídeo demonstrativo autoral do Projeto DAVI em preparação.
+                </p>
+                <p className="max-w-md text-sm font-semibold text-white/80">
+                  Enquanto o vídeo é produzido, use os botões abaixo e o apoio de
+                  voz para aprender.
+                </p>
+              </div>
             )}
           </div>
-          {ytEmbed && (
-            <p className="mt-2 text-center text-xs font-semibold text-zinc-500">
-              Vídeo de referência (YouTube), usado como exemplo inicial. Use os
-              controles do próprio player para tocar, pausar e avançar.
-            </p>
-          )}
+          <p className="mt-2 text-center text-xs font-semibold text-zinc-500">
+            Conteúdo demonstrativo autoral criado para o Projeto DAVI.
+          </p>
 
           {/* Controles grandes */}
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
