@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { mockUser, mockNotifications } from "../lib/userData";
 import { assetSrc } from "../lib/imageAssets";
 import { mainNav, footerSections, type ModuleStatus } from "../lib/siteNav";
-import { IconBell, IconContrast, IconMenu, IconMotion } from "./icons";
+import { IconBell, IconMenu } from "./icons";
 import { VisitCounter } from "./VisitCounter";
 
 const focusRing =
@@ -24,20 +24,10 @@ const menuStatusDot: Record<ModuleStatus, string> = {
 };
 
 export function SiteHeader() {
-  const [largeText, setLargeText] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("davi-large-text", largeText);
-    document.documentElement.classList.toggle("davi-high-contrast", highContrast);
-    document.documentElement.classList.toggle("davi-reduce-motion", reducedMotion);
-  }, [highContrast, largeText, reducedMotion]);
-
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white shadow-sm">
+    <header id="menu-principal" className="sticky top-0 z-40 border-b border-zinc-200 bg-white shadow-sm">
       <a
-        href="#conteudo"
+        href="#conteudo-principal"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-blue-700 focus:px-4 focus:py-2 focus:font-bold focus:text-white"
       >
         Pular para o conteúdo
@@ -127,40 +117,6 @@ export function SiteHeader() {
           </div>
 
           <div className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-blue-800 md:flex">
-            <button
-              type="button"
-              aria-label="Aumentar texto"
-              aria-pressed={largeText}
-              onClick={() => setLargeText((current) => !current)}
-              className={`rounded-lg px-2 py-2 ${focusRing} ${
-                largeText ? "bg-green-700 text-white" : "hover:bg-blue-50"
-              }`}
-            >
-              A+
-            </button>
-            <button
-              type="button"
-              aria-label="Alternar alto contraste"
-              aria-pressed={highContrast}
-              onClick={() => setHighContrast((current) => !current)}
-              className={`rounded-lg px-2 py-2 ${focusRing} ${
-                highContrast ? "bg-green-700 text-white" : "hover:bg-blue-50"
-              }`}
-            >
-              <IconContrast className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              aria-label="Reduzir movimento"
-              aria-pressed={reducedMotion}
-              onClick={() => setReducedMotion((current) => !current)}
-              className={`rounded-lg px-2 py-2 ${focusRing} ${
-                reducedMotion ? "bg-green-700 text-white" : "hover:bg-blue-50"
-              }`}
-            >
-              <IconMotion className="h-5 w-5" />
-            </button>
-
             <Link
               href="/notificacoes"
               aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ""}`}
@@ -197,7 +153,7 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-zinc-800 bg-zinc-950 px-6 py-12 text-white">
+    <footer id="rodape" className="border-t border-zinc-800 bg-zinc-950 px-6 py-12 text-white">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_2fr]">
           <div>
@@ -272,7 +228,7 @@ export function PageShell({ children }: { children: ReactNode }) {
     <main className="min-h-screen bg-white text-zinc-950">
       <UnderConstructionBanner />
       <SiteHeader />
-      <div id="conteudo">{children}</div>
+      <div id="conteudo-principal" tabIndex={-1}>{children}</div>
       <SiteFooter />
     </main>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Atkinson_Hyperlegible, Inter } from "next/font/google";
 import "./globals.css";
+import { AccessibilityToolbar } from "./components/AccessibilityToolbar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,7 +30,17 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${inter.variable} ${atkinson.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        {/* Aplica as preferências de acessibilidade antes do paint (sem flash). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var s=localStorage.getItem('davi-a11y-scale');if(s){document.documentElement.style.setProperty('--font-scale',s);}if(localStorage.getItem('davi-a11y-contrast')==='1'){document.documentElement.classList.add('high-contrast');}if(localStorage.getItem('davi-a11y-motion')==='1'){document.documentElement.classList.add('davi-reduce-motion');}}catch(e){}})();",
+          }}
+        />
+        <AccessibilityToolbar />
+        {children}
+      </body>
     </html>
   );
 }

@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* Escala de fonte controlada pela barra de acessibilidade (A+). */
+  --font-scale: 1;
 }
 
 @theme inline {
@@ -17,6 +19,11 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Aumento de fonte: escala a base em rem (afeta texto, botões, cards…). */
+html {
+  font-size: calc(100% * var(--font-scale, 1));
 }
 
 body {
@@ -37,25 +44,64 @@ h3 {
   color: #ffffff;
 }
 
-.davi-large-text {
-  font-size: 18px;
+/* Foco visível global, claro e consistente. */
+:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
 }
 
-.davi-high-contrast body {
-  background: #ffffff;
-  color: #000000;
+/* Links de salto (skip links) — visíveis só ao receber foco pelo teclado. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: #1d4ed8;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  font-weight: 800;
+  border-radius: 0 0 0.6rem 0;
+}
+.skip-link:focus {
+  left: 0;
+  outline: 3px solid #ffffff;
+  outline-offset: -3px;
 }
 
-.davi-high-contrast a,
-.davi-high-contrast button {
-  text-decoration-thickness: 2px;
+/* ───────────────── Alto contraste (modo escuro de alta legibilidade) ──────────
+   Override amplo para funcionar em qualquer página, mantendo as imagens. */
+.high-contrast,
+.high-contrast :where(*:not(img):not(video):not(canvas)) {
+  background-color: #000000 !important;
+  background-image: none !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+.high-contrast a {
+  color: #7cc0ff !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.high-contrast button,
+.high-contrast [role="button"],
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select {
+  border: 2px solid #ffffff !important;
+}
+/* Imagens recebem fundo claro para não sumirem em logos com transparência. */
+.high-contrast img,
+.high-contrast video,
+.high-contrast canvas {
+  background: #ffffff !important;
+}
+.high-contrast :focus-visible {
+  outline: 4px solid #ffd400 !important;
+  outline-offset: 3px !important;
 }
 
-.davi-high-contrast :focus-visible {
-  outline: 4px solid #fdb022;
-  outline-offset: 3px;
-}
-
+/* Reduzir movimento (opção da barra) + preferência do sistema. */
 .davi-reduce-motion *,
 .davi-reduce-motion *::before,
 .davi-reduce-motion *::after {
