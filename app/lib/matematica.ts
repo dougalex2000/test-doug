@@ -42,6 +42,7 @@ export type AulaMat = {
   categoria: string;
   descricao: string;
   videoUrl: string;
+  poster?: string; // imagem de prévia (opcional)
   visualType: VisualType;
   visualA?: number;
   visualB?: number;
@@ -61,6 +62,21 @@ export const CATEGORIAS_MAT = [
 
 export const AULAS_MAT: AulaMat[] = [
   // Números
+  {
+    id: "numeros-0-5",
+    titulo: "Números de 0 a 5",
+    subtitulo: "Reconhecer e contar de 0 a 5",
+    categoria: "Números",
+    descricao: "Vídeo autoral: conheça os números de 0 a 5 contando bolinhas.",
+    videoUrl: "/videos/matematica/davi-matematica-01-numeros-0-a-5.mp4",
+    poster: "/videos/matematica/davi-matematica-01-numeros-0-a-5-poster.png",
+    visualType: "counting",
+    visualA: 5,
+    exercicios: [
+      { id: "n5-1", tipo: "numero", pergunta: "Conte as bolinhas e digite o número.", resposta: "5", objetos: 5 },
+      { id: "n5-2", tipo: "numero", pergunta: "Qual número vem depois do 4?", resposta: "5" },
+    ],
+  },
   {
     id: "numeros-0-10",
     titulo: "Números de 0 a 10",
@@ -156,7 +172,8 @@ export const AULAS_MAT: AulaMat[] = [
     subtitulo: "Juntar quantidades",
     categoria: "Operações",
     descricao: "Aprenda a juntar quantidades usando a soma.",
-    videoUrl: "",
+    videoUrl: "/videos/matematica/davi-matematica-02-soma-1-mais-1.mp4",
+    poster: "/videos/matematica/davi-matematica-02-soma-1-mais-1-poster.png",
     visualType: "addition",
     visualA: 2,
     visualB: 3,

@@ -395,8 +395,10 @@ export function AulaMatematica({
             <video
               ref={videoRef}
               src={aula.videoUrl}
+              poster={aula.poster}
               preload="metadata"
               playsInline
+              controls
               className="h-full w-full object-cover"
               onCanPlay={() => setVideoReady(true)}
               onError={() => setVideoReady(false)}

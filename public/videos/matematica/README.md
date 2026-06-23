@@ -5,14 +5,18 @@ Enquanto o arquivo não existir, a página da aula mostra o placeholder
 _"Vídeo demonstrativo autoral do Projeto DAVI em preparação."_ e o restante
 (apoio visual, exercícios, teclado numérico, TTS, varredura) segue funcionando.
 
-Cada aula procura o arquivo `/videos/matematica/{id}.mp4`, onde `{id}` é o
-identificador da aula em `app/lib/matematica.ts`. Não é preciso mexer no código.
+Por padrão, cada aula procura `/videos/matematica/{id}.mp4` (onde `{id}` é o
+identificador da aula em `app/lib/matematica.ts`). Algumas aulas já usam vídeos
+autorais com nome próprio, indicados abaixo. Um `poster` (`.png`) opcional, com
+o sufixo `-poster`, é mostrado como prévia antes de tocar.
 
 ## Nomes esperados
 
-| Aula | Arquivo |
-|------|---------|
-| Números de 0 a 10 | `numeros-0-10.mp4` |
+| Aula | Arquivo | Poster |
+|------|---------|--------|
+| Números de 0 a 5 | `davi-matematica-01-numeros-0-a-5.mp4` ✅ | `...-poster.png` ✅ |
+| Soma simples (1 + 1) | `davi-matematica-02-soma-1-mais-1.mp4` ✅ | `...-poster.png` ✅ |
+| Números de 0 a 10 | `numeros-0-10.mp4` |  |
 | Números de 0 a 20 | `numeros-0-20.mp4` |
 | Contar objetos | `contar-objetos.mp4` |
 | Antes e depois | `antes-depois.mp4` |

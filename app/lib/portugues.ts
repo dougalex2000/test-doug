@@ -38,6 +38,7 @@ export type Aula = {
   palavras: string[];
   fraseModelo: string;
   videoUrl: string;
+  poster?: string; // imagem de prévia (opcional)
   exercicios: Exercicio[];
 };
 
@@ -77,32 +78,33 @@ export const COMPLEXOS: ComplexoInfo[] = [
  */
 export const VIDEOAULAS_INICIAIS: Aula[] = [
   {
-    id: "silaba-por-silaba",
-    titulo: "Aprendendo a ler sílaba por sílaba",
-    subtitulo: "Aula inicial de leitura usando sílabas",
+    id: "silabas-com-b",
+    titulo: "Sílabas com B — BA BE BI BO BU",
+    subtitulo: "Vídeo autoral: as sílabas da letra B",
     tipo: "introducao",
-    silabas: [],
-    palavras: ["SÍLABA", "PALAVRA", "LEITURA"],
-    fraseModelo: "Eu estou aprendendo a ler.",
-    videoUrl: "/videos/portugues/portugues-silaba-por-silaba.mp4",
+    silabas: ["BA", "BE", "BI", "BO", "BU"],
+    palavras: ["BALA", "BOLA", "BEBÊ", "BULE"],
+    fraseModelo: "A bola é bonita.",
+    videoUrl: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido.mp4",
+    poster: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido-poster.png",
     exercicios: [
-      { id: "sps-1", tipo: "aberto", pergunta: "Escreva uma sílaba que apareceu na aula." },
-      { id: "sps-2", tipo: "aberto", pergunta: "Escreva uma palavra simples que você conseguiu ler." },
-      { id: "sps-3", tipo: "aberto", pergunta: "Digite uma frase curta usando uma palavra da aula." },
+      { id: "scb-1", tipo: "escolha", pergunta: "Qual sílaba começa a palavra BOLA?", opcoes: ["BA", "BE", "BO", "BU"], correta: "BO" },
+      { id: "scb-2", tipo: "aberto", pergunta: "Escreva uma palavra com BA, BE, BI, BO ou BU." },
     ],
   },
   {
-    id: "alfabetizacao-complementar",
-    titulo: "Aula complementar de alfabetização",
-    subtitulo: "Reforço de letras, sons, sílabas e palavras",
+    id: "palavra-bola",
+    titulo: "Formando a palavra BOLA",
+    subtitulo: "Vídeo autoral: BO + LA = BOLA",
     tipo: "introducao",
-    silabas: [],
-    palavras: ["LETRA", "SOM", "PALAVRA"],
-    fraseModelo: "Cada letra tem o seu som.",
-    videoUrl: "/videos/portugues/davi-alfabetizacao_1.mp4",
+    silabas: ["BO", "LA"],
+    palavras: ["BOLA"],
+    fraseModelo: "A bola é bonita.",
+    videoUrl: "/videos/portugues/davi-portugues-02-palavra-bola.mp4",
+    poster: "/videos/portugues/davi-portugues-02-palavra-bola-poster.png",
     exercicios: [
-      { id: "ac-1", tipo: "aberto", pergunta: "Qual letra ou sílaba você ouviu na aula?" },
-      { id: "ac-2", tipo: "aberto", pergunta: "Copie uma palavra da aula." },
+      { id: "pb-1", tipo: "escolha", pergunta: "BO + LA forma qual palavra?", opcoes: ["BOLA", "BALA", "BULE"], correta: "BOLA" },
+      { id: "pb-2", tipo: "frase", pergunta: "Escreva ou copie a frase abaixo:", modelo: "A bola é bonita." },
     ],
   },
 ];
@@ -174,7 +176,8 @@ const aulasExplicitas: Record<string, Aula> = {
     silabas: ["BA", "BE", "BI", "BO", "BU"],
     palavras: ["BOLA", "BALA", "BEBÊ", "BULE", "BANANA"],
     fraseModelo: "A bola é bonita.",
-    videoUrl: "/videos/portugues/portugues-ba-be-bi-bo-bu.mp4",
+    videoUrl: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido.mp4",
+    poster: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido-poster.png",
     exercicios: [
       {
         id: "b-1",
