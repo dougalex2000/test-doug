@@ -134,7 +134,7 @@ export default function CatalogoPage() {
         description="Acionadores, sensores, suportes, pranchas e kits — todos com indicação de uso, tipo de acesso, dificuldade de montagem e custo estimado. Projetos abertos podem ser reproduzidos livremente; os demais são adaptados sob demanda pela oficina maker."
         actions={
           <>
-            <LinkButton href="/oficina-maker">Solicitar adaptação</LinkButton>
+            <LinkButton href="/tecnologias-assistivas/oficina-maker">Solicitar adaptação</LinkButton>
             <LinkButton href="/galeria" variant="secondary">
               Explorar com filtros na Galeria
             </LinkButton>
@@ -217,7 +217,7 @@ export default function CatalogoPage() {
             escolas, famílias e instituições parceiras.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <LinkButton href="/oficina-maker">Falar com a Oficina Maker</LinkButton>
+            <LinkButton href="/tecnologias-assistivas/oficina-maker">Falar com a Oficina Maker</LinkButton>
             <LinkButton href="/loja-social" variant="secondary">
               Conhecer a Loja Social
             </LinkButton>

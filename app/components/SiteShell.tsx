@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { mockUser, mockNotifications } from "../lib/userData";
 import { assetSrc } from "../lib/imageAssets";
+import { getSupabaseBrowserClient } from "../lib/supabase/browser";
 import { mainNav, footerSections, type ModuleStatus } from "../lib/siteNav";
 import { IconBell, IconMenu } from "./icons";
 import { VisitCounter } from "./VisitCounter";
@@ -24,6 +25,26 @@ const menuStatusDot: Record<ModuleStatus, string> = {
 };
 
 export function SiteHeader() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    if (!supabase) return;
+
+    let active = true;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (active) setIsAuthenticated(Boolean(data.session));
+    });
+    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(Boolean(session));
+    });
+
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <header id="menu-principal" className="sticky top-0 z-40 border-b border-zinc-200 bg-white shadow-sm">
       <a
@@ -108,7 +129,7 @@ export function SiteHeader() {
 
             <div className="min-w-0">
               <p className="text-base font-semibold leading-tight tracking-tight sm:text-2xl lg:text-3xl">
-                Serviços e Informações do DAVI
+                Projeto DAVI
               </p>
               <p className="mt-1 hidden text-sm font-medium leading-snug text-zinc-600 sm:block">
                 Desenvolvimento Assistivo para Vida Independente
@@ -116,33 +137,35 @@ export function SiteHeader() {
             </div>
           </div>
 
-          <div className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-blue-800 md:flex">
+          <div className="flex shrink-0 items-center gap-1 text-sm font-semibold text-blue-800">
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/notificacoes"
+                  aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ""}`}
+                  className={`relative hidden rounded-lg px-2 py-2 hover:bg-blue-50 md:block ${focusRing}`}
+                >
+                  <IconBell className="h-5 w-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white">
+                      {unreadCount}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  href="/painel/perfil"
+                  aria-label="Meu perfil"
+                  className={`ml-1 hidden h-9 w-9 items-center justify-center rounded-full bg-blue-700 text-sm font-black text-white hover:bg-blue-800 md:flex ${focusRing}`}
+                >
+                  {mockUser.initials}
+                </Link>
+              </>
+            ) : null}
             <Link
-              href="/notificacoes"
-              aria-label={`Notificações${unreadCount > 0 ? ` (${unreadCount} não lidas)` : ""}`}
-              className={`relative rounded-lg px-2 py-2 hover:bg-blue-50 ${focusRing}`}
+              href={isAuthenticated ? "/painel" : "/entrar"}
+              className={`ml-1 rounded-lg bg-blue-700 px-3 py-2.5 font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 sm:px-5 ${focusRing}`}
             >
-              <IconBell className="h-5 w-5" />
-              {unreadCount > 0 && (
-                <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white">
-                  {unreadCount}
-                </span>
-              )}
-            </Link>
-
-            <Link
-              href="/perfil"
-              aria-label="Meu perfil"
-              className={`ml-1 flex h-9 w-9 items-center justify-center rounded-full bg-blue-700 text-sm font-black text-white hover:bg-blue-800 ${focusRing}`}
-            >
-              {mockUser.initials}
-            </Link>
-
-            <Link
-              href="/dashboard"
-              className={`ml-2 rounded-full bg-blue-700 px-5 py-3 font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 ${focusRing}`}
-            >
-              Meu Painel
+              {isAuthenticated ? "Meu Painel" : "Entrar"}
             </Link>
           </div>
         </div>
@@ -159,9 +182,9 @@ export function SiteFooter() {
           <div>
             <p className="text-2xl font-black">Projeto DAVI</p>
             <p className="mt-3 max-w-lg text-sm leading-6 text-zinc-400">
-              Desenvolvimento Assistivo para Vida Independente. Ecossistema de
-              tecnologia assistiva para comunicação, alfabetização, aprendizagem
-              e autonomia — em construção.
+              Desenvolvimento Assistivo para Vida Independente. Tecnologia
+              assistiva para comunicação, alfabetização, aprendizagem e
+              autonomia — em construção.
             </p>
             <p className="mt-4 max-w-lg text-xs leading-5 text-zinc-500">
               Iniciativa independente de tecnologia assistiva. Não representa
@@ -309,12 +332,13 @@ export function LinkButton({
 }: {
   href: string;
   children: ReactNode;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "tertiary";
 }) {
-  const className =
-    variant === "primary"
-      ? `rounded-lg bg-blue-700 px-5 py-3 font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 ${focusRing}`
-      : `rounded-lg border border-zinc-300 bg-white px-5 py-3 font-black text-zinc-950 hover:border-green-600 hover:text-green-800 ${focusRing}`;
+  const className = {
+    primary: `rounded-lg bg-blue-700 px-5 py-3 font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 ${focusRing}`,
+    secondary: `rounded-lg border border-zinc-300 bg-white px-5 py-3 font-black text-zinc-950 hover:border-green-600 hover:text-green-800 ${focusRing}`,
+    tertiary: `rounded-lg px-2 py-3 font-black text-blue-800 hover:bg-blue-50 hover:underline ${focusRing}`,
+  }[variant];
 
   return (
     <Link href={href} className={className}>
@@ -485,7 +509,7 @@ export function InfoGrid({
             </p>
             {item.href ? (
               <p className="mt-5 text-sm font-black text-blue-800">
-                Acessar página
+                Conhecer detalhes →
               </p>
             ) : null}
           </div>

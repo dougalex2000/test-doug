@@ -27,7 +27,7 @@ const pillars = [
     title: "Comunicar",
     description:
       "Comunicação alternativa e aumentativa com botões grandes, símbolos, frases rápidas e retorno por áudio.",
-    href: "/comunicacao-alternativa",
+    href: "/comunicacao/alternativa",
   },
   {
     title: "Aprender",
@@ -51,7 +51,7 @@ const pillars = [
     title: "Construir",
     description:
       "Oficina maker assistiva para adaptar, criar, imprimir em 3D e documentar soluções como projetos abertos.",
-    href: "/oficina-maker",
+    href: "/tecnologias-assistivas/oficina-maker",
   },
 ];
 
@@ -179,7 +179,7 @@ export default function PlataformaPage() {
           />
           <div className="mt-8 flex flex-wrap gap-3">
             <LinkButton href="/rastreamento-visual">Rastreamento Visual</LinkButton>
-            <LinkButton href="/comunicacao-alternativa" variant="secondary">
+            <LinkButton href="/comunicacao/alternativa" variant="secondary">
               Comunicação Alternativa
             </LinkButton>
             <LinkButton href="/metodos-de-acesso" variant="secondary">

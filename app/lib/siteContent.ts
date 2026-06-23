@@ -3,7 +3,7 @@ export const mainNav = [
   { label: "Origem", href: "/origem" },
   { label: "Plataforma", href: "/plataforma" },
   { label: "Galeria", href: "/galeria" },
-  { label: "Oficina Maker", href: "/oficina-maker" },
+  { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
   { label: "Relatórios", href: "/relatorios" },
   { label: "Acessibilidade", href: "/acessibilidade" },
   { label: "Contato", href: "/contato" },

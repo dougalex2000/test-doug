@@ -69,7 +69,7 @@ export const mockNotifications: Notification[] = [
     message: "Sua conta foi criada com sucesso. Explore os módulos disponíveis.",
     time: "Há 7 dias",
     read: true,
-    href: "/dashboard",
+    href: "/painel",
   },
   {
     id: "5",

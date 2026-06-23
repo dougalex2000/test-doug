@@ -48,7 +48,7 @@ export default function LojaSocialPage() {
         actions={
           <>
             <LinkButton href="/galeria">Ver dispositivos na Galeria</LinkButton>
-            <LinkButton href="/oficina-maker" variant="secondary">
+            <LinkButton href="/tecnologias-assistivas/oficina-maker" variant="secondary">
               Oficina Maker
             </LinkButton>
           </>

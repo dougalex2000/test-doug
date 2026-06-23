@@ -150,7 +150,7 @@ export default function OficinaMakerPage() {
         actions={
           <>
             <LinkButton href="#solicitar">Solicitar adaptação</LinkButton>
-            <LinkButton href="/catalogo" variant="secondary">
+            <LinkButton href="/tecnologias-assistivas/catalogo" variant="secondary">
               Ver o Catálogo
             </LinkButton>
           </>

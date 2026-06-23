@@ -32,7 +32,7 @@ const familySteps = [
     title: "3. Experimente os recursos",
     description:
       "Comunicação alternativa, atividades e rastreamento visual podem ser testados gratuitamente.",
-    href: "/comunicacao-alternativa",
+    href: "/comunicacao/alternativa",
   },
   {
     title: "4. Explore tecnologias de baixo custo",

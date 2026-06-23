@@ -27,7 +27,7 @@ const accessibilityPrefs = [
 ];
 
 const quickLinks = [
-  { label: "Acessar painel", href: "/dashboard" },
+  { label: "Abrir painel", href: "/painel" },
   { label: "Ver notificações", href: "/notificacoes" },
   { label: "Configurações", href: "/configuracoes" },
   { label: "Acessibilidade", href: "/acessibilidade" },

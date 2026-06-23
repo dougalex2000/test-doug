@@ -25,7 +25,7 @@ export default function GaleriaPage() {
         description="Soluções assistivas de baixo custo com indicação de uso, tipo de acesso, dificuldade de montagem e custo estimado. Projetos abertos poderão ser baixados e reproduzidos livremente."
         actions={
           <>
-            <LinkButton href="/oficina-maker">Solicitar adaptação</LinkButton>
+            <LinkButton href="/tecnologias-assistivas/oficina-maker">Solicitar adaptação</LinkButton>
             <LinkButton href="/metodos-de-acesso" variant="secondary">
               Métodos de Acesso
             </LinkButton>
@@ -41,7 +41,7 @@ export default function GaleriaPage() {
             description="Recursos de comunicação, acesso ao computador, mobilidade, leitura, audição e automação — organizados por categoria, da escrita adaptada à automação do ambiente."
           />
           <div className="mt-10">
-            <AssistiveGallery cta={{ label: "Saiba mais", href: "/tecnologias-assistivas/catalogo" }} />
+            <AssistiveGallery cta={{ label: "Explorar catálogo", href: "/tecnologias-assistivas/catalogo" }} />
           </div>
         </div>
       </section>
@@ -75,7 +75,7 @@ export default function GaleriaPage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <LinkButton href="/loja-social">Conhecer a Loja Social</LinkButton>
-            <LinkButton href="/oficina-maker" variant="secondary">
+            <LinkButton href="/tecnologias-assistivas/oficina-maker" variant="secondary">
               Oficina Maker
             </LinkButton>
           </div>

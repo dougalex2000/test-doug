@@ -209,7 +209,7 @@ export const platformModules: Record<PlatformModuleKey, PlatformModule> = {
     title: "Catálogo de Tecnologias Assistivas",
     description:
       "Catálogo dos produtos, recursos e soluções do Projeto DAVI.",
-    route: "/catalogo",
+    route: "/tecnologias-assistivas/catalogo",
     status: "Catálogo inicial",
     items: ["Produtos", "Recursos", "Projetos abertos", "Indicação de uso"],
     nextSteps: ["Criar categorias", "Adicionar filtros", "Detalhar cada solução"],

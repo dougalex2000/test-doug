@@ -27,7 +27,7 @@ export const institutionalNav: NavGroup[] = [
     links: [
       { label: "Rastreamento Visual", href: "/rastreamento-visual" },
       { label: "Captura Visual Assistiva", href: "/captura-visual" },
-      { label: "Comunicação Alternativa", href: "/comunicacao-alternativa" },
+      { label: "Comunicação Alternativa", href: "/comunicacao/alternativa" },
       { label: "Métodos de Acesso", href: "/metodos-de-acesso" },
       { label: "Atividades Assistivas", href: "/atividades" },
     ],
@@ -45,7 +45,7 @@ export const institutionalNav: NavGroup[] = [
     links: [
       { label: "Galeria", href: "/galeria" },
       { label: "Projetos Abertos", href: "/galeria#projetos-abertos" },
-      { label: "Oficina Maker", href: "/oficina-maker" },
+      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
       { label: "Loja Social (em breve)", href: "/loja-social" },
     ],
   },
@@ -74,7 +74,7 @@ export const platformNav: NavGroup[] = [
     title: "Minha conta",
     links: [
       { label: "Entrar / Criar conta", href: "/entrar" },
-      { label: "Meu Painel", href: "/dashboard" },
+      { label: "Meu Painel", href: "/painel" },
       { label: "Meu Perfil", href: "/perfil" },
       { label: "Notificações", href: "/notificacoes" },
       { label: "Configurações", href: "/configuracoes" },
@@ -97,7 +97,7 @@ export const platformNav: NavGroup[] = [
     links: [
       { label: "Dispositivos", href: "/dispositivos" },
       { label: "Pareamento Bluetooth", href: "/dispositivos/pareamento" },
-      { label: "Catálogo", href: "/catalogo" },
+      { label: "Catálogo", href: "/tecnologias-assistivas/catalogo" },
       { label: "Alunos", href: "/usuarios/alunos" },
       { label: "Profissionais (cadastro)", href: "/usuarios/profissionais" },
       { label: "Responsáveis", href: "/usuarios/responsaveis" },
@@ -121,9 +121,9 @@ export const footerNav: NavLink[] = [
   { label: "Origem", href: "/origem" },
   { label: "Plataforma", href: "/plataforma" },
   { label: "Rastreamento Visual", href: "/rastreamento-visual" },
-  { label: "Comunicação Alternativa", href: "/comunicacao-alternativa" },
+  { label: "Comunicação Alternativa", href: "/comunicacao/alternativa" },
   { label: "Galeria", href: "/galeria" },
-  { label: "Oficina Maker", href: "/oficina-maker" },
+  { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
   { label: "Profissionais", href: "/profissionais" },
   { label: "Famílias", href: "/familias" },
   { label: "Instituições", href: "/instituicoes" },

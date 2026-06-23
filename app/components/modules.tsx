@@ -158,7 +158,7 @@ export function ModuleGrid({
             </p>
             {item.href ? (
               <p className="mt-auto pt-5 text-sm font-black text-blue-800">
-                Acessar →
+                Explorar →
               </p>
             ) : null}
           </div>

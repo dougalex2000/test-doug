@@ -171,11 +171,54 @@ export const mainNav: NavSection[] = [
   },
 ];
 
-/** Itens do rodapé, derivados das rotas principais das seções. */
-export const footerSections = mainNav.map((section) => ({
-  title: section.title,
-  links: section.items.slice(0, 5),
-}));
+/** Atalhos essenciais do rodapé, agrupados para facilitar a leitura. */
+export const footerSections = [
+  {
+    title: "Projeto",
+    links: [
+      { label: "Conhecer o DAVI", href: "/projeto" },
+      { label: "Origem", href: "/projeto/origem" },
+      { label: "Ética e LGPD", href: "/projeto/etica" },
+      { label: "Manual", href: "/manual" },
+    ],
+  },
+  {
+    title: "Recursos",
+    links: [
+      { label: "DAVI Escola", href: "/escola" },
+      { label: "Comunicação", href: "/comunicacao" },
+      { label: "Acesso e dispositivos", href: "/acesso" },
+      { label: "Inteligência artificial", href: "/ia" },
+    ],
+  },
+  {
+    title: "Tecnologias",
+    links: [
+      { label: "Catálogo", href: "/tecnologias-assistivas/catalogo" },
+      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
+      { label: "Galeria", href: "/galeria" },
+      { label: "DAVI Games", href: "/davi-games" },
+    ],
+  },
+  {
+    title: "Comunidade",
+    links: [
+      { label: "Famílias", href: "/comunidades/familias" },
+      { label: "Escolas", href: "/comunidades/escolas" },
+      { label: "Profissionais", href: "/comunidades/profissionais" },
+      { label: "Instituições", href: "/instituicoes" },
+    ],
+  },
+  {
+    title: "Conta e suporte",
+    links: [
+      { label: "Entrar", href: "/entrar" },
+      { label: "Meu Painel", href: "/painel" },
+      { label: "Acessibilidade", href: "/acessibilidade" },
+      { label: "Contato", href: "/contato" },
+    ],
+  },
+];
 
 /** Mapa href → metadados (label, status, seção) para breadcrumbs e índices. */
 const itemIndex = new Map<string, { item: NavItem; section: NavSection }>();

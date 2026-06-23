@@ -29,7 +29,7 @@ import {
 export const metadata: Metadata = {
   title: "DAVI — Desenvolvimento Assistivo para Vida Independente",
   description:
-    "Um ecossistema de tecnologia assistiva para comunicação, alfabetização, aprendizagem e autonomia.",
+    "Tecnologia assistiva para comunicação, alfabetização, aprendizagem e autonomia.",
 };
 
 const mainModules: ModuleCard[] = [
@@ -156,26 +156,13 @@ export default function Home() {
               DAVI — Desenvolvimento Assistivo para Vida Independente
             </h1>
             <p className="mt-5 max-w-2xl text-xl font-semibold leading-8 text-zinc-800">
-              Um ecossistema de tecnologia assistiva para comunicação,
-              alfabetização, aprendizagem e autonomia.
-            </p>
-            <p className="mt-6 max-w-2xl rounded-2xl border-l-4 border-green-600 bg-white p-5 text-lg font-bold italic leading-8 text-zinc-800 shadow-sm">
-              “O DAVI transforma tecnologia assistiva em caminho para
-              comunicação, alfabetização, aprendizagem e vida independente.”
+              Tecnologia assistiva para ampliar comunicação, alfabetização,
+              aprendizagem e autonomia.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <LinkButton href="/projeto">Conhecer o projeto</LinkButton>
-              <LinkButton href="/escola" variant="secondary">
-                Acessar DAVI Escola
-              </LinkButton>
-              <LinkButton href="/tecnologias-assistivas" variant="secondary">
-                Ver tecnologias assistivas
-              </LinkButton>
-              <LinkButton href="/ia/assistente" variant="secondary">
-                Conhecer o Assistente DAVI
-              </LinkButton>
-              <LinkButton href="/manual" variant="secondary">
-                Ler o manual do projeto
+              <LinkButton href="#recursos">Explorar recursos do DAVI</LinkButton>
+              <LinkButton href="/projeto" variant="secondary">
+                Conhecer o projeto
               </LinkButton>
             </div>
           </div>
@@ -205,28 +192,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Aviso transparente */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-12">
-        <div className="mx-auto max-w-7xl rounded-2xl border border-amber-200 bg-amber-50 p-6">
-          <span className="inline-flex items-center gap-2 rounded-full bg-amber-200 px-3 py-1 text-sm font-black text-amber-900">
-            <span aria-hidden="true">🚧</span> Plataforma em construção
-          </span>
-          <p className="mt-3 max-w-4xl text-lg leading-8 text-zinc-800">
-            A plataforma DAVI está em fase inicial de estruturação online.
-            Algumas páginas apresentam a visão do ecossistema e determinados
-            recursos ainda estão em desenvolvimento, prototipagem ou testes
-            iniciais.
-          </p>
-        </div>
-      </section>
-
       {/* Jornada DAVI */}
       <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-14">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="A jornada DAVI"
             title="Da comunicação à vida independente"
-            description="Cada módulo do ecossistema apoia uma etapa desse caminho contínuo."
+            description="Cada recurso apoia uma etapa desse caminho contínuo."
           />
           <div className="mt-8 overflow-x-auto">
             <JourneyDavi />
@@ -235,12 +207,12 @@ export default function Home() {
       </section>
 
       {/* Cards principais */}
-      <section className="border-b border-zinc-200 bg-white px-6 py-14">
+      <section id="recursos" className="scroll-mt-32 border-b border-zinc-200 bg-white px-6 py-14">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Módulos do ecossistema"
-            title="Tudo o que o DAVI integra"
-            description="Áreas independentes que evoluem por grupos de trabalho, conectadas pela mesma jornada."
+            eyebrow="Recursos da plataforma"
+            title="Recursos do DAVI"
+            description="Recursos conectados para apoiar comunicação, aprendizagem e autonomia."
           />
           <div className="mt-10">
             <ModuleGrid items={mainModules} />
@@ -259,8 +231,8 @@ export default function Home() {
             <div className="mt-6 space-y-4 text-lg leading-8 text-zinc-700">
               <p>
                 O projeto nasceu do acompanhamento de Davi, um aluno de 9 anos em
-                Valinhos-SP que ainda não lia nem escrevia por causa de
-                limitações motoras severas que impediam o uso de lápis e papel.
+                Valinhos-SP que encontrava barreiras para ler e escrever com
+                lápis e papel devido às limitações motoras.
               </p>
               <p>
                 Ao perceber que ele conseguia pressionar algumas teclas, foi
@@ -303,7 +275,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Para quem é?"
-            title="Um ecossistema para redes inteiras de inclusão"
+            title="Feito para quem aprende, ensina, cuida e acompanha"
             description="Da sala de aula ao centro de reabilitação, da família à prefeitura, da comunidade remota à instituição."
           />
           <div className="mt-8 flex flex-wrap gap-2">

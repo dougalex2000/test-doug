@@ -37,7 +37,7 @@ const professionalResources = [
     title: "Comunicação alternativa",
     description:
       "Pranchas, frases rápidas e categorias para apoiar a expressão dos seus alunos e pacientes.",
-    href: "/comunicacao-alternativa",
+    href: "/comunicacao/alternativa",
   },
   {
     title: "Galeria de tecnologias",
@@ -49,7 +49,7 @@ const professionalResources = [
     title: "Oficina maker",
     description:
       "Solicitação de adaptações e fabricação de dispositivos personalizados para casos específicos.",
-    href: "/oficina-maker",
+    href: "/tecnologias-assistivas/oficina-maker",
   },
 ];
 
@@ -82,8 +82,8 @@ export default function ProfissionaisPage() {
         actions={
           <>
             <LinkButton href="/avaliacao">Começar pela Avaliação</LinkButton>
-            <LinkButton href="/dashboard" variant="secondary">
-              Acessar o Painel
+            <LinkButton href="/painel" variant="secondary">
+              Abrir o Painel
             </LinkButton>
           </>
         }
