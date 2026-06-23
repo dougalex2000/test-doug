@@ -118,6 +118,8 @@ export const mainNav: NavSection[] = [
       { label: "Visão Geral", href: "/tecnologias-assistivas", description: "Recursos para a vida independente." },
       { label: "Catálogo", href: "/tecnologias-assistivas/catalogo", description: "Prateleira virtual de recursos.", group: "Grupo Catálogo de Tecnologias Assistivas" },
       { label: "Dispositivos DAVI", href: "/tecnologias-assistivas/dispositivos", description: "Dispositivos do ecossistema." },
+      { label: "DAVI Assistivo App", href: "/tecnologias-assistivas/davi-assistivo-app", description: "Celular como tecnologia assistiva.", status: "Planejado" },
+      { label: "DAVI Imersivo", href: "/tecnologias-assistivas/davi-imersivo", description: "Realidade virtual, aumentada e smart glasses.", status: "Planejado" },
       { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker", description: "Adaptar, criar e personalizar.", group: "Grupo Oficina Maker" },
       { label: "Projetos Abertos", href: "/tecnologias-assistivas/projetos-abertos", description: "Arquivos livres para reproduzir." },
       { label: "Materiais de Apoio", href: "/tecnologias-assistivas/materiais", description: "Guias e documentação." },

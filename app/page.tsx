@@ -173,18 +173,18 @@ export default function Home() {
           <div className="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-2xl shadow-blue-950/10">
             <div className="bg-white px-6 py-8">
               <Image
-                src="/davi-logo.png"
-                alt="Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
-                width={1226}
-                height={367}
+                src="/images/davi/novo-logo-projeto-davi.png"
+                alt="Logo do Projeto DAVI - Desenvolvimento Assistivo para a Vida Independente"
+                width={900}
+                height={300}
                 priority
                 className="mx-auto h-auto w-full max-w-[560px]"
               />
             </div>
             <div className="relative min-h-[240px] overflow-hidden border-t border-zinc-100">
               <Image
-                src="/hero.jpg"
-                alt="Ambiente de tecnologia assistiva com computador e dispositivo de apoio"
+                src="/images/davi/imagem-2-biosinal-davi.png"
+                alt="Pessoa utilizando recursos do Projeto DAVI com sinais assistivos e tecnologia acessível"
                 fill
                 priority
                 sizes="(min-width: 1024px) 45vw, 100vw"

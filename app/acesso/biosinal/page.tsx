@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   Breadcrumb,
   Illustration,
@@ -113,8 +114,75 @@ export default function BioSinalPage() {
         </div>
       </section>
 
-      {/* Possibilidades de leitura */}
+      {/* BioSinal além da cabeça — sinais de diferentes regiões do corpo */}
       <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-14">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="BioSinal além da cabeça"
+            title="Sinais de diferentes regiões do corpo"
+            description="O melhor comando nem sempre vem da cabeça. Os sensores podem ser posicionados onde a pessoa tiver mais controle e constância."
+          />
+          <div className="mt-10 grid items-center gap-10 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+              <Image
+                src="/images/davi/imagem-2-biosinal-davi.png"
+                alt="Estação do Projeto DAVI BioSinal: monitor com o painel de sinais EEG, EMG e EOG, ao lado de uma mão com sensores e uma pessoa usando touca de eletrodos"
+                width={1200}
+                height={900}
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="h-auto w-full"
+              />
+            </div>
+            <div className="space-y-4 text-lg leading-8 text-zinc-700">
+              <p>
+                O módulo DAVI BioSinal poderá utilizar sensores posicionados em
+                diferentes partes do corpo, conforme a necessidade e a capacidade
+                motora da pessoa. Além de sinais da cabeça — como EEG, EOG,
+                piscadas e movimentos oculares — também poderão ser explorados
+                sinais no braço, pescoço, ombros, mãos, tronco ou outras regiões.
+              </p>
+              <p>
+                Esses sinais podem envolver sensores de movimento, EMG, pressão,
+                contração muscular, inclinação corporal, respiração, sopro ou
+                pequenos movimentos residuais.
+              </p>
+              <p className="font-bold text-zinc-900">
+                BioSinal não significa apenas “sensor na cabeça”. Para algumas
+                pessoas, o melhor comando pode vir de outro lugar do corpo.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              "Contração do braço",
+              "Movimento do pescoço",
+              "Inclinação da cabeça",
+              "Tensão muscular no ombro",
+              "Piscar dos olhos",
+              "Movimento do dedo",
+              "Pressão em um ponto do corpo",
+              "Respiração ou sopro",
+              "Pequeno movimento residual",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-lg border border-zinc-200 bg-white p-3 text-sm font-semibold text-zinc-800 shadow-sm"
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-600">
+            O DAVI BioSinal é flexível, adaptável e personalizável conforme a
+            capacidade motora e sensorial de cada usuário.
+          </p>
+        </div>
+      </section>
+
+      {/* Possibilidades de leitura */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-14">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Possibilidades de leitura"
