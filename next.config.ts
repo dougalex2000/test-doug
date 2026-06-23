@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
         destination: "/comunicacao/alternativa",
         permanent: true,
       },
+      {
+        source: "/tecnologias-assistivas/davi-imersivo",
+        destination: "/davi-imersivo",
+        permanent: true,
+      },
     ];
   },
 };

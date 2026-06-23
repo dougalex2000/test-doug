@@ -50,7 +50,7 @@ export default function EcossistemaPage() {
           { title: "Assistente DAVI", description: "Guia com IA.", href: "/ia/assistente", icon: <IconSparkles className="h-6 w-6" />, status: "Demonstração" },
           { title: "DAVI Games", description: "Jogos e gamificação.", href: "/davi-games", icon: <IconGamepad className="h-6 w-6" />, status: "Protótipo" },
           { title: "DAVI Assistivo App", description: "Celular como acesso.", href: "/tecnologias-assistivas/davi-assistivo-app", icon: <IconTouch className="h-6 w-6" />, status: "Planejado" },
-          { title: "DAVI Imersivo", description: "Realidade virtual e AR.", href: "/tecnologias-assistivas/davi-imersivo", icon: <IconVrGlasses className="h-6 w-6" />, status: "Planejado" },
+          { title: "DAVI Imersivo", description: "Realidade virtual e AR.", href: "/davi-imersivo", icon: <IconVrGlasses className="h-6 w-6" />, status: "Planejado" },
           { title: "Catálogo", description: "Recursos prontos.", href: "/tecnologias-assistivas/catalogo", icon: <IconCube className="h-6 w-6" /> },
           { title: "Oficina Maker", description: "Criar e adaptar.", href: "/tecnologias-assistivas/oficina-maker", icon: <IconWrench className="h-6 w-6" /> },
           { title: "Evolução", description: "Métricas e relatórios.", href: "/evolucao", icon: <IconClipboard className="h-6 w-6" /> },
