@@ -6,7 +6,6 @@ import {
   SectionHeader,
 } from "./components/SiteShell";
 import {
-  JourneyDavi,
   ModuleGrid,
   type ModuleCard,
 } from "./components/modules";
@@ -23,6 +22,8 @@ import {
   IconHeartHand,
   IconLightbulb,
   IconSparkles,
+  IconTouch,
+  IconVrGlasses,
   IconWrench,
 } from "./components/icons";
 
@@ -64,6 +65,22 @@ const mainModules: ModuleCard[] = [
     href: "/acesso/conecta",
     icon: <IconChip className="h-6 w-6" />,
     status: "Testes iniciais",
+  },
+  {
+    title: "DAVI CelAcesso",
+    description:
+      "Celular como botão Sim e Não, joystick, mouse, teclado adaptado, prancha de comunicação e controle acessível.",
+    href: "/davi-celacesso",
+    icon: <IconTouch className="h-6 w-6" />,
+    status: "Protótipo",
+  },
+  {
+    title: "DAVI Imersivo",
+    description:
+      "Óculos imersivos e inteligentes para aprendizagem, jogos, interação, acessibilidade e pesquisa.",
+    href: "/davi-imersivo",
+    icon: <IconVrGlasses className="h-6 w-6" />,
+    status: "Planejado",
   },
   {
     title: "DAVI BioSinal",
@@ -198,11 +215,19 @@ export default function Home() {
           <SectionHeader
             eyebrow="A jornada DAVI"
             title="Da comunicação à vida independente"
-            description="Cada recurso apoia uma etapa desse caminho contínuo."
+            description="Cada recurso apoia uma etapa desse caminho contínuo, desde a comunicação inicial até a participação, autonomia e vida independente."
           />
-          <div className="mt-8 overflow-x-auto">
-            <JourneyDavi />
-          </div>
+          <figure className="mx-auto mt-8 max-w-5xl overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
+            <Image
+              src="/images/davi/Jornada-DAVI.png"
+              alt="Jornada DAVI: caminho da comunicação à vida independente, passando por alfabetização, escrita e leitura, aprendizagem, interação, participação e autonomia."
+              width={1672}
+              height={941}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="h-auto w-full"
+              priority={false}
+            />
+          </figure>
         </div>
       </section>
 

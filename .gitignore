@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local AI agent settings (may contain machine-specific permissions or secrets)
+.claude/
+
 # supabase cli
 /supabase/.temp
 
