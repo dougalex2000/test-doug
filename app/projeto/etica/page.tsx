@@ -55,6 +55,20 @@ export default function EticaPage() {
           ],
           tone: "soft",
         },
+        {
+          eyebrow: "9. Marco legal",
+          title: "Acessibilidade e inclusão na lei brasileira",
+          description:
+            "O DAVI se orienta pelo arcabouço legal de direitos das pessoas com deficiência. As referências abaixo são educativas — consulte sempre as fontes oficiais e orientação especializada.",
+          bullets: [
+            "Lei nº 13.146/2015 — Lei Brasileira de Inclusão (LBI), o Estatuto da Pessoa com Deficiência: assegura direitos, acessibilidade, educação inclusiva e autonomia.",
+            "Lei nº 10.098/2000 — Lei de Acessibilidade: normas gerais e critérios básicos para a acessibilidade de pessoas com deficiência ou mobilidade reduzida.",
+            "Decreto nº 5.296/2004 — regulamenta a acessibilidade e o atendimento prioritário.",
+            "Lei nº 8.213/1991, art. 93 — Lei de Cotas: reserva de vagas para pessoas com deficiência (ver DAVI Emprega).",
+            "Convenção da ONU sobre os Direitos das Pessoas com Deficiência (Decreto nº 6.949/2009), com status constitucional no Brasil.",
+            "Acessibilidade digital: as diretrizes WCAG (W3C) e o eMAG (Governo Eletrônico) orientam sites e sistemas acessíveis — princípios que guiam o próprio DAVI.",
+          ],
+        },
       ]}
       note={
         <ConstructionNotice title="Compromisso permanente" tone="blue">
