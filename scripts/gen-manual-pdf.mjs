@@ -70,9 +70,10 @@ function bullets(items) {
 const menu = [
   ["O Projeto", "/projeto", [
     ["Visão Geral", "/projeto"], ["Origem do DAVI", "/projeto/origem"],
-    ["Vida Independente", "/projeto/vida-independente"], ["Ecossistema DAVI", "/projeto/ecossistema"],
+    ["Vida Independente", "/projeto/vida-independente"], ["DAVI Emprega", "/davi-emprega"],
+    ["Ecossistema DAVI", "/projeto/ecossistema"],
     ["Plataforma Online", "/projeto/plataforma-online"], ["Ética, CEP e LGPD", "/projeto/etica"],
-    ["Manual do Projeto", "/manual"],
+    ["Manual do Projeto", "/manual"], ["Documentação", "/documentacao"],
   ]],
   ["DAVI Escola", "/escola", [
     ["Visão Geral", "/escola"], ["Língua Portuguesa", "/escola/portugues"],
@@ -193,6 +194,8 @@ h2("DAVI Imersivo");
 para("Linha de pesquisa sobre óculos de realidade virtual, aumentada, mista e smart glasses como recursos de acessibilidade, aprendizagem e interação — integrados ao DAVI Vision, Escola, BioSinal, Games e Conecta, com atenção a conforto, segurança e adaptação individual.");
 h2("Evolução e Relatórios");
 para("Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico clínico. Relatórios para família, professor e instituição.");
+h2("DAVI Emprega");
+para("Área conceitual de inclusão profissional pela metodologia do Emprego Apoiado: aproxima pessoas com deficiência, famílias, instituições e empresas, considerando preparação, comunicação, acessibilidade, adaptação do trabalho e acompanhamento — antes, durante e depois da entrada no mundo do trabalho. É uma proposta conceitual, sem coleta de dados nesta etapa.");
 
 h1(5, "Métodos de acesso");
 para("Não existe um único método de acesso. A mesma atividade pode funcionar por caminhos diferentes, conforme o que a pessoa consegue fazer:");

@@ -20,6 +20,7 @@ import {
   IconDocument,
   IconEye,
   IconGamepad,
+  IconHeartHand,
   IconLightbulb,
   IconSparkles,
   IconWrench,
@@ -108,6 +109,14 @@ const mainModules: ModuleCard[] = [
       "Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico.",
     href: "/evolucao",
     icon: <IconClipboard className="h-6 w-6" />,
+  },
+  {
+    title: "DAVI Emprega",
+    description:
+      "Emprego apoiado e inclusão profissional: ponte entre pessoas, famílias, instituições e empresas.",
+    href: "/davi-emprega",
+    icon: <IconHeartHand className="h-6 w-6" />,
+    status: "Planejado",
   },
 ];
 

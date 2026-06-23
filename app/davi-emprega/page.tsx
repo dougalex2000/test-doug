@@ -339,6 +339,87 @@ export default function DaviEmpregaPage() {
         </div>
       </section>
 
+      {/* Protótipo visual (mockups) */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-14">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Como ficaria"
+            title="Protótipo visual"
+            description="Exemplos de como um perfil acessível e uma vaga inclusiva poderiam aparecer. São apenas ilustrações — sem campos reais, sem cadastro e sem envio de dados."
+          />
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            {/* Perfil acessível (demonstração) */}
+            <article className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-black uppercase tracking-wide text-blue-800">
+                  Perfil acessível
+                </p>
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-900">
+                  Demonstração
+                </span>
+              </div>
+              <div className="mt-4 flex items-center gap-3">
+                <span className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-2xl" aria-hidden="true">🙂</span>
+                <div>
+                  <p className="text-lg font-black text-zinc-950">Candidato (exemplo)</p>
+                  <p className="text-sm font-bold text-zinc-500">Em busca da primeira oportunidade</p>
+                </div>
+              </div>
+              <dl className="mt-5 grid gap-3 text-sm leading-6">
+                {[
+                  ["Formas de comunicação", "Fala + prancha de pictogramas"],
+                  ["Habilidades", "Organização, atenção a detalhes, uso de tablet"],
+                  ["Áreas de interesse", "Estoque, digitalização, atendimento simples"],
+                  ["Necessidades de acessibilidade", "Instruções por imagens, tempo extra, ambiente tranquilo"],
+                  ["Apoios", "Acompanhamento na adaptação ao trabalho"],
+                ].map(([k, v]) => (
+                  <div key={k} className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                    <dt className="text-xs font-black uppercase tracking-wide text-zinc-500">{k}</dt>
+                    <dd className="mt-0.5 font-semibold text-zinc-800">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </article>
+
+            {/* Vaga inclusiva (exemplo) */}
+            <article className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-black uppercase tracking-wide text-green-800">
+                  Vaga inclusiva
+                </p>
+                <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-900">
+                  Exemplo
+                </span>
+              </div>
+              <p className="mt-4 text-lg font-black text-zinc-950">Auxiliar de organização</p>
+              <p className="text-sm font-bold text-zinc-500">Empresa Exemplo · Vaga ilustrativa</p>
+              <dl className="mt-5 grid gap-3 text-sm leading-6">
+                {[
+                  ["Acessibilidade", "Posto adaptável, comunicação por imagens"],
+                  ["Rotina", "Meio período, tarefas em etapas claras"],
+                  ["Habilidades", "Organização, cuidado, pontualidade"],
+                  ["Apoio", "Mediação com instituição parceira e tecnologia assistiva"],
+                ].map(([k, v]) => (
+                  <div key={k} className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                    <dt className="text-xs font-black uppercase tracking-wide text-zinc-500">{k}</dt>
+                    <dd className="mt-0.5 font-semibold text-zinc-800">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <button
+                type="button"
+                disabled
+                title="Demonstração — sem envio de dados"
+                aria-disabled="true"
+                className="mt-5 w-full cursor-not-allowed rounded-lg bg-green-600/60 px-5 py-3 text-sm font-black text-white"
+              >
+                Tenho interesse (exemplo)
+              </button>
+            </article>
+          </div>
+        </div>
+      </section>
+
       {/* Integração com o ecossistema */}
       <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-14">
         <div className="mx-auto max-w-7xl">
