@@ -215,12 +215,12 @@ export default function Home() {
           <SectionHeader
             eyebrow="A jornada DAVI"
             title="Da comunicação à vida independente"
-            description="Cada recurso apoia uma etapa desse caminho contínuo, desde a comunicação inicial até a participação, autonomia e vida independente."
+            description="Cada recurso apoia uma etapa desse caminho contínuo, desde a comunicação inicial até a alfabetização, escrita e leitura, aprendizagem, interação, participação, autonomia e vida independente."
           />
           <figure className="mx-auto mt-8 max-w-5xl overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
             <Image
-              src="/images/davi/Jornada-DAVI.png"
-              alt="Jornada DAVI: caminho da comunicação à vida independente, passando por alfabetização, escrita e leitura, aprendizagem, interação, participação e autonomia."
+              src="/images/davi/Jornada-DAVI-cadeirante.png"
+              alt="Jornada DAVI com criança cadeirante, mostrando o caminho da comunicação à vida independente, passando por alfabetização, escrita e leitura, aprendizagem, interação, participação e autonomia."
               width={1672}
               height={941}
               sizes="(max-width: 1024px) 100vw, 1024px"
