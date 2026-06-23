@@ -44,6 +44,7 @@ export const mainNav: NavSection[] = [
       { label: "Plataforma Online", href: "/projeto/plataforma-online", description: "Acesso pela internet, em construção.", status: "Em construção" },
       { label: "Ética, CEP e LGPD", href: "/projeto/etica", description: "Proteção da pessoa antes de tudo." },
       { label: "Manual do Projeto", href: "/manual", description: "Guia inicial do ecossistema." },
+      { label: "Documentação", href: "/documentacao", description: "Manual, artigo e resumo em PDF." },
     ],
   },
   {
