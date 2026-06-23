@@ -271,6 +271,12 @@ export const AULAS_MAT: AulaMat[] = [
 /* API                                                                */
 /* ----------------------------------------------------------------- */
 
+// Vídeos autorais locais: cada aula busca /videos/matematica/{id}.mp4.
+// Enquanto o arquivo não existir, a aula mostra um placeholder autoral.
+for (const a of AULAS_MAT) {
+  if (!a.videoUrl) a.videoUrl = `/videos/matematica/${a.id}.mp4`;
+}
+
 const porId = new Map(AULAS_MAT.map((a) => [a.id, a]));
 
 export function getAulaMat(id: string): AulaMat | undefined {

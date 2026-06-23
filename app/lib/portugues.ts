@@ -72,7 +72,7 @@ export const COMPLEXOS: ComplexoInfo[] = [
 /**
  * Lista de videoaulas iniciais — vídeos autorais do Projeto DAVI (locais).
  * Para usar um vídeo, basta colocar o arquivo .mp4 em
- * `/public/videos/davi-escola/` com o nome indicado em `videoUrl`. Enquanto o
+ * `/public/videos/portugues/` com o nome indicado em `videoUrl`. Enquanto o
  * arquivo não existir, a aula mostra um placeholder autoral.
  */
 export const VIDEOAULAS_INICIAIS: Aula[] = [
@@ -84,7 +84,7 @@ export const VIDEOAULAS_INICIAIS: Aula[] = [
     silabas: [],
     palavras: ["SÍLABA", "PALAVRA", "LEITURA"],
     fraseModelo: "Eu estou aprendendo a ler.",
-    videoUrl: "/videos/davi-escola/portugues-silaba-por-silaba.mp4",
+    videoUrl: "/videos/portugues/portugues-silaba-por-silaba.mp4",
     exercicios: [
       { id: "sps-1", tipo: "aberto", pergunta: "Escreva uma sílaba que apareceu na aula." },
       { id: "sps-2", tipo: "aberto", pergunta: "Escreva uma palavra simples que você conseguiu ler." },
@@ -99,7 +99,7 @@ export const VIDEOAULAS_INICIAIS: Aula[] = [
     silabas: [],
     palavras: ["LETRA", "SOM", "PALAVRA"],
     fraseModelo: "Cada letra tem o seu som.",
-    videoUrl: "/videos/davi-escola/portugues-alfabetizacao.mp4",
+    videoUrl: "/videos/portugues/davi-alfabetizacao_1.mp4",
     exercicios: [
       { id: "ac-1", tipo: "aberto", pergunta: "Qual letra ou sílaba você ouviu na aula?" },
       { id: "ac-2", tipo: "aberto", pergunta: "Copie uma palavra da aula." },
@@ -122,7 +122,7 @@ const aulasExplicitas: Record<string, Aula> = {
     silabas: [],
     palavras: ["DESENHO", "SINAL", "LETRA", "PALAVRA", "FRASE"],
     fraseModelo: "Escrever é se comunicar.",
-    videoUrl: "/videos/davi-escola/portugues-introducao.mp4",
+    videoUrl: "/videos/portugues/portugues-introducao.mp4",
     exercicios: [
       {
         id: "intro-1",
@@ -163,7 +163,7 @@ const aulasExplicitas: Record<string, Aula> = {
         modelo: "Eu amo as vogais.",
       },
     ],
-    videoUrl: "/videos/davi-escola/portugues-vogal-a.mp4",
+    videoUrl: "/videos/portugues/portugues-vogal-a.mp4",
   },
 
   b: {
@@ -174,7 +174,7 @@ const aulasExplicitas: Record<string, Aula> = {
     silabas: ["BA", "BE", "BI", "BO", "BU"],
     palavras: ["BOLA", "BALA", "BEBÊ", "BULE", "BANANA"],
     fraseModelo: "A bola é bonita.",
-    videoUrl: "/videos/davi-escola/portugues-ba-be-bi-bo-bu.mp4",
+    videoUrl: "/videos/portugues/portugues-ba-be-bi-bo-bu.mp4",
     exercicios: [
       {
         id: "b-1",
@@ -210,7 +210,7 @@ function aulaComplexo(info: ComplexoInfo): Aula {
     silabas: info.palavras,
     palavras: info.palavras,
     fraseModelo: info.frase,
-    videoUrl: `/videos/davi-escola/portugues-${info.id}.mp4`,
+    videoUrl: `/videos/portugues/portugues-${info.id}.mp4`,
     exercicios: [
       {
         id: `${info.id}-1`,
@@ -242,7 +242,7 @@ function aulaPadraoLetra(letra: string): Aula {
     silabas,
     palavras: [],
     fraseModelo: `Eu estou aprendendo a letra ${L}.`,
-    videoUrl: `/videos/davi-escola/portugues-letra-${letra.toLowerCase()}.mp4`,
+    videoUrl: `/videos/portugues/portugues-letra-${letra.toLowerCase()}.mp4`,
     exercicios: [
       {
         id: `${letra.toLowerCase()}-1`,
