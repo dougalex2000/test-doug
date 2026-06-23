@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { SectionHub } from "../components/modules";
 
 export const metadata: Metadata = {
@@ -13,6 +14,18 @@ export default function ComunicacaoPage() {
       href="/comunicacao"
       subtitle="Comunicação alternativa para expressão, escolhas e participação."
       cardsTitle="Recursos de comunicação"
+      lead={
+        <figure className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
+          <Image
+            src="/images/davi/Comunicacao-assistiva.png"
+            alt="Criança usando prancha de comunicação alternativa do Projeto DAVI, com recursos de sim e não, frases rápidas, pranchas, necessidades básicas e diferentes formas de acesso como olhar, toque, botão, sopro e varredura."
+            width={1672}
+            height={941}
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            className="h-auto w-full"
+          />
+        </figure>
+      }
       sections={[
         {
           eyebrow: "DAVI Comunicação",
