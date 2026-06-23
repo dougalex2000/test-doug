@@ -103,7 +103,10 @@ const menu = [
   ]],
   ["Tecnologias Assistivas", "/tecnologias-assistivas", [
     ["Visão Geral", "/tecnologias-assistivas"], ["Catálogo", "/tecnologias-assistivas/catalogo"],
-    ["Dispositivos DAVI", "/tecnologias-assistivas/dispositivos"], ["Oficina Maker", "/tecnologias-assistivas/oficina-maker"],
+    ["Dispositivos DAVI", "/tecnologias-assistivas/dispositivos"],
+    ["DAVI Assistivo App", "/tecnologias-assistivas/davi-assistivo-app"],
+    ["DAVI Imersivo", "/tecnologias-assistivas/davi-imersivo"],
+    ["Oficina Maker", "/tecnologias-assistivas/oficina-maker"],
     ["Projetos Abertos", "/tecnologias-assistivas/projetos-abertos"], ["Materiais de Apoio", "/tecnologias-assistivas/materiais"],
   ]],
   ["Evolução e Relatórios", "/evolucao", [
@@ -129,8 +132,11 @@ doc.rect(0, 0, PAGE_W, doc.page.height).fill(DARK);
 // cartão branco com logo
 const cardW = 360, cardH = 120, cardX = (PAGE_W - cardW) / 2, cardY = 120;
 doc.roundedRect(cardX, cardY, cardW, cardH, 16).fill("#ffffff");
-if (existsSync("public/davi-logo.png")) {
-  doc.image("public/davi-logo.png", cardX + 40, cardY + 28, { fit: [cardW - 80, cardH - 56], align: "center" });
+const logoPath = existsSync("public/images/davi/novo-logo-projeto-davi.png")
+  ? "public/images/davi/novo-logo-projeto-davi.png"
+  : "public/davi-logo.png";
+if (existsSync(logoPath)) {
+  doc.image(logoPath, cardX + 40, cardY + 28, { fit: [cardW - 80, cardH - 56], align: "center" });
 }
 doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(30)
   .text("Manual do Projeto DAVI", LEFT, 300, { width: WIDTH, align: "center" });
@@ -174,13 +180,17 @@ para("Núcleo pedagógico: Língua Portuguesa, Matemática, videoaulas acessíve
 h2("DAVI Comunicação");
 para("Comunicação alternativa para expressar necessidades, vontades e escolhas: sim e não, frases rápidas, pranchas com símbolos e necessidades básicas.");
 h2("Acesso e Dispositivos");
-para("Como cada pessoa interage com o DAVI. Inclui DAVI Vision (rastreamento ocular, em protótipo), DAVI Conecta (botões, sensores e ESP32 sem fio, em testes iniciais), DAVI BioSinal (EEG, EMG, EOG e piscadas, experimental), calibração e perfil de acesso.");
+para("Como cada pessoa interage com o DAVI. Inclui DAVI Vision (rastreamento ocular, em protótipo), DAVI Conecta (botões, sensores e ESP32 sem fio, em testes iniciais), DAVI BioSinal (sinais do corpo como EEG, EMG, EOG e piscadas — e também sensores no braço, pescoço, mãos e outras regiões, não só na cabeça), calibração e perfil de acesso.");
 h2("Inteligência Artificial");
 para("A IA como apoio — nunca como substituta de profissionais. Inclui o Assistente DAVI (guia da plataforma), IA na aprendizagem e na comunicação, arquitetura RAG e modelos locais para proteger dados sensíveis.");
 h2("DAVI Games");
 para("Jogos educativos e gamificação acessível para treinar aprendizagem, comunicação, atenção, decisão e métodos de acesso. Destaque para o Jogo da Velha Acessível com varredura, e possibilidades futuras com realidade virtual e aumentada.");
 h2("Tecnologias Assistivas");
 para("Catálogo de recursos (prateleira virtual), dispositivos DAVI, oficina maker para adaptar e criar soluções, projetos abertos e materiais de apoio.");
+h2("DAVI Assistivo App");
+para("Proposta em desenvolvimento para transformar o celular em tecnologia assistiva multifuncional: teclado, mouse, joystick, prancha de comunicação, sensor de movimento, rastreador visual e controle pedagógico conectado à plataforma, aproveitando um aparelho que muitas pessoas já têm.");
+h2("DAVI Imersivo");
+para("Linha de pesquisa sobre óculos de realidade virtual, aumentada, mista e smart glasses como recursos de acessibilidade, aprendizagem e interação — integrados ao DAVI Vision, Escola, BioSinal, Games e Conecta, com atenção a conforto, segurança e adaptação individual.");
 h2("Evolução e Relatórios");
 para("Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico clínico. Relatórios para família, professor e instituição.");
 
