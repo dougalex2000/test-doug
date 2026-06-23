@@ -40,6 +40,7 @@ export const mainNav: NavSection[] = [
       { label: "Visão Geral", href: "/projeto", description: "O que é o ecossistema DAVI." },
       { label: "Origem do DAVI", href: "/projeto/origem", description: "A história do aluno Davi." },
       { label: "Vida Independente", href: "/projeto/vida-independente", description: "O destino da jornada DAVI." },
+      { label: "DAVI Emprega", href: "/davi-emprega", description: "Emprego apoiado e inclusão profissional.", status: "Planejado" },
       { label: "Ecossistema DAVI", href: "/projeto/ecossistema", description: "Como os módulos se conectam." },
       { label: "Plataforma Online", href: "/projeto/plataforma-online", description: "Acesso pela internet, em construção.", status: "Em construção" },
       { label: "Ética, CEP e LGPD", href: "/projeto/etica", description: "Proteção da pessoa antes de tudo." },
