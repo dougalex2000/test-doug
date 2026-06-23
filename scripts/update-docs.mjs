@@ -79,7 +79,7 @@ async function appendAddendum(originalPath, addendumBytes, outPath) {
 
 /* ----------------------------- CONTEÚDO: ARTIGO ----------------------------- */
 const artigoBlocks = [
-  { type: "divider", title: "Seção complementar — DAVI Assistivo App, DAVI Imersivo e atualizações", subtitle: "Novos módulos e complementos ao ecossistema — junho de 2026" },
+  { type: "divider", title: "Seção complementar — DAVI Assistivo App, DAVI Imersivo, DAVI Emprega e atualizações", subtitle: "Novos módulos e complementos ao ecossistema — junho de 2026" },
 
   { type: "h", title: "23. DAVI Assistivo App: o celular como tecnologia assistiva multifuncional" },
   { type: "p", text: "O DAVI Assistivo App é uma proposta em desenvolvimento que busca transformar o telefone celular em uma tecnologia assistiva multifuncional, conectada à plataforma DAVI. Em vez de exigir a aquisição de equipamentos especializados e de alto custo, a iniciativa parte de um princípio de acessibilidade econômica: aproveitar um dispositivo que muitas famílias e instituições já possuem, ampliando o alcance da comunicação, da aprendizagem e da autonomia." },
@@ -99,12 +99,17 @@ const artigoBlocks = [
   { type: "p", text: "A trilha de Língua Portuguesa ganhou uma área de entrada dedicada à alfabetização, com uma página inicial acolhedora e cards grandes e coloridos para cada letra do alfabeto e para sílabas complexas e sons especiais — como CH, LH, NH, BL, BR, sons nasalados, QU, GU, RR e SS. Cada letra ou som abre uma aula específica." },
   { type: "p", text: "Cada aula reúne uma área de vídeo (preparada para receber vídeos próprios do projeto), controles grandes com atalhos de teclado, modo de varredura automática, exercícios de escolha e de escrita, leitura por voz (TTS) em português do Brasil, retorno positivo ao acerto e mensagens acolhedoras ao tentar novamente, registrando métricas locais de tempo, tentativas e conclusão. A estrutura foi pensada para ser acessível e fácil de expandir." },
 
+  { type: "h", title: "27. DAVI Emprega: emprego apoiado e inclusão profissional" },
+  { type: "p", text: "O DAVI Emprega é a frente do ecossistema voltada à inclusão profissional de pessoas com deficiência, organizada em torno da metodologia do Emprego Apoiado. Em vez de funcionar como um simples balcão de vagas, propõe-se como uma ponte entre pessoas com deficiência, famílias, instituições de apoio, profissionais especializados e empresas dispostas a contratar de forma ética e responsável. O pressuposto é que a vida independente também passa pela preparação profissional e pelo acesso ao mundo do trabalho." },
+  { type: "p", text: "A metodologia é centrada na pessoa e percorre etapas de perfil, preparação, busca de oportunidades, adaptação do trabalho e acompanhamento — antes, durante e depois da contratação. A iniciativa dialoga com a Lei de Cotas (Lei nº 8.213/1991, art. 93), apresentada de forma educativa, mas reforça que a inclusão deve ir além da obrigação legal, priorizando dignidade, acessibilidade, permanência e desenvolvimento." },
+  { type: "p", text: "O DAVI Emprega integra-se aos demais módulos: o DAVI Escola apoia leitura, escrita, matemática e habilidades digitais; a Comunicação Alternativa apoia a comunicação no trabalho; o DAVI Vision, o BioSinal e o Conecta oferecem métodos de acesso; a inteligência artificial apoia currículo, entrevista e planos de desenvolvimento; e os relatórios acompanham a evolução. Nesta etapa é uma proposta conceitual: não há banco de dados, cadastro real ou coleta de dados sensíveis, e qualquer coleta futura exigirá consentimento, segurança e respeito à LGPD." },
+
   { type: "p", text: "Esta seção complementa o documento original, preservando suas conclusões e sua orientação ética: as funcionalidades aqui descritas são possibilidades de pesquisa e desenvolvimento, e qualquer coleta de dados com participantes deverá ser submetida previamente ao Sistema CEP/Conep, pela Plataforma Brasil." },
 ];
 
 /* ----------------------------- CONTEÚDO: RESUMO ----------------------------- */
 const resumoBlocks = [
-  { type: "divider", title: "Atualização — DAVI Assistivo App, DAVI Imersivo e BioSinal", subtitle: "Novos módulos em linguagem simples — junho de 2026" },
+  { type: "divider", title: "Atualização — DAVI Assistivo App, DAVI Imersivo, DAVI Emprega e BioSinal", subtitle: "Novos módulos em linguagem simples — junho de 2026" },
 
   { type: "h", title: "24. DAVI Assistivo App" },
   { type: "p", text: "O DAVI Assistivo App é uma proposta para transformar o celular em uma tecnologia assistiva. A ideia é aproveitar um aparelho que muita gente já tem, em vez de comprar equipamentos caros. O celular poderá funcionar como prancha de escrita, botão Sim/Não, painel de botões personalizados, comunicação por imagens e voz, mouse, teclado adaptado e joystick para jogos. Poderá ainda usar a câmera para reconhecer movimentos, gestos, piscadas ou o olhar, e se conectar à plataforma por QR Code, Bluetooth, Wi-Fi ou código de sessão. As atividades poderão gerar métricas, como tempo de resposta e acertos. É uma proposta em desenvolvimento: as funções descritas poderão funcionar conforme o projeto avança." },
@@ -114,6 +119,9 @@ const resumoBlocks = [
 
   { type: "h", title: "26. BioSinal além da cabeça" },
   { type: "p", text: "O DAVI BioSinal não é só “sensor na cabeça”. Os sinais de acesso podem vir de várias partes do corpo, conforme o que cada pessoa consegue fazer. Além de EEG, EOG e piscadas, é possível explorar sinais no braço, no pescoço, nos ombros, nas mãos ou no tronco, usando sensores de movimento, EMG, pressão, contração muscular, inclinação, respiração, sopro ou pequenos movimentos. Para algumas pessoas, o melhor comando pode ser uma contração do braço, um movimento do pescoço ou de um dedo, ou a própria respiração. O módulo é flexível e se adapta à capacidade motora e sensorial de cada usuário." },
+
+  { type: "h", title: "27. DAVI Emprega" },
+  { type: "p", text: "O DAVI Emprega é a área do projeto voltada à inclusão profissional de pessoas com deficiência, usando o Emprego Apoiado. A ideia não é só oferecer vagas, mas aproximar pessoas, famílias, instituições e empresas, cuidando da preparação, da comunicação, da acessibilidade e do acompanhamento antes, durante e depois do trabalho. Ele conversa com o DAVI Escola, a Comunicação Alternativa, o DAVI Vision, o BioSinal, o Conecta e a inteligência artificial, e lembra que a inclusão deve ir além da Lei de Cotas, com dignidade e respeito. Nesta etapa é uma proposta conceitual, sem cadastro nem coleta de dados." },
 ];
 
 /* --------------------------------- EXECUÇÃO --------------------------------- */

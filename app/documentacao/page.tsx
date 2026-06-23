@@ -34,8 +34,8 @@ const documentos: Doc[] = [
   {
     titulo: "Artigo conceitual",
     descricao:
-      "Documento técnico-institucional completo do Projeto DAVI — origem, fundamentação, módulos, métricas, ética e os módulos mais recentes (DAVI Games, Assistivo App e Imersivo).",
-    meta: "PDF · 17 páginas",
+      "Documento técnico-institucional completo do Projeto DAVI — origem, fundamentação, módulos, métricas, ética e os módulos mais recentes (DAVI Games, Assistivo App, Imersivo e Emprega).",
+    meta: "PDF · 18 páginas",
     arquivo: "/docs/artigo-projeto-davi.pdf",
   },
   {
