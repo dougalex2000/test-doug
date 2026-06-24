@@ -12,6 +12,7 @@ import {
   IconLightbulb,
   IconSparkles,
   IconTouch,
+  IconUsers,
   IconVrGlasses,
   IconWrench,
 } from "../../components/icons";
@@ -53,6 +54,7 @@ export default function EcossistemaPage() {
           { title: "DAVI Imersivo", description: "Realidade virtual e AR.", href: "/davi-imersivo", icon: <IconVrGlasses className="h-6 w-6" />, status: "Planejado" },
           { title: "Catálogo", description: "Recursos prontos.", href: "/tecnologias-assistivas/catalogo", icon: <IconCube className="h-6 w-6" /> },
           { title: "Oficina Maker", description: "Criar e adaptar.", href: "/tecnologias-assistivas/oficina-maker", icon: <IconWrench className="h-6 w-6" /> },
+          { title: "DAVI Capacita", description: "Formação e treinamentos.", href: "/davi-capacita", icon: <IconUsers className="h-6 w-6" />, status: "Planejado" },
           { title: "Evolução", description: "Métricas e relatórios.", href: "/evolucao", icon: <IconClipboard className="h-6 w-6" /> },
           { title: "DAVI Emprega", description: "Inclusão profissional.", href: "/davi-emprega", icon: <IconHeartHand className="h-6 w-6" />, status: "Planejado" },
         ],

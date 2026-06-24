@@ -124,6 +124,7 @@ export const mainNav: NavSection[] = [
       { label: "DAVI Assistivo App", href: "/tecnologias-assistivas/davi-assistivo-app", description: "Celular como tecnologia assistiva.", status: "Planejado" },
       { label: "DAVI Imersivo", href: "/davi-imersivo", description: "Óculos imersivos e inteligentes para aprendizagem, acessibilidade e pesquisa.", status: "Planejado", group: "Grupo DAVI Vision e Pesquisa Imersiva" },
       { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker", description: "Adaptar, criar e personalizar.", group: "Grupo Oficina Maker" },
+      { label: "DAVI Capacita", href: "/davi-capacita", description: "Formação, treinamento e inovação assistiva.", status: "Planejado", group: "Grupo DAVI Capacita — Formação e Treinamentos" },
       { label: "Projetos Abertos", href: "/tecnologias-assistivas/projetos-abertos", description: "Arquivos livres para reproduzir." },
       { label: "Materiais de Apoio", href: "/tecnologias-assistivas/materiais", description: "Guias e documentação." },
     ],

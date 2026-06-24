@@ -29,6 +29,7 @@ const workingGroups = [
   "Grupo Inteligência Artificial",
   "Grupo Catálogo de Tecnologias Assistivas",
   "Grupo Oficina Maker",
+  "Grupo DAVI Capacita — Formação e Treinamentos",
   "Grupo Métricas e Relatórios",
   "Grupo Ética, CEP e LGPD",
   "Grupo Acessibilidade e UI/UX",
@@ -155,6 +156,15 @@ export default function ManualPage() {
           paragraphs: [
             "O DAVI Evolução acompanha métricas de aprendizagem e de acesso — tempo de resposta, tentativas, pausas, repetições, escrita produzida e método usado — para apoiar decisões pedagógicas e funcionais. Não é diagnóstico clínico, e qualquer coleta com participantes respeita ética e LGPD.",
           ],
+        },
+        {
+          eyebrow: "13.1. DAVI Capacita",
+          title: "Formação e Treinamentos",
+          paragraphs: [
+            "O DAVI Capacita é o módulo de formação do Projeto DAVI. Ele oferece treinamentos presenciais, remotos ou híbridos para professores, profissionais, familiares, cuidadores, estudantes, pesquisadores e usuários interessados em utilizar a plataforma, aplicar recursos de tecnologia assistiva, criar soluções em ambiente maker, documentar produtos, cadastrar tecnologias no catálogo e compreender conceitos de produto aberto, propriedade intelectual, inovação assistiva e geração de renda.",
+            "O módulo também poderá apoiar formações práticas em comunicação alternativa, acessibilidade digital, botões adaptados, dispositivos assistivos, eletrônica, programação, sensores, impressão 3D, corte a laser, CAD, fabricação digital, documentação técnica, desenvolvimento de produtos e formação de multiplicadores — com possibilidade de atividades no CTI Renato Archer. A proposta é transformar conhecimento em autonomia.",
+          ],
+          tone: "soft",
         },
         {
           eyebrow: "14. Grupos de trabalho",

@@ -23,6 +23,7 @@ import {
   IconLightbulb,
   IconSparkles,
   IconTouch,
+  IconUsers,
   IconVrGlasses,
   IconWrench,
 } from "./components/icons";
@@ -33,15 +34,9 @@ export const metadata: Metadata = {
     "Tecnologia assistiva para comunicação, alfabetização, aprendizagem e autonomia.",
 };
 
+// Ordem: comunicação → acesso → aprendizagem → tecnologia assistiva →
+// criação → formação → catálogo → geração de renda → emprego apoiado.
 const mainModules: ModuleCard[] = [
-  {
-    title: "DAVI Escola",
-    description:
-      "Português, Matemática, videoaulas e tarefas acessíveis — o núcleo pedagógico.",
-    href: "/escola",
-    icon: <IconDocument className="h-6 w-6" />,
-    status: "Demonstração",
-  },
   {
     title: "DAVI Comunicação",
     description:
@@ -51,11 +46,11 @@ const mainModules: ModuleCard[] = [
     status: "Demonstração",
   },
   {
-    title: "DAVI Vision",
+    title: "DAVI CelAcesso",
     description:
-      "Rastreamento ocular e interação visual por câmera como método de acesso.",
-    href: "/acesso/vision",
-    icon: <IconEye className="h-6 w-6" />,
+      "Celular como botão Sim e Não, joystick, mouse, teclado adaptado, prancha de comunicação e controle acessível.",
+    href: "/davi-celacesso",
+    icon: <IconTouch className="h-6 w-6" />,
     status: "Protótipo",
   },
   {
@@ -67,11 +62,35 @@ const mainModules: ModuleCard[] = [
     status: "Testes iniciais",
   },
   {
-    title: "DAVI CelAcesso",
+    title: "DAVI Vision",
     description:
-      "Celular como botão Sim e Não, joystick, mouse, teclado adaptado, prancha de comunicação e controle acessível.",
-    href: "/davi-celacesso",
-    icon: <IconTouch className="h-6 w-6" />,
+      "Rastreamento ocular e interação visual por câmera como método de acesso.",
+    href: "/acesso/vision",
+    icon: <IconEye className="h-6 w-6" />,
+    status: "Protótipo",
+  },
+  {
+    title: "DAVI BioSinal",
+    description:
+      "Sinais biológicos (EEG, EMG, EOG, piscadas) como caminhos experimentais de acesso.",
+    href: "/acesso/biosinal",
+    icon: <IconLightbulb className="h-6 w-6" />,
+    status: "Experimental",
+  },
+  {
+    title: "DAVI Escola",
+    description:
+      "Português, Matemática, videoaulas e tarefas acessíveis — o núcleo pedagógico.",
+    href: "/escola",
+    icon: <IconDocument className="h-6 w-6" />,
+    status: "Demonstração",
+  },
+  {
+    title: "DAVI Games",
+    description:
+      "Jogos educativos acessíveis para treinar aprendizagem, comunicação, atenção, decisão e métodos de acesso (toque, botão, olhar, sopro, joystick, varredura).",
+    href: "/davi-games",
+    icon: <IconGamepad className="h-6 w-6" />,
     status: "Protótipo",
   },
   {
@@ -83,14 +102,6 @@ const mainModules: ModuleCard[] = [
     status: "Planejado",
   },
   {
-    title: "DAVI BioSinal",
-    description:
-      "Sinais biológicos (EEG, EMG, EOG, piscadas) como caminhos experimentais de acesso.",
-    href: "/acesso/biosinal",
-    icon: <IconLightbulb className="h-6 w-6" />,
-    status: "Experimental",
-  },
-  {
     title: "Assistente DAVI com IA",
     description:
       "Um guia inteligente para ajudar a usar a plataforma — apoia, não decide.",
@@ -99,12 +110,11 @@ const mainModules: ModuleCard[] = [
     status: "Demonstração",
   },
   {
-    title: "DAVI Games",
+    title: "Evolução e Relatórios",
     description:
-      "Jogos educativos acessíveis para treinar aprendizagem, comunicação, atenção, decisão e métodos de acesso (toque, botão, olhar, sopro, joystick, varredura).",
-    href: "/davi-games",
-    icon: <IconGamepad className="h-6 w-6" />,
-    status: "Protótipo",
+      "Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico.",
+    href: "/evolucao",
+    icon: <IconClipboard className="h-6 w-6" />,
   },
   {
     title: "Catálogo de Tecnologias Assistivas",
@@ -121,11 +131,12 @@ const mainModules: ModuleCard[] = [
     icon: <IconWrench className="h-6 w-6" />,
   },
   {
-    title: "Evolução e Relatórios",
+    title: "DAVI Capacita",
     description:
-      "Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico.",
-    href: "/evolucao",
-    icon: <IconClipboard className="h-6 w-6" />,
+      "Formação e treinamentos para uso da plataforma, criação de tecnologias assistivas, ambiente maker, catálogo, produto aberto, propriedade intelectual e geração de renda.",
+    href: "/davi-capacita",
+    icon: <IconUsers className="h-6 w-6" />,
+    status: "Planejado",
   },
   {
     title: "DAVI Emprega",
