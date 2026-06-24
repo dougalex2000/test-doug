@@ -47,6 +47,24 @@ export function AulaPortugues({
   const [videoReady, setVideoReady] = useState(false);
   const [playing, setPlaying] = useState(false);
 
+  // Opções de videoaula (se a aula oferecer mais de uma); senão, uma só.
+  const opcoesVideo = useMemo(
+    () =>
+      aula.videos && aula.videos.length > 0
+        ? aula.videos
+        : [{ titulo: aula.titulo, src: aula.videoUrl, poster: aula.poster }],
+    [aula],
+  );
+  const [videoSel, setVideoSel] = useState(0);
+  const videoAtual = opcoesVideo[videoSel] ?? opcoesVideo[0];
+
+  function escolherVideo(i: number) {
+    if (i === videoSel) return;
+    setVideoSel(i);
+    setVideoReady(false);
+    setPlaying(false);
+  }
+
   // Varredura
   const [scanning, setScanning] = useState(false);
   const [scanIndex, setScanIndex] = useState(0);
@@ -338,14 +356,57 @@ export function AulaPortugues({
       {/* Vídeo */}
       <section className="border-b border-zinc-200 px-6 py-8">
         <div className="mx-auto max-w-4xl">
+          {opcoesVideo.length > 1 && (
+            <div className="mb-6">
+              <h3 className="text-xl font-black text-zinc-900">Escolha uma videoaula</h3>
+              <p className="mt-1 text-sm leading-6 text-zinc-600">
+                O aluno pode escolher a aula que deseja assistir e realizar as
+                atividades no seu próprio ritmo, com vídeos curtos, exercícios
+                acessíveis, áudio e botões adaptados.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {opcoesVideo.map((v, i) => {
+                  const ativo = i === videoSel;
+                  return (
+                    <button
+                      key={v.src}
+                      type="button"
+                      onClick={() => escolherVideo(i)}
+                      aria-pressed={ativo}
+                      className={`flex flex-col rounded-2xl border-2 p-4 text-left transition ${focusRing} ${
+                        ativo
+                          ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+                          : "border-zinc-200 bg-white hover:border-blue-300"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span aria-hidden="true">{ativo ? "▶️" : "🎬"}</span>
+                        <span className="text-base font-black text-zinc-900">{v.titulo}</span>
+                        {ativo && (
+                          <span className="ml-auto rounded-full bg-blue-600 px-2 py-0.5 text-xs font-black text-white">
+                            Selecionada
+                          </span>
+                        )}
+                      </span>
+                      {v.descricao && (
+                        <span className="mt-1 text-sm leading-6 text-zinc-600">{v.descricao}</span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="relative aspect-video w-full overflow-hidden rounded-3xl border-2 border-zinc-200 bg-zinc-900 shadow-sm">
             <video
+              key={videoAtual.src}
               ref={videoRef}
-              src={aula.videoUrl}
-              poster={aula.poster}
+              src={videoAtual.src}
+              poster={videoAtual.poster}
               preload="metadata"
               playsInline
               controls
+              autoPlay={videoSel > 0}
               className="h-full w-full object-cover"
               onCanPlay={() => setVideoReady(true)}
               onError={() => setVideoReady(false)}

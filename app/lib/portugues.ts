@@ -29,6 +29,14 @@ export type Exercicio =
 
 export type TipoAula = "introducao" | "vogais" | "letra" | "complexo";
 
+/** Uma opção de vídeo (para aulas que oferecem mais de uma videoaula). */
+export type VideoOpcao = {
+  titulo: string;
+  descricao?: string;
+  src: string;
+  poster?: string;
+};
+
 export type Aula = {
   id: string;
   titulo: string;
@@ -39,6 +47,8 @@ export type Aula = {
   fraseModelo: string;
   videoUrl: string;
   poster?: string; // imagem de prévia (opcional)
+  /** Opcional: várias videoaulas selecionáveis. Se ausente, usa videoUrl. */
+  videos?: VideoOpcao[];
   exercicios: Exercicio[];
 };
 
@@ -87,6 +97,19 @@ export const VIDEOAULAS_INICIAIS: Aula[] = [
     fraseModelo: "A bola é bonita.",
     videoUrl: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido.mp4",
     poster: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido-poster.png",
+    videos: [
+      {
+        titulo: "Aprendendo a ler sílaba por sílaba",
+        descricao: "Aula inicial de alfabetização com sílabas, palavras e leitura guiada.",
+        src: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido.mp4",
+        poster: "/videos/portugues/davi-portugues-01-silabas-com-b-corrigido-poster.png",
+      },
+      {
+        titulo: "Aula complementar de alfabetização",
+        descricao: "Vídeo complementar para reforçar a aprendizagem de leitura e escrita.",
+        src: "/videos/portugues/Video-portugues-youtube.mp4",
+      },
+    ],
     exercicios: [
       { id: "scb-1", tipo: "escolha", pergunta: "Qual sílaba começa a palavra BOLA?", opcoes: ["BA", "BE", "BO", "BU"], correta: "BO" },
       { id: "scb-2", tipo: "aberto", pergunta: "Escreva uma palavra com BA, BE, BI, BO ou BU." },
