@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import {
   Breadcrumb,
   Illustration,
@@ -164,11 +165,23 @@ export default function OficinaMakerPage() {
             title="Um fablab dedicado à tecnologia assistiva"
             description="Impressão 3D, corte a laser, eletrônica e testes com usuários no mesmo ambiente — organizado para que cada protótipo saia da bancada e chegue à mão da pessoa no menor caminho possível."
           />
-          <Illustration
-            name="oficina-fablab"
-            alt="Panorâmica do fablab assistivo: duas impressoras 3D em bancada, cortadora a laser, bancada de eletrônica com monitor, painel de ferramentas, estante de componentes coloridos e mesa central com acionador, keyguard e filamento"
-            className="mt-10"
-          />
+          <figure className="mt-10 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
+            <Image
+              src="/images/davi/Espaco-maker.png"
+              alt="Espaço maker do Projeto DAVI com ambiente realista dedicado à criação de tecnologias assistivas"
+              width={1672}
+              height={941}
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="h-auto w-full"
+            />
+          </figure>
+          <p className="mt-6 max-w-4xl text-lg leading-8 text-zinc-700">
+            O Espaço Maker do Projeto DAVI representa um ambiente de criação,
+            adaptação e experimentação de tecnologias assistivas, aproximando
+            educação, acessibilidade, eletrônica, impressão 3D, programação e
+            soluções personalizadas para ampliar a autonomia das pessoas com
+            deficiência.
+          </p>
           <div className="mt-6 flex flex-wrap gap-2">
             {[
               "Impressão 3D",
