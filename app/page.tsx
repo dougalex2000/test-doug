@@ -209,6 +209,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Autonomia do aluno */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-14">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-1.5 text-sm font-black text-green-700 ring-1 ring-green-100">
+              Educação inclusiva
+            </span>
+            <h2 className="mt-4 text-3xl font-black tracking-tight text-zinc-900 sm:text-4xl">
+              Autonomia para aprender no próprio ritmo
+            </h2>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-zinc-700">
+              No Projeto DAVI, o aluno poderá acompanhar videoaulas, realizar
+              exercícios, ouvir orientações e responder atividades com mais
+              autonomia. A plataforma foi pensada para apoiar crianças, jovens e
+              pessoas com deficiência no processo de aprendizagem, permitindo que
+              cada estudante avance no seu tempo, com recursos acessíveis, botões
+              adaptados, áudio, vídeo e atividades interativas.
+            </p>
+          </div>
+          <figure className="overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
+            <Image
+              src="/images/davi/Menino-sala-aula.png"
+              alt="Aluno utilizando o Projeto DAVI em sala de aula com apoio de recursos digitais acessíveis"
+              width={1536}
+              height={1024}
+              sizes="(max-width: 1024px) 100vw, 600px"
+              className="h-auto w-full"
+            />
+          </figure>
+        </div>
+      </section>
+
       {/* Jornada DAVI */}
       <section className="border-b border-zinc-200 bg-[#F6F8FB] px-6 py-14">
         <div className="mx-auto max-w-7xl">
