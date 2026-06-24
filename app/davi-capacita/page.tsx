@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ConceptPage, ConstructionNotice } from "../components/modules";
 
 export const metadata: Metadata = {
@@ -43,6 +44,23 @@ export default function DaviCapacitaPage() {
             aprendizagem, a autonomia, a participação social e, futuramente, a
             inclusão produtiva de pessoas com deficiência.
           </p>
+          <figure className="mt-2 overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm">
+            <Image
+              src="/images/davi/DAVI-Capacita.png"
+              alt="Ambiente de formação do DAVI Capacita com sala de aula, oficina maker, treinamento em eletrônica, fabricação digital e tecnologia assistiva"
+              width={1672}
+              height={941}
+              sizes="(max-width: 1024px) 100vw, 896px"
+              className="h-auto w-full"
+            />
+            <figcaption className="px-5 py-4 text-sm leading-6 text-zinc-600">
+              O DAVI Capacita integra formação, ambiente maker, tecnologia
+              assistiva, eletrônica, programação, fabricação digital e apoio ao
+              uso da plataforma, preparando profissionais, familiares,
+              estudantes e instituições para criar, adaptar e aplicar soluções
+              acessíveis.
+            </figcaption>
+          </figure>
         </div>
       }
       sections={[
