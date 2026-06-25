@@ -38,41 +38,49 @@ export const metadata: Metadata = {
 // criação → formação → catálogo → geração de renda → emprego apoiado.
 const mainModules: ModuleCard[] = [
   {
-    title: "DAVI Comunicação",
+    title: "DAVI Comunica",
     description:
-      "Comunicação alternativa para expressar necessidades, escolhas e respostas.",
+      "Comunicação alternativa para expressar necessidades, escolhas, respostas e sentimentos.",
     href: "/comunicacao",
     icon: <IconChat className="h-6 w-6" />,
     status: "Demonstração",
   },
   {
-    title: "DAVI InterCel",
-    description:
-      "Celular como interface assistiva. Transforma o celular em uma extensão dos recursos do Projeto DAVI, permitindo comunicação, controle, teclado adaptado, mouse alternativo, joystick, botões personalizados, prancha de comunicação, gestos, movimento, câmera e interação com dispositivos assistivos.",
-    href: "/davi-intercel",
-    icon: <IconTouch className="h-6 w-6" />,
-    status: "Em desenvolvimento",
-  },
-  {
     title: "DAVI Conecta",
     description:
-      "Integração com botões, sensores, ESP32 e dispositivos sem fio.",
+      "Integração com botões, sensores, dispositivos embarcados e tecnologias sem fio.",
     href: "/acesso/conecta",
     icon: <IconChip className="h-6 w-6" />,
     status: "Testes iniciais",
   },
   {
+    title: "DAVI InterCel",
+    description:
+      "Celular como interface assistiva para comunicação, controle, teclado adaptado, pranchas e interação com dispositivos.",
+    href: "/davi-intercel",
+    icon: <IconTouch className="h-6 w-6" />,
+    status: "Em desenvolvimento",
+  },
+  {
     title: "DAVI Vision",
     description:
-      "Rastreamento ocular e interação visual por câmera como método de acesso.",
+      "Rastreamento visual, facial e gestual por câmera como método de acesso à plataforma.",
     href: "/acesso/vision",
     icon: <IconEye className="h-6 w-6" />,
     status: "Protótipo",
   },
   {
+    title: "DAVI Imersivo",
+    description:
+      "Óculos imersivos e inteligentes para aprendizagem, interação, acessibilidade e pesquisa.",
+    href: "/davi-imersivo",
+    icon: <IconVrGlasses className="h-6 w-6" />,
+    status: "Planejado",
+  },
+  {
     title: "DAVI BioSinal",
     description:
-      "Sinais biológicos (EEG, EMG, EOG, piscadas) como caminhos experimentais de acesso.",
+      "Sinais biológicos, como EEG, EMG, EOG e piscadas, como caminhos experimentais de interação.",
     href: "/acesso/biosinal",
     icon: <IconLightbulb className="h-6 w-6" />,
     status: "Experimental",
@@ -80,7 +88,7 @@ const mainModules: ModuleCard[] = [
   {
     title: "DAVI Escola",
     description:
-      "Português, Matemática, videoaulas e tarefas acessíveis — o núcleo pedagógico.",
+      "Português, Matemática, videoaulas e tarefas acessíveis — o núcleo pedagógico do DAVI.",
     href: "/escola",
     icon: <IconDocument className="h-6 w-6" />,
     status: "Demonstração",
@@ -88,52 +96,44 @@ const mainModules: ModuleCard[] = [
   {
     title: "DAVI Games",
     description:
-      "Jogos educativos acessíveis para treinar aprendizagem, comunicação, atenção, decisão e métodos de acesso (toque, botão, olhar, sopro, joystick, varredura).",
+      "Jogos educativos acessíveis para treinar atenção, comunicação, decisão, causa e efeito.",
     href: "/davi-games",
     icon: <IconGamepad className="h-6 w-6" />,
     status: "Protótipo",
   },
   {
-    title: "DAVI Imersivo",
+    title: "DAVI Assistente",
     description:
-      "Óculos imersivos e inteligentes para aprendizagem, jogos, interação, acessibilidade e pesquisa.",
-    href: "/davi-imersivo",
-    icon: <IconVrGlasses className="h-6 w-6" />,
-    status: "Planejado",
-  },
-  {
-    title: "Assistente DAVI com IA",
-    description:
-      "Um guia inteligente para ajudar a usar a plataforma — apoia, não decide.",
+      "Assistente inteligente para orientar o uso da plataforma, apoiar atividades e responder dúvidas.",
     href: "/ia/assistente",
     icon: <IconSparkles className="h-6 w-6" />,
     status: "Demonstração",
   },
   {
-    title: "Evolução e Relatórios",
+    title: "DAVI Métricas",
     description:
-      "Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico.",
+      "Métricas, evolução e relatórios para acompanhar progresso, participação e tempo de resposta — sem diagnóstico.",
     href: "/evolucao",
     icon: <IconClipboard className="h-6 w-6" />,
   },
   {
-    title: "Catálogo de Tecnologias Assistivas",
+    title: "DAVI Catálogo",
     description:
-      "Prateleira virtual de recursos para comunicação, aprendizagem e autonomia.",
+      "Prateleira virtual de tecnologias assistivas, recursos, produtos e soluções para comunicação, aprendizagem e autonomia.",
     href: "/tecnologias-assistivas/catalogo",
     icon: <IconCube className="h-6 w-6" />,
   },
   {
-    title: "Oficina Maker",
+    title: "DAVI Maker",
     description:
-      "Adaptar, criar, testar e documentar tecnologias assistivas de baixo custo.",
+      "Oficina maker para criar, adaptar, documentar e testar tecnologias assistivas de baixo custo.",
     href: "/tecnologias-assistivas/oficina-maker",
     icon: <IconWrench className="h-6 w-6" />,
   },
   {
     title: "DAVI Capacita",
     description:
-      "Formação e treinamentos para uso da plataforma, criação de tecnologias assistivas, ambiente maker, catálogo, produto aberto, propriedade intelectual e geração de renda.",
+      "Formação e treinamentos para uso da plataforma, tecnologia assistiva, ambiente maker e geração de renda.",
     href: "/davi-capacita",
     icon: <IconUsers className="h-6 w-6" />,
     status: "Planejado",
@@ -141,7 +141,7 @@ const mainModules: ModuleCard[] = [
   {
     title: "DAVI Emprega",
     description:
-      "Emprego apoiado e inclusão profissional: ponte entre pessoas, famílias, instituições e empresas.",
+      "Balcão de oportunidades e núcleo de emprego apoiado para conectar pessoas com deficiência e empresas, orientar adaptações no posto de trabalho e apoiar a independência ao final da jornada DAVI.",
     href: "/davi-emprega",
     icon: <IconHeartHand className="h-6 w-6" />,
     status: "Planejado",

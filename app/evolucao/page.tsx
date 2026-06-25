@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ConstructionNotice, SectionHub } from "../components/modules";
 
 export const metadata: Metadata = {
-  title: "DAVI Evolução",
+  title: "DAVI Métricas",
   description:
-    "Métricas para compreender, apoiar e ampliar possibilidades.",
+    "Métricas, evolução e relatórios para acompanhar progresso, participação e tempo de resposta — sem diagnóstico.",
 };
 
 export default function EvolucaoPage() {

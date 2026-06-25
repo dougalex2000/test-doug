@@ -100,7 +100,24 @@ export default function ManualPage() {
           eyebrow: "4. Jornada DAVI",
           title: "Comunicação → … → Vida Independente",
           paragraphs: [
-            "A jornada conceitual do projeto vai da comunicação à vida independente: Comunicação → Alfabetização → Escrita → Aprendizagem → Participação → Autonomia → Vida Independente. Cada módulo apoia uma ou mais dessas etapas.",
+            "A jornada DAVI começa pela comunicação e pelas formas de acesso, passa pela aprendizagem, acompanhamento, tecnologias assistivas, criação de soluções, capacitação e chega ao DAVI Emprega, que busca apoiar autonomia, independência e inclusão profissional.",
+            "Os módulos, na ordem da jornada:",
+          ],
+          bullets: [
+            "DAVI Comunica — comunicação alternativa",
+            "DAVI Conecta — dispositivos e tecnologias sem fio",
+            "DAVI InterCel — celular como interface assistiva",
+            "DAVI Vision — acesso por câmera (visual, facial e gestual)",
+            "DAVI Imersivo — óculos imersivos e inteligentes",
+            "DAVI BioSinal — sinais biológicos (experimental)",
+            "DAVI Escola — núcleo pedagógico",
+            "DAVI Games — jogos educativos acessíveis",
+            "DAVI Assistente — assistente inteligente da plataforma",
+            "DAVI Métricas — evolução, métricas e relatórios",
+            "DAVI Catálogo — prateleira de tecnologias assistivas",
+            "DAVI Maker — oficina maker",
+            "DAVI Capacita — formação e treinamentos",
+            "DAVI Emprega — balcão de oportunidades e emprego apoiado",
           ],
         },
         {
@@ -111,10 +128,10 @@ export default function ManualPage() {
           ],
         },
         {
-          eyebrow: "7. Comunicação Alternativa",
+          eyebrow: "7. DAVI Comunica",
           title: "Dar voz antes da alfabetização plena",
           paragraphs: [
-            "O DAVI Comunicação permite expressar necessidades, vontades, respostas e escolhas mesmo antes da alfabetização: sim e não, frases rápidas, pranchas com símbolos, necessidades básicas, emoções e rotina — integrados aos métodos de acesso.",
+            "O DAVI Comunica permite expressar necessidades, vontades, respostas e escolhas mesmo antes da alfabetização: sim e não, frases rápidas, pranchas com símbolos, necessidades básicas, emoções e rotina — integrados aos métodos de acesso.",
           ],
         },
         {
@@ -147,21 +164,21 @@ export default function ManualPage() {
           ],
         },
         {
-          eyebrow: "11. Assistente DAVI com IA",
+          eyebrow: "11. DAVI Assistente",
           title: "Um guia inteligente da plataforma",
           paragraphs: [
             "Caixa de texto com IA especializada no DAVI para orientar usuários, famílias, professores, cuidadores e equipes técnicas sobre como usar os módulos. A IA apoia comunicação, aprendizagem, acessibilidade, calibração e criação de atividades — sem substituir profissionais nem realizar diagnóstico.",
           ],
         },
         {
-          eyebrow: "12. Catálogo e Oficina Maker",
+          eyebrow: "12. DAVI Catálogo e DAVI Maker",
           title: "Prateleira virtual e fabricação",
           paragraphs: [
-            "O catálogo é uma prateleira virtual de recursos prontos. Quando o produto pronto não resolve, a necessidade é encaminhada à Oficina Maker, que adapta ou cria a solução, testa, registra o aprendizado e atualiza o catálogo.",
+            "O catálogo é uma prateleira virtual de recursos prontos. Quando o produto pronto não resolve, a necessidade é encaminhada ao DAVI Maker, que adapta ou cria a solução, testa, registra o aprendizado e atualiza o catálogo.",
           ],
         },
         {
-          eyebrow: "13. Evolução e Relatórios",
+          eyebrow: "13. DAVI Métricas",
           title: "Medir para ampliar, não para limitar",
           paragraphs: [
             "O DAVI Evolução acompanha métricas de aprendizagem e de acesso — tempo de resposta, tentativas, pausas, repetições, escrita produzida e método usado — para apoiar decisões pedagógicas e funcionais. Não é diagnóstico clínico, e qualquer coleta com participantes respeita ética e LGPD.",
@@ -210,7 +227,7 @@ export default function ManualPage() {
           { title: "DAVI InterCel", description: "Celular como interface assistiva.", href: "/davi-intercel", icon: <IconTouch className="h-6 w-6" />, status: "Em desenvolvimento" },
           { title: "DAVI Conecta", description: "Dispositivos sem fio.", href: "/acesso/conecta", icon: <IconChip className="h-6 w-6" />, status: "Testes iniciais" },
           { title: "DAVI BioSinal", description: "Sinais biológicos.", href: "/acesso/biosinal", icon: <IconLightbulb className="h-6 w-6" />, status: "Experimental" },
-          { title: "Assistente DAVI", description: "Guia com IA.", href: "/ia/assistente", icon: <IconSparkles className="h-6 w-6" />, status: "Demonstração" },
+          { title: "DAVI Assistente", description: "Guia com IA.", href: "/ia/assistente", icon: <IconSparkles className="h-6 w-6" />, status: "Demonstração" },
           { title: "Catálogo", description: "Recursos prontos.", href: "/tecnologias-assistivas/catalogo", icon: <IconCube className="h-6 w-6" /> },
           { title: "Evolução", description: "Métricas e relatórios.", href: "/evolucao", icon: <IconClipboard className="h-6 w-6" /> },
           { title: "Ética, CEP e LGPD", description: "Proteção da pessoa.", href: "/projeto/etica", icon: <IconShieldCheck className="h-6 w-6" /> },

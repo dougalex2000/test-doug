@@ -69,7 +69,7 @@ export const mainNav: NavSection[] = [
     ],
   },
   {
-    title: "Comunicação",
+    title: "DAVI Comunica",
     href: "/comunicacao",
     description: "Comunicação alternativa para expressão, escolhas e participação.",
     items: [
@@ -104,7 +104,7 @@ export const mainNav: NavSection[] = [
     description: "IA como apoio à comunicação, aprendizagem e acessibilidade.",
     items: [
       { label: "Visão Geral", href: "/ia", description: "A IA no ecossistema DAVI.", group: "Grupo Inteligência Artificial" },
-      { label: "Assistente DAVI", href: "/ia/assistente", description: "Guia inteligente da plataforma.", status: "Demonstração" },
+      { label: "DAVI Assistente", href: "/ia/assistente", description: "Guia inteligente da plataforma.", status: "Demonstração" },
       { label: "IA no DAVI Vision", href: "/ia/vision", description: "Apoio à calibração e interpretação.", status: "Planejado" },
       { label: "IA na Aprendizagem", href: "/ia/aprendizagem", description: "Personalização de atividades.", status: "Planejado" },
       { label: "IA na Comunicação", href: "/ia/comunicacao", description: "Ampliar a comunicação alternativa.", status: "Planejado" },
@@ -120,18 +120,18 @@ export const mainNav: NavSection[] = [
     description: "Catálogo, dispositivos, oficina maker e projetos abertos.",
     items: [
       { label: "Visão Geral", href: "/tecnologias-assistivas", description: "Recursos para a vida independente." },
-      { label: "Catálogo", href: "/tecnologias-assistivas/catalogo", description: "Prateleira virtual de recursos.", group: "Grupo Catálogo de Tecnologias Assistivas" },
+      { label: "DAVI Catálogo", href: "/tecnologias-assistivas/catalogo", description: "Prateleira virtual de recursos.", group: "Grupo Catálogo de Tecnologias Assistivas" },
       { label: "Dispositivos DAVI", href: "/tecnologias-assistivas/dispositivos", description: "Dispositivos do ecossistema." },
       { label: "DAVI Assistivo App", href: "/tecnologias-assistivas/davi-assistivo-app", description: "Celular como tecnologia assistiva.", status: "Planejado" },
       { label: "DAVI Imersivo", href: "/davi-imersivo", description: "Óculos imersivos e inteligentes para aprendizagem, acessibilidade e pesquisa.", status: "Planejado", group: "Grupo DAVI Vision e Pesquisa Imersiva" },
-      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker", description: "Adaptar, criar e personalizar.", group: "Grupo Oficina Maker" },
+      { label: "DAVI Maker", href: "/tecnologias-assistivas/oficina-maker", description: "Adaptar, criar e personalizar.", group: "Grupo Oficina Maker" },
       { label: "DAVI Capacita", href: "/davi-capacita", description: "Formação, treinamento e inovação assistiva.", status: "Planejado", group: "Grupo DAVI Capacita — Formação e Treinamentos" },
       { label: "Projetos Abertos", href: "/tecnologias-assistivas/projetos-abertos", description: "Arquivos livres para reproduzir." },
       { label: "Materiais de Apoio", href: "/tecnologias-assistivas/materiais", description: "Guias e documentação." },
     ],
   },
   {
-    title: "Evolução e Relatórios",
+    title: "DAVI Métricas",
     href: "/evolucao",
     description: "Métricas para compreender, apoiar e ampliar possibilidades.",
     items: [
@@ -191,48 +191,42 @@ export const megaMenu: MegaCategoria[] = [
     ],
   },
   {
-    titulo: "Comunicação e Acesso",
+    titulo: "Comunicação, acesso e interação",
     itens: [
-      { label: "DAVI Comunicação", href: "/comunicacao", status: "Demonstração" },
-      { label: "DAVI InterCel", href: "/davi-intercel", status: "Em desenvolvimento" },
+      { label: "DAVI Comunica", href: "/comunicacao", status: "Demonstração" },
       { label: "DAVI Conecta", href: "/acesso/conecta", status: "Testes iniciais" },
+      { label: "DAVI InterCel", href: "/davi-intercel", status: "Em desenvolvimento" },
       { label: "DAVI Vision", href: "/acesso/vision", status: "Protótipo" },
+      { label: "DAVI Imersivo", href: "/davi-imersivo", status: "Planejado" },
       { label: "DAVI BioSinal", href: "/acesso/biosinal", status: "Experimental" },
     ],
   },
   {
-    titulo: "Aprendizagem",
+    titulo: "Aprendizagem e desenvolvimento",
     itens: [
       { label: "DAVI Escola", href: "/escola", status: "Demonstração" },
-      { label: "Língua Portuguesa", href: "/escola/portugues", status: "Demonstração" },
-      { label: "Matemática", href: "/escola/matematica", status: "Demonstração" },
       { label: "DAVI Games", href: "/davi-games", status: "Protótipo" },
-      { label: "DAVI Imersivo", href: "/davi-imersivo", status: "Planejado" },
     ],
   },
   {
-    titulo: "Acompanhamento e IA",
+    titulo: "Acompanhamento e apoio",
     itens: [
-      { label: "Assistente DAVI com IA", href: "/ia/assistente", status: "Demonstração" },
-      { label: "Evolução e Relatórios", href: "/evolucao" },
-      { label: "Métricas de uso", href: "/evolucao/aprendizagem" },
+      { label: "DAVI Assistente", href: "/ia/assistente", status: "Demonstração" },
+      { label: "DAVI Métricas", href: "/evolucao" },
     ],
   },
   {
-    titulo: "Tecnologia Assistiva e Oficina",
+    titulo: "Tecnologia assistiva e criação",
     itens: [
-      { label: "Catálogo de Tecnologias Assistivas", href: "/tecnologias-assistivas/catalogo" },
-      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
-      { label: "Dispositivos assistivos", href: "/tecnologias-assistivas/dispositivos" },
-      { label: "Pareamento de dispositivos", href: "/acesso/bluetooth", status: "Testes iniciais" },
+      { label: "DAVI Catálogo", href: "/tecnologias-assistivas/catalogo" },
+      { label: "DAVI Maker", href: "/tecnologias-assistivas/oficina-maker" },
     ],
   },
   {
-    titulo: "Capacitação e Emprego",
+    titulo: "Formação e independência",
     itens: [
       { label: "DAVI Capacita", href: "/davi-capacita", status: "Planejado" },
       { label: "DAVI Emprega", href: "/davi-emprega", status: "Planejado" },
-      { label: "Emprego apoiado", href: "/davi-emprega" },
     ],
   },
   {
@@ -269,8 +263,8 @@ export const footerSections = [
   {
     title: "Tecnologias",
     links: [
-      { label: "Catálogo", href: "/tecnologias-assistivas/catalogo" },
-      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
+      { label: "DAVI Catálogo", href: "/tecnologias-assistivas/catalogo" },
+      { label: "DAVI Maker", href: "/tecnologias-assistivas/oficina-maker" },
       { label: "DAVI InterCel", href: "/davi-intercel" },
       { label: "Galeria", href: "/galeria" },
       { label: "DAVI Games", href: "/davi-games" },

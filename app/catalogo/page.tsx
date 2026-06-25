@@ -21,7 +21,7 @@ import {
 } from "../components/icons";
 
 export const metadata: Metadata = {
-  title: "Catálogo de Tecnologias Assistivas",
+  title: "DAVI Catálogo",
   description:
     "Catálogo de dispositivos do Projeto DAVI: acionadores, sensores de sopro, acesso pelo olhar, comunicação alternativa, suportes e kits maker — com indicação de uso e custo estimado.",
 };
@@ -126,10 +126,10 @@ export default function CatalogoPage() {
   return (
     <PageShell>
       <Breadcrumb
-        items={[{ label: "Tecnologias Assistivas" }, { label: "Catálogo" }]}
+        items={[{ label: "Tecnologias Assistivas" }, { label: "DAVI Catálogo" }]}
       />
       <PageHero
-        eyebrow="Catálogo de Tecnologias Assistivas"
+        eyebrow="DAVI Catálogo"
         title="Dispositivos pensados para cada forma de acesso"
         description="Acionadores, sensores, suportes, pranchas e kits — todos com indicação de uso, tipo de acesso, dificuldade de montagem e custo estimado. Projetos abertos podem ser reproduzidos livremente; os demais são adaptados sob demanda pela oficina maker."
         actions={

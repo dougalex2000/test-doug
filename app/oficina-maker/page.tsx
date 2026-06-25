@@ -23,7 +23,7 @@ import {
 } from "../components/icons";
 
 export const metadata: Metadata = {
-  title: "Oficina Maker Assistiva",
+  title: "DAVI Maker",
   description:
     "A oficina maker do DAVI adapta dispositivos, cria acionadores, imprime peças em 3D, integra sensores e documenta projetos abertos.",
 };
@@ -143,9 +143,9 @@ const openProjects = assistiveDevices
 export default function OficinaMakerPage() {
   return (
     <PageShell>
-      <Breadcrumb items={[{ label: "Tecnologias Assistivas" }, { label: "Oficina Maker" }]} />
+      <Breadcrumb items={[{ label: "Tecnologias Assistivas" }, { label: "DAVI Maker" }]} />
       <PageHero
-        eyebrow="Oficina Maker Assistiva"
+        eyebrow="DAVI Maker"
         title="Quando a solução não existe, a oficina cria"
         description="Espaço de fabricação digital dedicado a adaptar, criar, testar e documentar tecnologias assistivas de baixo custo — sempre como projetos abertos que outras pessoas podem reproduzir."
         actions={

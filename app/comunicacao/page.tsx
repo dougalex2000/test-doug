@@ -3,9 +3,9 @@ import Image from "next/image";
 import { SectionHub } from "../components/modules";
 
 export const metadata: Metadata = {
-  title: "DAVI Comunicação",
+  title: "DAVI Comunica",
   description:
-    "Comunicação alternativa para expressão, escolhas e participação.",
+    "Comunicação alternativa para expressar necessidades, escolhas, respostas e sentimentos.",
 };
 
 export default function ComunicacaoPage() {

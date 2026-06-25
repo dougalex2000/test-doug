@@ -170,7 +170,7 @@ export default function DaviEmpregaPage() {
       <PageHero
         eyebrow="DAVI Emprega"
         title="DAVI Emprega: tecnologia, apoio e oportunidades para inclusão profissional"
-        description="Emprego Apoiado, inclusão profissional e vida independente."
+        description="Balcão de oportunidades e núcleo de emprego apoiado: conecta pessoas com deficiência e empresas, orienta adaptações no posto de trabalho e apoia a independência ao final da jornada DAVI."
         actions={
           <>
             <LinkButton href="#pcd">Sou pessoa com deficiência</LinkButton>
@@ -191,6 +191,22 @@ export default function DaviEmpregaPage() {
       {/* Introdução */}
       <section className="border-b border-zinc-200 bg-white px-6 py-14">
         <div className="mx-auto max-w-4xl space-y-4 text-lg leading-8 text-zinc-700">
+          <p>
+            O DAVI Emprega representa uma etapa final da jornada DAVI: transformar
+            comunicação, aprendizagem, tecnologia assistiva e capacitação em
+            oportunidades reais de autonomia. O módulo poderá funcionar como
+            balcão de empregos, mas também como espaço de mediação, orientação e
+            acompanhamento, conectando pessoas com deficiência e empresas,
+            apoiando a adequação do posto de trabalho e ajudando os dois lados
+            para que a inclusão profissional seja viável, segura e contínua.
+          </p>
+          <p>
+            Ele ajuda a <strong>pessoa com deficiência</strong> a se preparar, se
+            comunicar melhor, mostrar suas habilidades e se inserir no trabalho; e
+            ajuda a <strong>empresa</strong> a compreender adaptações possíveis,
+            adequar o posto de trabalho e realizar a inclusão de forma
+            responsável.
+          </p>
           <p>
             O DAVI Emprega é uma proposta do Projeto DAVI para apoiar a inclusão
             de pessoas com deficiência no mundo do trabalho. A ideia é aproximar
