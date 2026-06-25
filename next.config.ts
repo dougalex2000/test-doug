@@ -34,6 +34,11 @@ const nextConfig: NextConfig = {
         destination: "/davi-imersivo",
         permanent: true,
       },
+      {
+        source: "/origem",
+        destination: "/projeto/origem",
+        permanent: true,
+      },
     ];
   },
 };
