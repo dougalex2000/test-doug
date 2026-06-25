@@ -255,7 +255,7 @@ export default function DaviInterCelPage() {
           </ol>
           <p className="mt-6 max-w-3xl text-sm leading-6 text-zinc-500">
             Esta versão já permite usar o DAVI InterCel no navegador, com conexão
-            em <strong>tempo real</strong> entre o celular e a Tela Grande via
+            em <strong>tempo real</strong> entre o celular e o Painel via
             Supabase Realtime. O armazenamento local (localStorage) é mantido como
             histórico e reserva no mesmo aparelho.
           </p>
@@ -317,7 +317,7 @@ export default function DaviInterCelPage() {
             <div>
               <h3 className="text-2xl font-black text-zinc-950">Na TV, escola ou sala de recursos</h3>
               <p className="mt-3 text-lg leading-8 text-zinc-700">
-                O Painel (na tela grande) exibe a aula, o jogo ou a atividade. O celular permite
+                O Painel exibe a aula, o jogo ou a atividade. O celular permite
                 responder, escrever, controlar vídeos e usar comunicação alternativa
                 sem depender do Bluetooth da televisão.
               </p>

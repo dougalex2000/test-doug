@@ -436,7 +436,7 @@ const modeItems: Array<{
 function SessionCodeField({
   value,
   onChange,
-  label = "Código para conectar o celular à Tela Grande",
+  label = "Código para conectar o celular ao Painel",
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -453,7 +453,7 @@ function SessionCodeField({
         inputMode="text"
         maxLength={12}
         className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-center text-xl font-black tracking-widest text-zinc-950 shadow-sm ${focusRing}`}
-        aria-label="Código para conectar o celular à Tela Grande"
+        aria-label="Código para conectar o celular ao Painel"
       />
     </label>
   );
@@ -896,7 +896,7 @@ function PhoneShell({
             <SessionCodeField
               value={sessionCode}
               onChange={(v) => { setSessionCode(v); setConfirmado(false); }}
-              label="Código da Tela Grande"
+              label="Código do Painel"
             />
             <button
               type="button"
@@ -906,7 +906,7 @@ function PhoneShell({
               {confirmado ? "✓ Conectado" : "Conectar"}
             </button>
             <p className="mt-2 text-xs font-semibold leading-5 text-zinc-500">
-              Digite o código exibido na Tela Grande ou acesse pelo QR Code.
+              Digite o código exibido no Painel ou acesse pelo QR Code.
             </p>
           </div>
         )}
@@ -916,7 +916,7 @@ function PhoneShell({
             ⚙️ Modo técnico (avançado)
           </summary>
           <div className="grid gap-3 pt-3">
-            {!naInicial && <SessionCodeField value={sessionCode} onChange={setSessionCode} label="Código da Tela Grande" />}
+            {!naInicial && <SessionCodeField value={sessionCode} onChange={setSessionCode} label="Código do Painel" />}
             <label className="block">
               <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
                 Nome deste celular
