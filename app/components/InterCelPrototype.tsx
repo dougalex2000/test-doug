@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   IconChat,
   IconCheckCircle,
@@ -21,8 +21,27 @@ type Command = {
   label: string;
   detail: string;
   mode: string;
+  deviceName: string;
+  deviceRole: DeviceRole;
   createdAt: string;
 };
+
+type ConnectedDevice = {
+  id: string;
+  name: string;
+  role: DeviceRole;
+  lastSeen: string;
+};
+
+type DeviceRole =
+  | "controle-geral"
+  | "botao-sim-nao"
+  | "sensor-movimento"
+  | "sensor-som-sopro"
+  | "joystick"
+  | "comunicacao"
+  | "mouse"
+  | "escrita";
 
 type Mode =
   | "inicio"
@@ -33,15 +52,95 @@ type Mode =
   | "comunicacao"
   | "escrita"
   | "acessibilidade"
-  | "olhar";
+  | "olhar"
+  | "movimento"
+  | "som-sopro";
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2";
 
 const defaultSession = "DAVI-24";
 
+const roleLabels: Record<DeviceRole, string> = {
+  "controle-geral": "Controle geral",
+  "botao-sim-nao": "Botão Sim/Não",
+  "sensor-movimento": "Sensor de movimento",
+  "sensor-som-sopro": "Sensor de som/sopro",
+  joystick: "Joystick",
+  comunicacao: "Comunicação",
+  mouse: "Mouse",
+  escrita: "Escrita",
+};
+
+const roleDefaultMode: Record<DeviceRole, Mode> = {
+  "controle-geral": "inicio",
+  "botao-sim-nao": "sim-nao",
+  "sensor-movimento": "movimento",
+  "sensor-som-sopro": "som-sopro",
+  joystick: "joystick",
+  comunicacao: "comunicacao",
+  mouse: "mouse",
+  escrita: "escrita",
+};
+
+const roleOptions: Array<{ role: DeviceRole; title: string; description: string }> = [
+  {
+    role: "controle-geral",
+    title: "Controle geral",
+    description: "Abre todos os recursos do DAVI InterCel.",
+  },
+  {
+    role: "botao-sim-nao",
+    title: "Botão Sim/Não",
+    description: "Celular dedicado para escolhas rápidas.",
+  },
+  {
+    role: "sensor-movimento",
+    title: "Sensor de movimento",
+    description: "Celular usado como acionador por movimento.",
+  },
+  {
+    role: "sensor-som-sopro",
+    title: "Sensor de som/sopro",
+    description: "Celular usando microfone como acionador sonoro.",
+  },
+  {
+    role: "joystick",
+    title: "Joystick",
+    description: "Celular dedicado para jogos e direção.",
+  },
+  {
+    role: "comunicacao",
+    title: "Comunicação",
+    description: "Celular dedicado para frases rápidas.",
+  },
+];
+
 function storageKey(code: string) {
   return `davi-intercel-session-${code.trim().toUpperCase() || defaultSession}`;
+}
+
+function devicesKey(code: string) {
+  return `davi-intercel-devices-${code.trim().toUpperCase() || defaultSession}`;
+}
+
+function normalizeSessionCode(code: string) {
+  return code.trim().toUpperCase() || defaultSession;
+}
+
+function normalizeRole(role: string | null): DeviceRole {
+  if (
+    role === "botao-sim-nao" ||
+    role === "sensor-movimento" ||
+    role === "sensor-som-sopro" ||
+    role === "joystick" ||
+    role === "comunicacao" ||
+    role === "mouse" ||
+    role === "escrita"
+  ) {
+    return role;
+  }
+  return "controle-geral";
 }
 
 function nowLabel() {
@@ -68,8 +167,79 @@ function writeCommands(code: string, commands: Command[]) {
   window.localStorage.setItem(storageKey(code), JSON.stringify(commands.slice(0, 12)));
 }
 
-function useInterCelCommands(sessionCode: string) {
+function readDevices(code: string): ConnectedDevice[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(devicesKey(code));
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.slice(0, 16) : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeDevices(code: string, devices: ConnectedDevice[]) {
+  window.localStorage.setItem(devicesKey(code), JSON.stringify(devices.slice(0, 16)));
+}
+
+function makeControlUrl(sessionCode: string, role: DeviceRole = "controle-geral") {
+  if (typeof window === "undefined") {
+    return `/davi-intercel/controle?sessao=${encodeURIComponent(sessionCode)}&papel=${role}`;
+  }
+  const url = new URL("/davi-intercel/controle", window.location.origin);
+  url.searchParams.set("sessao", normalizeSessionCode(sessionCode));
+  url.searchParams.set("papel", role);
+  return url.toString();
+}
+
+function qrImageUrl(value: string) {
+  return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=12&data=${encodeURIComponent(value)}`;
+}
+
+function useInitialControlParams() {
+  const [params, setParams] = useState<{ sessionCode: string; role: DeviceRole }>(() => ({
+    sessionCode: defaultSession,
+    role: "controle-geral",
+  }));
+
+  useEffect(() => {
+    const loadParams = window.setTimeout(() => {
+      const search = new URLSearchParams(window.location.search);
+      const session = normalizeSessionCode(search.get("sessao") ?? defaultSession);
+      const role = normalizeRole(search.get("papel"));
+      setParams({ sessionCode: session, role });
+    }, 0);
+
+    return () => window.clearTimeout(loadParams);
+  }, []);
+
+  return params;
+}
+
+function useStableDeviceId() {
+  const [deviceId, setDeviceId] = useState("");
+
+  useEffect(() => {
+    const loadDeviceId = window.setTimeout(() => {
+      const key = "davi-intercel-device-id";
+      let id = window.localStorage.getItem(key);
+      if (!id) {
+        id = `celular-${Math.random().toString(16).slice(2, 8)}`;
+        window.localStorage.setItem(key, id);
+      }
+      setDeviceId(id);
+    }, 0);
+
+    return () => window.clearTimeout(loadDeviceId);
+  }, []);
+
+  return deviceId;
+}
+
+function useInterCelCommands(sessionCode: string, deviceName = "Celular", deviceRole: DeviceRole = "controle-geral") {
   const [commands, setCommands] = useState<Command[]>([]);
+  const [devices, setDevices] = useState<ConnectedDevice[]>([]);
 
   useEffect(() => {
     const initialLoad = window.setTimeout(() => {
@@ -78,11 +248,15 @@ function useInterCelCommands(sessionCode: string) {
 
     const interval = window.setInterval(() => {
       setCommands(readCommands(sessionCode));
+      setDevices(readDevices(sessionCode));
     }, 700);
 
     function onStorage(event: StorageEvent) {
       if (event.key === storageKey(sessionCode)) {
         setCommands(readCommands(sessionCode));
+      }
+      if (event.key === devicesKey(sessionCode)) {
+        setDevices(readDevices(sessionCode));
       }
     }
 
@@ -94,6 +268,23 @@ function useInterCelCommands(sessionCode: string) {
     };
   }, [sessionCode]);
 
+  const announceDevice = useCallback(
+    (id: string, name = deviceName, role = deviceRole) => {
+      if (!id) return;
+      const nextDevice: ConnectedDevice = {
+        id,
+        name,
+        role,
+        lastSeen: nowLabel(),
+      };
+      const others = readDevices(sessionCode).filter((device) => device.id !== id);
+      const next = [nextDevice, ...others].slice(0, 16);
+      writeDevices(sessionCode, next);
+      setDevices(next);
+    },
+    [deviceName, deviceRole, sessionCode],
+  );
+
   const sendCommand = useCallback(
     (label: string, detail: string, mode: string) => {
       const command: Command = {
@@ -101,6 +292,8 @@ function useInterCelCommands(sessionCode: string) {
         label,
         detail,
         mode,
+        deviceName,
+        deviceRole,
         createdAt: nowLabel(),
       };
       const next = [command, ...readCommands(sessionCode)].slice(0, 12);
@@ -108,7 +301,7 @@ function useInterCelCommands(sessionCode: string) {
       setCommands(next);
       if ("vibrate" in navigator) navigator.vibrate?.(35);
     },
-    [sessionCode],
+    [deviceName, deviceRole, sessionCode],
   );
 
   const clearCommands = useCallback(() => {
@@ -116,7 +309,7 @@ function useInterCelCommands(sessionCode: string) {
     setCommands([]);
   }, [sessionCode]);
 
-  return { commands, sendCommand, clearCommands };
+  return { commands, devices, sendCommand, clearCommands, announceDevice };
 }
 
 const modeItems: Array<{
@@ -176,6 +369,20 @@ const modeItems: Array<{
     tone: "bg-amber-50 text-amber-900 ring-amber-100",
   },
   {
+    id: "movimento",
+    title: "Movimento",
+    subtitle: "Sensor do celular",
+    icon: <IconMotion className="h-7 w-7" />,
+    tone: "bg-lime-50 text-lime-900 ring-lime-100",
+  },
+  {
+    id: "som-sopro",
+    title: "Som/Sopro",
+    subtitle: "Microfone",
+    icon: <IconMotion className="h-7 w-7" />,
+    tone: "bg-rose-50 text-rose-900 ring-rose-100",
+  },
+  {
     id: "olhar",
     title: "Olhar",
     subtitle: "Integração futura",
@@ -233,14 +440,183 @@ function CommandButton({
   );
 }
 
+function MicrophoneSensorPanel({
+  onSend,
+}: {
+  onSend: (label: string, detail: string, mode: string) => void;
+}) {
+  const [listening, setListening] = useState(false);
+  const [level, setLevel] = useState(0);
+  const [threshold, setThreshold] = useState(42);
+  const [error, setError] = useState("");
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const animationRef = useRef<number | null>(null);
+  const lastTriggerRef = useRef(0);
+
+  const stopListening = useCallback(() => {
+    if (animationRef.current) window.cancelAnimationFrame(animationRef.current);
+    animationRef.current = null;
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    void audioContextRef.current?.close();
+    audioContextRef.current = null;
+    setListening(false);
+    setLevel(0);
+  }, []);
+
+  const startListening = useCallback(async () => {
+    setError("");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: false,
+          noiseSuppression: false,
+          autoGainControl: false,
+        },
+      });
+      const AudioContextClass =
+        window.AudioContext ||
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
+      if (!AudioContextClass) {
+        throw new Error("AudioContext indisponível neste navegador.");
+      }
+      const audioContext = new AudioContextClass();
+      const source = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = 1024;
+      source.connect(analyser);
+
+      const samples = new Uint8Array(analyser.fftSize);
+      streamRef.current = stream;
+      audioContextRef.current = audioContext;
+      setListening(true);
+
+      const tick = () => {
+        analyser.getByteTimeDomainData(samples);
+        let sum = 0;
+        for (const sample of samples) {
+          const centered = sample - 128;
+          sum += centered * centered;
+        }
+        const rms = Math.sqrt(sum / samples.length);
+        const nextLevel = Math.min(100, Math.round((rms / 42) * 100));
+        setLevel(nextLevel);
+
+        const now = Date.now();
+        if (nextLevel >= threshold && now - lastTriggerRef.current > 1200) {
+          lastTriggerRef.current = now;
+          onSend("Som/sopro detectado", `Intensidade ${nextLevel}%`, "Som/Sopro");
+          if ("vibrate" in navigator) navigator.vibrate?.([40, 30, 40]);
+        }
+
+        animationRef.current = window.requestAnimationFrame(tick);
+      };
+
+      tick();
+    } catch {
+      setError("Não foi possível acessar o microfone. Verifique a permissão do navegador.");
+      stopListening();
+    }
+  }, [onSend, stopListening, threshold]);
+
+  useEffect(() => stopListening, [stopListening]);
+
+  return (
+    <div className="grid gap-4">
+      <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
+        <p className="text-sm font-black uppercase tracking-wide text-rose-900">
+          Microfone como acionador
+        </p>
+        <p className="mt-2 text-sm font-semibold leading-6 text-rose-950">
+          Use som, vocalização ou sopro próximo ao microfone para enviar um comando
+          quando a intensidade passar do limite configurado.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-black uppercase tracking-wide text-zinc-500">
+              Intensidade
+            </p>
+            <p className="text-3xl font-black text-zinc-950">{level}%</p>
+          </div>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-black ${
+              listening ? "bg-green-100 text-green-800" : "bg-zinc-100 text-zinc-600"
+            }`}
+          >
+            {listening ? "Escutando" : "Pausado"}
+          </span>
+        </div>
+        <div className="mt-4 h-5 overflow-hidden rounded-full bg-zinc-100">
+          <div
+            className="h-full rounded-full bg-rose-600 transition-all"
+            style={{ width: `${level}%` }}
+          />
+        </div>
+      </div>
+
+      <label className="block rounded-xl border border-zinc-200 bg-white p-4">
+        <span className="text-sm font-black uppercase tracking-wide text-zinc-500">
+          Limite de acionamento: {threshold}%
+        </span>
+        <input
+          type="range"
+          min="10"
+          max="90"
+          value={threshold}
+          onChange={(event) => setThreshold(Number(event.target.value))}
+          className="mt-3 w-full"
+        />
+      </label>
+
+      {error ? (
+        <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-800">
+          {error}
+        </p>
+      ) : null}
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={listening ? stopListening : startListening}
+          className={`min-h-16 rounded-lg px-4 py-3 text-center text-base font-black text-white ${
+            listening ? "bg-zinc-700 hover:bg-zinc-800" : "bg-rose-600 hover:bg-rose-700"
+          } ${focusRing}`}
+        >
+          {listening ? "Parar" : "Ativar microfone"}
+        </button>
+        <CommandButton
+          label="Simular sopro"
+          detail="Enviar teste"
+          mode="Som/Sopro"
+          className="border-rose-200 bg-white text-rose-950 text-center"
+          onSend={onSend}
+        />
+      </div>
+    </div>
+  );
+}
+
 function PhoneShell({
   children,
   sessionCode,
   setSessionCode,
+  deviceName,
+  setDeviceName,
+  deviceRole,
+  setDeviceRole,
 }: {
   children: ReactNode;
   sessionCode: string;
   setSessionCode: (value: string) => void;
+  deviceName: string;
+  setDeviceName: (value: string) => void;
+  deviceRole: DeviceRole;
+  setDeviceRole: (value: DeviceRole) => void;
 }) {
   return (
     <div
@@ -272,8 +648,36 @@ function PhoneShell({
             ON
           </span>
         </div>
-        <div className="px-5 py-4">
+        <div className="grid gap-3 px-5 py-4">
           <SessionCodeField value={sessionCode} onChange={setSessionCode} />
+          <label className="block">
+            <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
+              Nome deste celular
+            </span>
+            <input
+              value={deviceName}
+              onChange={(event) => setDeviceName(event.target.value)}
+              className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-950 shadow-sm ${focusRing}`}
+              aria-label="Nome deste celular"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
+              Papel do celular
+            </span>
+            <select
+              value={deviceRole}
+              onChange={(event) => setDeviceRole(normalizeRole(event.target.value))}
+              className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-black text-zinc-950 shadow-sm ${focusRing}`}
+              aria-label="Papel deste celular na sessão"
+            >
+              {Object.entries(roleLabels).map(([role, label]) => (
+                <option key={role} value={role}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         {children}
       </div>
@@ -502,6 +906,50 @@ function ModePanel({
       };
     }
 
+    if (mode === "movimento") {
+      return {
+        title: "Sensor de movimento",
+        subtitle: "Celular usado como acionador por inclinação, giro ou toque no aparelho.",
+        content: (
+          <div className="grid gap-3">
+            <div className="rounded-xl border border-lime-200 bg-lime-50 p-4">
+              <p className="text-sm font-black uppercase tracking-wide text-lime-900">
+                Protótipo
+              </p>
+              <p className="mt-2 text-sm font-semibold leading-6 text-lime-950">
+                Nesta fase, os botões abaixo simulam eventos de movimento. Na próxima
+                etapa, podemos ler sensores reais do celular quando o navegador permitir.
+              </p>
+            </div>
+            {[
+              ["Movimento detectado", "Acionador por movimento"],
+              ["Inclinar esquerda", "Comando lateral"],
+              ["Inclinar direita", "Comando lateral"],
+              ["Levantar celular", "Confirmar escolha"],
+              ["Agitar", "Pedir ajuda ou repetir"],
+            ].map(([label, detail]) => (
+              <CommandButton
+                key={label}
+                label={label}
+                detail={detail}
+                mode="Movimento"
+                className="border-lime-200 bg-white text-lime-950"
+                onSend={onSend}
+              />
+            ))}
+          </div>
+        ),
+      };
+    }
+
+    if (mode === "som-sopro") {
+      return {
+        title: "Sensor de som/sopro",
+        subtitle: "Use o microfone do celular como acionador assistivo.",
+        content: <MicrophoneSensorPanel onSend={onSend} />,
+      };
+    }
+
     return {
       title: "Acessibilidade",
       subtitle: "Preferências que reduzem barreiras de uso.",
@@ -560,7 +1008,7 @@ function CommandLog({ commands }: { commands: Command[] }) {
             >
               <p className="text-sm font-black text-zinc-950">{command.label}</p>
               <p className="text-xs font-semibold text-zinc-500">
-                {command.mode} · {command.createdAt}
+                {command.mode} · {command.deviceName} · {command.createdAt}
               </p>
             </div>
           ))
@@ -575,9 +1023,39 @@ function CommandLog({ commands }: { commands: Command[] }) {
 }
 
 export function InterCelControlPrototype() {
+  const initialParams = useInitialControlParams();
+  const deviceId = useStableDeviceId();
   const [sessionCode, setSessionCode] = useState(defaultSession);
+  const [deviceRole, setDeviceRole] = useState<DeviceRole>("controle-geral");
+  const [deviceName, setDeviceName] = useState("Celular 1");
   const [mode, setMode] = useState<Mode>("inicio");
-  const { commands, sendCommand } = useInterCelCommands(sessionCode);
+  const { commands, sendCommand, announceDevice } = useInterCelCommands(
+    sessionCode,
+    deviceName || roleLabels[deviceRole],
+    deviceRole,
+  );
+
+  useEffect(() => {
+    const loadParams = window.setTimeout(() => {
+      setSessionCode(initialParams.sessionCode);
+      setDeviceRole(initialParams.role);
+      setMode(roleDefaultMode[initialParams.role]);
+      setDeviceName(roleLabels[initialParams.role]);
+    }, 0);
+
+    return () => window.clearTimeout(loadParams);
+  }, [initialParams]);
+
+  useEffect(() => {
+    if (!deviceId) return;
+    announceDevice(deviceId, deviceName || roleLabels[deviceRole], deviceRole);
+  }, [announceDevice, deviceId, deviceName, deviceRole]);
+
+  function handleRoleChange(role: DeviceRole) {
+    setDeviceRole(role);
+    setMode(roleDefaultMode[role]);
+    setDeviceName((current) => current || roleLabels[role]);
+  }
 
   return (
     <main
@@ -618,8 +1096,8 @@ export function InterCelControlPrototype() {
           <div className="mt-6 rounded-xl border border-blue-100 bg-white p-5 shadow-sm">
             <p className="text-lg font-black text-zinc-950">Como testar agora</p>
             <p className="mt-2 text-sm font-semibold leading-6 text-zinc-600">
-              Abra a tela de sessão no computador e use o mesmo código no celular.
-              Nesta primeira versão, os comandos são simulados no navegador.
+              Abra a tela de sessão no computador e conecte um ou mais celulares
+              com o mesmo código. Cada aparelho pode ter um papel diferente.
             </p>
             <div className="mt-4 grid gap-3 sm:flex sm:flex-wrap">
               <Link
@@ -646,7 +1124,14 @@ export function InterCelControlPrototype() {
           }}
           aria-label="Controle DAVI InterCel"
         >
-          <PhoneShell sessionCode={sessionCode} setSessionCode={setSessionCode}>
+          <PhoneShell
+            sessionCode={sessionCode}
+            setSessionCode={setSessionCode}
+            deviceName={deviceName}
+            setDeviceName={setDeviceName}
+            deviceRole={deviceRole}
+            setDeviceRole={handleRoleChange}
+          >
             {mode === "inicio" ? (
               <ModeHome setMode={setMode} />
             ) : (
@@ -664,8 +1149,9 @@ export function InterCelControlPrototype() {
 
 export function InterCelSessionReceiver() {
   const [sessionCode, setSessionCode] = useState(defaultSession);
-  const { commands, clearCommands } = useInterCelCommands(sessionCode);
+  const { commands, devices, clearCommands } = useInterCelCommands(sessionCode);
   const latest = commands[0];
+  const generalControlUrl = makeControlUrl(sessionCode);
 
   return (
     <main className="min-h-screen bg-zinc-950 px-6 py-8 text-white">
@@ -696,7 +1182,7 @@ export function InterCelSessionReceiver() {
                 <p className="text-6xl font-black text-green-300">{latest.label}</p>
                 <p className="mt-4 text-2xl font-bold text-white">{latest.detail}</p>
                 <p className="mt-3 text-sm font-black uppercase tracking-wide text-green-200">
-                  {latest.mode} · {latest.createdAt}
+                  {latest.mode} · {latest.deviceName} · {roleLabels[latest.deviceRole]} · {latest.createdAt}
                 </p>
               </div>
             ) : (
@@ -712,7 +1198,82 @@ export function InterCelSessionReceiver() {
             )}
           </div>
 
-          <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
+          <div className="grid gap-6">
+            <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
+              <p className="text-sm font-black uppercase tracking-wide text-blue-800">
+                Conectar celular
+              </p>
+              <h2 className="mt-2 text-2xl font-black">QR Code da sessão</h2>
+              <div className="mt-5 grid gap-5 md:grid-cols-[auto_1fr] md:items-center">
+                {/* QR externo do protótipo; quando virar recurso final, trocar por gerador local. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={qrImageUrl(generalControlUrl)}
+                  alt={`QR Code para abrir o controle DAVI InterCel da sessão ${sessionCode}`}
+                  width={220}
+                  height={220}
+                  className="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm"
+                />
+                <div>
+                  <p className="text-sm font-semibold leading-6 text-zinc-600">
+                    Aponte a câmera do celular para abrir o controle já conectado à
+                    sessão {sessionCode}. Depois escolha o papel deste aparelho.
+                  </p>
+                  <a
+                    href={generalControlUrl}
+                    className={`mt-4 inline-flex rounded-lg bg-blue-700 px-5 py-3 text-sm font-black text-white hover:bg-blue-800 ${focusRing}`}
+                  >
+                    Abrir controle neste aparelho
+                  </a>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-2 sm:grid-cols-2">
+                {roleOptions.map((option) => {
+                  const href = makeControlUrl(sessionCode, option.role);
+                  return (
+                    <a
+                      key={option.role}
+                      href={href}
+                      className={`rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-left hover:border-blue-300 hover:bg-blue-50 ${focusRing}`}
+                    >
+                      <span className="block text-sm font-black text-zinc-950">
+                        {option.title}
+                      </span>
+                      <span className="mt-1 block text-xs font-semibold leading-5 text-zinc-600">
+                        {option.description}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
+              <p className="text-sm font-black uppercase tracking-wide text-green-700">
+                Celulares conectados
+              </p>
+              <div className="mt-4 grid gap-3">
+                {devices.length ? (
+                  devices.map((device) => (
+                    <article
+                      key={device.id}
+                      className="rounded-xl border border-zinc-200 bg-zinc-50 p-4"
+                    >
+                      <p className="font-black text-zinc-950">{device.name}</p>
+                      <p className="text-sm font-semibold text-zinc-600">
+                        {roleLabels[device.role]} · ativo às {device.lastSeen}
+                      </p>
+                    </article>
+                  ))
+                ) : (
+                  <p className="rounded-xl bg-zinc-50 p-5 font-semibold text-zinc-500">
+                    Nenhum celular registrado nesta sessão ainda.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-black uppercase tracking-wide text-blue-800">
@@ -735,7 +1296,7 @@ export function InterCelSessionReceiver() {
                     <p className="text-lg font-black">{command.label}</p>
                     <p className="text-sm font-semibold text-zinc-600">{command.detail}</p>
                     <p className="mt-2 text-xs font-black uppercase tracking-wide text-zinc-400">
-                      {command.mode} · {command.createdAt}
+                      {command.mode} · {command.deviceName} · {roleLabels[command.deviceRole]} · {command.createdAt}
                     </p>
                   </article>
                 ))
@@ -744,6 +1305,7 @@ export function InterCelSessionReceiver() {
                   Nenhum comando nesta sessão.
                 </p>
               )}
+            </div>
             </div>
           </div>
         </section>
