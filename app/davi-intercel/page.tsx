@@ -195,7 +195,7 @@ export default function DaviInterCelPage() {
         description="O celular como interface assistiva e extensão dos recursos do Projeto DAVI."
         actions={
           <>
-            <LinkButton href="/davi-intercel/sessao">Abrir Tela Grande</LinkButton>
+            <LinkButton href="/davi-intercel/sessao">Abrir Painel</LinkButton>
             <LinkButton href="/davi-intercel/controle" variant="secondary">
               Usar celular como controle
             </LinkButton>
