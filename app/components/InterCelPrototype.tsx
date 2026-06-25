@@ -3,6 +3,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { RealtimeChannel } from "@supabase/supabase-js";
+import { getSupabaseBrowserClient } from "../lib/supabase/browser";
 import {
   IconChat,
   IconClipboard,
@@ -239,12 +241,18 @@ function useStableDeviceId() {
 function useInterCelCommands(sessionCode: string, deviceName = "Celular", deviceRole: DeviceRole = "controle-geral") {
   const [commands, setCommands] = useState<Command[]>([]);
   const [devices, setDevices] = useState<ConnectedDevice[]>([]);
+  const [realtime, setRealtime] = useState<"off" | "connecting" | "on">("off");
+  const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
+    const code = normalizeSessionCode(sessionCode);
+
     const initialLoad = window.setTimeout(() => {
       setCommands(readCommands(sessionCode));
+      setDevices(readDevices(sessionCode));
     }, 0);
 
+    // Fallback no mesmo dispositivo: polling + evento de storage entre abas.
     const interval = window.setInterval(() => {
       setCommands(readCommands(sessionCode));
       setDevices(readDevices(sessionCode));
@@ -258,12 +266,44 @@ function useInterCelCommands(sessionCode: string, deviceName = "Celular", device
         setDevices(readDevices(sessionCode));
       }
     }
-
     window.addEventListener("storage", onStorage);
+
+    // Tempo real entre dispositivos (Supabase Realtime Broadcast).
+    const supabase = getSupabaseBrowserClient();
+    let channel: RealtimeChannel | null = null;
+    if (supabase) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- status inicial de conexão (cliente)
+      setRealtime("connecting");
+      channel = supabase.channel(`intercel-${code}`, {
+        config: { broadcast: { self: false } },
+      });
+      channel.on("broadcast", { event: "command" }, ({ payload }) => {
+        const cmd = payload as Command;
+        if (!cmd || !cmd.id) return;
+        const next = [cmd, ...readCommands(sessionCode).filter((c) => c.id !== cmd.id)].slice(0, 12);
+        writeCommands(sessionCode, next);
+        setCommands(next);
+        if ("vibrate" in navigator) navigator.vibrate?.(35);
+      });
+      channel.on("broadcast", { event: "device" }, ({ payload }) => {
+        const dev = payload as ConnectedDevice;
+        if (!dev || !dev.id) return;
+        const next = [dev, ...readDevices(sessionCode).filter((d) => d.id !== dev.id)].slice(0, 16);
+        writeDevices(sessionCode, next);
+        setDevices(next);
+      });
+      channel.subscribe((status) => {
+        setRealtime(status === "SUBSCRIBED" ? "on" : "connecting");
+      });
+      channelRef.current = channel;
+    }
+
     return () => {
       window.clearTimeout(initialLoad);
       window.clearInterval(interval);
       window.removeEventListener("storage", onStorage);
+      if (channel && supabase) supabase.removeChannel(channel);
+      channelRef.current = null;
     };
   }, [sessionCode]);
 
@@ -280,6 +320,7 @@ function useInterCelCommands(sessionCode: string, deviceName = "Celular", device
       const next = [nextDevice, ...others].slice(0, 16);
       writeDevices(sessionCode, next);
       setDevices(next);
+      void channelRef.current?.send({ type: "broadcast", event: "device", payload: nextDevice });
     },
     [deviceName, deviceRole, sessionCode],
   );
@@ -298,6 +339,7 @@ function useInterCelCommands(sessionCode: string, deviceName = "Celular", device
       const next = [command, ...readCommands(sessionCode)].slice(0, 12);
       writeCommands(sessionCode, next);
       setCommands(next);
+      void channelRef.current?.send({ type: "broadcast", event: "command", payload: command });
       if ("vibrate" in navigator) navigator.vibrate?.(35);
     },
     [deviceName, deviceRole, sessionCode],
@@ -308,7 +350,7 @@ function useInterCelCommands(sessionCode: string, deviceName = "Celular", device
     setCommands([]);
   }, [sessionCode]);
 
-  return { commands, devices, sendCommand, clearCommands, announceDevice };
+  return { commands, devices, sendCommand, clearCommands, announceDevice, realtime };
 }
 
 const modeItems: Array<{
@@ -1058,7 +1100,7 @@ export function InterCelControlPrototype({
   const [deviceRole, setDeviceRole] = useState<DeviceRole>("controle-geral");
   const [deviceName, setDeviceName] = useState("Celular 1");
   const [mode, setMode] = useState<Mode>(modoForcado ?? "inicio");
-  const { commands, sendCommand, announceDevice } = useInterCelCommands(
+  const { commands, sendCommand, announceDevice, realtime } = useInterCelCommands(
     sessionCode,
     deviceName || roleLabels[deviceRole],
     deviceRole,
@@ -1109,6 +1151,14 @@ export function InterCelControlPrototype({
           <p className="mt-4 max-w-2xl break-words text-lg font-semibold leading-8 text-zinc-700">
             Escolha no celular o que você quer fazer: Sim/Não, controlar a aula,
             escrever, comunicação, joystick, mouse, som/sopro ou movimento.
+          </p>
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-zinc-700 ring-1 ring-zinc-200">
+            <span className={`h-2.5 w-2.5 rounded-full ${realtime === "on" ? "bg-green-500" : realtime === "connecting" ? "animate-pulse bg-amber-500" : "bg-zinc-400"}`} />
+            {realtime === "on"
+              ? "Conectado em tempo real à Tela Grande"
+              : realtime === "connecting"
+              ? "Conectando em tempo real…"
+              : "Tempo real indisponível — funciona no mesmo aparelho"}
           </p>
           <div className="mt-6 rounded-xl border border-blue-100 bg-white p-5 shadow-sm">
             <p className="text-lg font-black text-zinc-950">Como usar</p>
@@ -1175,7 +1225,7 @@ export function InterCelControlPrototype({
 
 export function InterCelSessionReceiver() {
   const [sessionCode, setSessionCode] = useState(defaultSession);
-  const { commands, devices, clearCommands, sendCommand } = useInterCelCommands(
+  const { commands, devices, clearCommands, sendCommand, realtime } = useInterCelCommands(
     sessionCode,
     "Demonstração",
     "controle-geral",
@@ -1195,6 +1245,14 @@ export function InterCelSessionReceiver() {
             <p className="mt-2 max-w-2xl text-zinc-300">
               Deixe esta tela aberta no computador, TV ou tablet. Use o celular
               para enviar comandos.
+            </p>
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-zinc-800 px-3 py-1 text-xs font-black">
+              <span className={`h-2.5 w-2.5 rounded-full ${realtime === "on" ? "bg-green-400" : realtime === "connecting" ? "animate-pulse bg-amber-400" : "bg-zinc-500"}`} />
+              {realtime === "on"
+                ? "Conectado em tempo real"
+                : realtime === "connecting"
+                ? "Conectando em tempo real…"
+                : "Tempo real indisponível — só no mesmo aparelho"}
             </p>
           </div>
           <div className="w-full max-w-xs">
