@@ -47,6 +47,7 @@ export const mainNav: NavSection[] = [
       { label: "Ética, CEP e LGPD", href: "/projeto/etica", description: "Proteção da pessoa antes de tudo." },
       { label: "Manual do Projeto", href: "/manual", description: "Guia inicial do ecossistema." },
       { label: "Documentação", href: "/documentacao", description: "Manual, artigo e resumo em PDF." },
+      { label: "Arquitetura e Tecnologias", href: "/projeto/tecnologias", description: "Stack, hospedagem e o fluxo do código ao ar." },
     ],
   },
   {
@@ -188,6 +189,7 @@ export const megaMenu: MegaCategoria[] = [
       { label: "Sobre o Projeto DAVI", href: "/projeto" },
       { label: "Recursos do DAVI", href: "/#recursos" },
       { label: "Manual da Plataforma", href: "/manual" },
+      { label: "Arquitetura e tecnologias", href: "/projeto/tecnologias" },
     ],
   },
   {
