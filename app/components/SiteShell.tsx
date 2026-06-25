@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { mockUser, mockNotifications } from "../lib/userData";
 import { assetSrc } from "../lib/imageAssets";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
-import { mainNav, footerSections, type ModuleStatus } from "../lib/siteNav";
+import { footerSections, megaMenu, type ModuleStatus } from "../lib/siteNav";
 import { IconBell, IconMenu } from "./icons";
 import { VisitCounter } from "./VisitCounter";
 
@@ -27,6 +28,39 @@ const menuStatusDot: Record<ModuleStatus, string> = {
 
 export function SiteHeader() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Fecha ao mudar de rota.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fecha o menu ao navegar
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // Esc + clique fora.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        menuBtnRef.current?.focus();
+      }
+    }
+    function onDown(e: MouseEvent) {
+      const t = e.target as Node;
+      if (!panelRef.current?.contains(t) && !menuBtnRef.current?.contains(t)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDown);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -57,76 +91,40 @@ export function SiteHeader() {
 
       <div className="bg-white">
         <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between gap-3 px-6 py-3 text-zinc-950">
-          <div className="flex min-w-0 items-center gap-4">
-            <details className="relative">
-              <summary
-                className={`flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-lg text-blue-800 hover:bg-blue-50 ${focusRing}`}
-                aria-label="Abrir menu de navegação"
-              >
-                <IconMenu className="h-7 w-7" />
-              </summary>
-              <div className="absolute left-0 top-14 z-50 max-h-[calc(100vh-7rem)] w-[min(94vw,520px)] overflow-y-auto rounded-lg border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/15">
-                <p className="text-sm font-black uppercase tracking-wide text-blue-800">
-                  Navegação DAVI
-                </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {[
-                    { label: "Início", href: "/" },
-                    { label: "Manual", href: "/manual" },
-                    { label: "Contato", href: "/contato" },
-                    { label: "Acessibilidade", href: "/acessibilidade" },
-                  ].map((quick) => (
-                    <Link
-                      key={quick.href}
-                      href={quick.href}
-                      className={`rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-bold text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
-                    >
-                      {quick.label}
-                    </Link>
-                  ))}
-                </div>
-                <div className="mt-3 grid gap-1.5">
-                  {mainNav.map((section) => (
-                    <details key={section.href} className="group rounded-lg border border-zinc-200 bg-white">
-                      <summary
-                        className={`flex cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-black text-zinc-900 hover:bg-blue-50 ${focusRing}`}
-                      >
-                        <span>{section.title}</span>
-                        <span aria-hidden="true" className="text-zinc-400 transition group-open:rotate-90">
-                          ›
-                        </span>
-                      </summary>
-                      <div className="grid gap-0.5 px-2 pb-2">
-                        <Link
-                          href={section.href}
-                          className={`rounded-lg px-3 py-2 text-sm font-bold text-blue-800 hover:bg-blue-50 ${focusRing}`}
-                        >
-                          {section.title}: visão geral
-                        </Link>
-                        {section.items
-                          .filter((item) => item.href !== section.href)
-                          .map((item) => (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-blue-50 hover:text-blue-800 ${focusRing}`}
-                            >
-                              <span>{item.label}</span>
-                              {item.status ? (
-                                <span
-                                  className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
-                                  title={item.status}
-                                  aria-label={`Status: ${item.status}`}
-                                />
-                              ) : null}
-                            </Link>
-                          ))}
-                      </div>
-                    </details>
-                  ))}
-                </div>
-              </div>
-            </details>
+          <div className="flex min-w-0 items-center gap-3">
+            <button
+              ref={menuBtnRef}
+              type="button"
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-expanded={menuOpen}
+              aria-controls="menu-principal-painel"
+              aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+              className={`flex h-12 items-center gap-2 rounded-lg px-3 text-blue-800 hover:bg-blue-50 ${focusRing}`}
+            >
+              <span className="relative flex h-7 w-7 items-center justify-center">
+                <IconMenu
+                  className={`absolute h-7 w-7 transition-all duration-200 ${
+                    menuOpen ? "scale-0 rotate-90 opacity-0" : "scale-100 rotate-0 opacity-100"
+                  }`}
+                />
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  className={`absolute h-7 w-7 transition-all duration-200 ${
+                    menuOpen ? "scale-100 rotate-0 opacity-100" : "scale-0 -rotate-90 opacity-0"
+                  }`}
+                >
+                  <path d="M6 6l12 12M18 6L6 18" />
+                </svg>
+              </span>
+              <span className="hidden text-base font-black sm:inline">
+                {menuOpen ? "Fechar" : "Menu"}
+              </span>
+            </button>
 
             <div className="min-w-0">
               <p className="text-base font-semibold leading-tight tracking-tight sm:text-2xl lg:text-3xl">
@@ -171,6 +169,64 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
+
+      {menuOpen && (
+        <>
+          <div className="fixed inset-0 z-30 bg-zinc-950/30" aria-hidden="true" />
+          <nav
+            id="menu-principal-painel"
+            ref={panelRef}
+            aria-label="Menu principal do Projeto DAVI"
+            className="absolute left-0 right-0 top-full z-50 max-h-[calc(100vh-5.5rem)] w-full overflow-y-auto border-t border-zinc-200 bg-white shadow-2xl shadow-blue-950/15"
+          >
+            <div className="mx-auto max-w-3xl px-4 py-4">
+              <p className="px-1 text-sm font-black uppercase tracking-wide text-blue-800">
+                Navegação do Projeto DAVI
+              </p>
+              <div className="mt-3 grid gap-1.5">
+                {megaMenu.map((cat, i) => (
+                  <details key={cat.titulo} className="group rounded-lg border border-zinc-200 bg-white" open={i === 0}>
+                    <summary
+                      className={`flex cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-4 py-3 text-sm font-black text-zinc-900 hover:bg-blue-50 ${focusRing}`}
+                    >
+                      <span>{cat.titulo}</span>
+                      <span aria-hidden="true" className="text-zinc-400 transition group-open:rotate-90">›</span>
+                    </summary>
+                    <ul className="grid gap-0.5 px-2 pb-2">
+                      {cat.itens.map((item) => {
+                        const ativo = pathname === item.href;
+                        return (
+                          <li key={`${cat.titulo}-${item.href}`}>
+                            <Link
+                              href={item.href}
+                              aria-current={ativo ? "page" : undefined}
+                              onClick={() => setMenuOpen(false)}
+                              className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold ${focusRing} ${
+                                ativo
+                                  ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
+                                  : "text-zinc-700 hover:bg-blue-50 hover:text-blue-800"
+                              }`}
+                            >
+                              <span>{item.label}</span>
+                              {item.status ? (
+                                <span
+                                  className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
+                                  title={item.status}
+                                  aria-label={`Status: ${item.status}`}
+                                />
+                              ) : null}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+            </div>
+          </nav>
+        </>
+      )}
     </header>
   );
 }

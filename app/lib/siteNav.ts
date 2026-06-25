@@ -174,6 +174,78 @@ export const mainNav: NavSection[] = [
   },
 ];
 
+/**
+ * Menu principal por jornada de uso (categorias + links).
+ * Reaproveita rotas já existentes; não cria páginas novas.
+ */
+export type MegaCategoria = { titulo: string; itens: NavItem[] };
+
+export const megaMenu: MegaCategoria[] = [
+  {
+    titulo: "Início",
+    itens: [
+      { label: "Página inicial", href: "/" },
+      { label: "Sobre o Projeto DAVI", href: "/projeto" },
+      { label: "Recursos do DAVI", href: "/#recursos" },
+      { label: "Manual da Plataforma", href: "/manual" },
+    ],
+  },
+  {
+    titulo: "Comunicação e Acesso",
+    itens: [
+      { label: "DAVI Comunicação", href: "/comunicacao", status: "Demonstração" },
+      { label: "DAVI InterCel", href: "/davi-intercel", status: "Em desenvolvimento" },
+      { label: "DAVI Conecta", href: "/acesso/conecta", status: "Testes iniciais" },
+      { label: "DAVI Vision", href: "/acesso/vision", status: "Protótipo" },
+      { label: "DAVI BioSinal", href: "/acesso/biosinal", status: "Experimental" },
+    ],
+  },
+  {
+    titulo: "Aprendizagem",
+    itens: [
+      { label: "DAVI Escola", href: "/escola", status: "Demonstração" },
+      { label: "Língua Portuguesa", href: "/escola/portugues", status: "Demonstração" },
+      { label: "Matemática", href: "/escola/matematica", status: "Demonstração" },
+      { label: "DAVI Games", href: "/davi-games", status: "Protótipo" },
+      { label: "DAVI Imersivo", href: "/davi-imersivo", status: "Planejado" },
+    ],
+  },
+  {
+    titulo: "Acompanhamento e IA",
+    itens: [
+      { label: "Assistente DAVI com IA", href: "/ia/assistente", status: "Demonstração" },
+      { label: "Evolução e Relatórios", href: "/evolucao" },
+      { label: "Métricas de uso", href: "/evolucao/aprendizagem" },
+    ],
+  },
+  {
+    titulo: "Tecnologia Assistiva e Oficina",
+    itens: [
+      { label: "Catálogo de Tecnologias Assistivas", href: "/tecnologias-assistivas/catalogo" },
+      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
+      { label: "Dispositivos assistivos", href: "/tecnologias-assistivas/dispositivos" },
+      { label: "Pareamento de dispositivos", href: "/acesso/bluetooth", status: "Testes iniciais" },
+    ],
+  },
+  {
+    titulo: "Capacitação e Emprego",
+    itens: [
+      { label: "DAVI Capacita", href: "/davi-capacita", status: "Planejado" },
+      { label: "DAVI Emprega", href: "/davi-emprega", status: "Planejado" },
+      { label: "Emprego apoiado", href: "/davi-emprega" },
+    ],
+  },
+  {
+    titulo: "Documentação e Segurança",
+    itens: [
+      { label: "Ética e LGPD", href: "/projeto/etica" },
+      { label: "Termos de uso", href: "/seguranca-e-privacidade" },
+      { label: "Política de privacidade", href: "/seguranca-e-privacidade" },
+      { label: "Documentação técnica", href: "/documentacao" },
+    ],
+  },
+];
+
 /** Atalhos essenciais do rodapé, agrupados para facilitar a leitura. */
 export const footerSections = [
   {
