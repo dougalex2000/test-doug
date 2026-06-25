@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ConceptPage } from "../../components/modules";
 
 export const metadata: Metadata = {
-  title: "Sim e Não — DAVI Comunicação",
+  title: "Sim e Não — DAVI Comunica",
   description: "As respostas essenciais para participar e decidir.",
 };
 

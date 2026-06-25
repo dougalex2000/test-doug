@@ -4,7 +4,7 @@ export default function OficinaPage() {
   return (
     <PageShell>
       <PageHero
-        eyebrow="Oficina Maker Assistiva"
+        eyebrow="DAVI Maker Assistiva"
         title="Criar, adaptar e documentar soluções personalizadas"
         description="Espaço conceitual para fabricação, adaptação e documentação de recursos assistivos de hardware e software."
       />

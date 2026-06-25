@@ -87,7 +87,7 @@ const userProfiles = [
       "Gerencia usuários, permissões, módulos e políticas de segurança da plataforma.",
   },
   {
-    title: "Oficina Maker",
+    title: "DAVI Maker",
     description:
       "Recebe solicitações de adaptação, fabrica dispositivos e documenta projetos abertos.",
   },

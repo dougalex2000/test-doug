@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ConceptPage } from "../../components/modules";
 
 export const metadata: Metadata = {
-  title: "Frases Rápidas — DAVI Comunicação",
+  title: "Frases Rápidas — DAVI Comunica",
   description: "Expressões prontas para o dia a dia.",
 };
 

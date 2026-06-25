@@ -3,7 +3,7 @@ export const mainNav = [
   { label: "Origem", href: "/origem" },
   { label: "Plataforma", href: "/plataforma" },
   { label: "Galeria", href: "/galeria" },
-  { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
+  { label: "DAVI Maker", href: "/tecnologias-assistivas/oficina-maker" },
   { label: "Relatórios", href: "/relatorios" },
   { label: "Acessibilidade", href: "/acessibilidade" },
   { label: "Contato", href: "/contato" },
@@ -129,7 +129,7 @@ export const pageCards = [
       "Explore exemplos de equipamentos, adaptações, projetos abertos e recursos maker.",
   },
   {
-    title: "Oficina Maker Assistiva",
+    title: "DAVI Maker Assistiva",
     href: "/oficina",
     description:
       "Entenda como a oficina poderá criar, adaptar e documentar soluções personalizadas.",

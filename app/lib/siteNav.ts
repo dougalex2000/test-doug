@@ -73,7 +73,7 @@ export const mainNav: NavSection[] = [
     href: "/comunicacao",
     description: "Comunicação alternativa para expressão, escolhas e participação.",
     items: [
-      { label: "Visão Geral", href: "/comunicacao", description: "DAVI Comunicação.", group: "Grupo Comunicação Alternativa" },
+      { label: "Visão Geral", href: "/comunicacao", description: "DAVI Comunica.", group: "Grupo Comunicação Alternativa" },
       { label: "Comunicação Alternativa", href: "/comunicacao/alternativa", description: "Prancha interativa com áudio.", status: "Demonstração" },
       { label: "Sim e Não", href: "/comunicacao/sim-nao", description: "Respostas essenciais." },
       { label: "Frases Rápidas", href: "/comunicacao/frases-rapidas", description: "Expressões do dia a dia." },

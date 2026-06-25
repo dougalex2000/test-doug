@@ -76,7 +76,7 @@ export default function GaleriaPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <LinkButton href="/loja-social">Conhecer a Loja Social</LinkButton>
             <LinkButton href="/tecnologias-assistivas/oficina-maker" variant="secondary">
-              Oficina Maker
+              DAVI Maker
             </LinkButton>
           </div>
         </div>

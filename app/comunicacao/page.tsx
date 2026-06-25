@@ -28,10 +28,10 @@ export default function ComunicacaoPage() {
       }
       sections={[
         {
-          eyebrow: "DAVI Comunicação",
+          eyebrow: "DAVI Comunica",
           title: "Participar, escolher, responder e se expressar",
           paragraphs: [
-            "O DAVI Comunicação permite que a pessoa expresse necessidades, vontades, respostas e escolhas, mesmo antes da alfabetização plena.",
+            "O DAVI Comunica permite que a pessoa expresse necessidades, vontades, respostas e escolhas, mesmo antes da alfabetização plena.",
             "É parte essencial da vida independente: comunicar é poder participar. Os recursos integram-se aos métodos de acesso (olhar, toque, botão, sopro e varredura).",
           ],
           bullets: [

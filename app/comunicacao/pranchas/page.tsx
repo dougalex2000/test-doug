@@ -3,7 +3,7 @@ import { ConceptPage } from "../../components/modules";
 import { LinkButton } from "../../components/SiteShell";
 
 export const metadata: Metadata = {
-  title: "Pranchas de Comunicação — DAVI Comunicação",
+  title: "Pranchas de Comunicação — DAVI Comunica",
   description: "Símbolos organizados por categoria para expressão.",
 };
 

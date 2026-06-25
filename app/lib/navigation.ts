@@ -45,7 +45,7 @@ export const institutionalNav: NavGroup[] = [
     links: [
       { label: "Galeria", href: "/galeria" },
       { label: "Projetos Abertos", href: "/galeria#projetos-abertos" },
-      { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
+      { label: "DAVI Maker", href: "/tecnologias-assistivas/oficina-maker" },
       { label: "Loja Social (em breve)", href: "/loja-social" },
     ],
   },
@@ -123,7 +123,7 @@ export const footerNav: NavLink[] = [
   { label: "Rastreamento Visual", href: "/rastreamento-visual" },
   { label: "Comunicação Alternativa", href: "/comunicacao/alternativa" },
   { label: "Galeria", href: "/galeria" },
-  { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
+  { label: "DAVI Maker", href: "/tecnologias-assistivas/oficina-maker" },
   { label: "Profissionais", href: "/profissionais" },
   { label: "Famílias", href: "/familias" },
   { label: "Instituições", href: "/instituicoes" },

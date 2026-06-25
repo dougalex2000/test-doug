@@ -158,7 +158,7 @@ export default function MetodosDeAcessoPage() {
           <div className="mt-8 flex flex-wrap gap-3">
             <LinkButton href="/avaliacao">Avaliação Funcional</LinkButton>
             <LinkButton href="/tecnologias-assistivas/oficina-maker" variant="secondary">
-              Oficina Maker
+              DAVI Maker
             </LinkButton>
             <LinkButton href="/comunicacao/alternativa" variant="secondary">
               Comunicação Alternativa

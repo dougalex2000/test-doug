@@ -49,7 +49,7 @@ export default function LojaSocialPage() {
           <>
             <LinkButton href="/galeria">Ver dispositivos na Galeria</LinkButton>
             <LinkButton href="/tecnologias-assistivas/oficina-maker" variant="secondary">
-              Oficina Maker
+              DAVI Maker
             </LinkButton>
           </>
         }

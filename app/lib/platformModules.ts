@@ -206,7 +206,7 @@ export const platformModules: Record<PlatformModuleKey, PlatformModule> = {
   },
   catalogo: {
     eyebrow: "Catálogo",
-    title: "Catálogo de Tecnologias Assistivas",
+    title: "DAVI Catálogo",
     description:
       "Catálogo dos produtos, recursos e soluções do Projeto DAVI.",
     route: "/tecnologias-assistivas/catalogo",

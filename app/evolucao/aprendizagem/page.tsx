@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function MetricasAprendizagemPage() {
   return (
     <ConceptPage
-      breadcrumb={[{ label: "Evolução e Relatórios", href: "/evolucao" }, { label: "Métricas de Aprendizagem" }]}
+      breadcrumb={[{ label: "DAVI Métricas", href: "/evolucao" }, { label: "Métricas de Aprendizagem" }]}
       eyebrow="Métricas de Aprendizagem"
       title="Sinais do progresso pedagógico"
       subtitle="Indicadores que ajudam professores e famílias a compreender e apoiar o aluno."

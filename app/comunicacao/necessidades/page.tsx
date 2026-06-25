@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ConceptPage } from "../../components/modules";
 
 export const metadata: Metadata = {
-  title: "Necessidades e Vontades — DAVI Comunicação",
+  title: "Necessidades e Vontades — DAVI Comunica",
   description: "Expressar o que se precisa e o que se deseja.",
 };
 

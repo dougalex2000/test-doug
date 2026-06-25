@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function RelatorioInstitucionalPage() {
   return (
     <ConceptPage
-      breadcrumb={[{ label: "Evolução e Relatórios", href: "/evolucao" }, { label: "Relatório Institucional" }]}
+      breadcrumb={[{ label: "DAVI Métricas", href: "/evolucao" }, { label: "Relatório Institucional" }]}
       eyebrow="Relatório Institucional"
       title="Visão agregada, dados protegidos"
       subtitle="Indicadores agregados para apoiar gestão e políticas de inclusão."

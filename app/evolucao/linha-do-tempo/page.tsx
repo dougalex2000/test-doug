@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function LinhaDoTempoPage() {
   return (
     <ConceptPage
-      breadcrumb={[{ label: "Evolução e Relatórios", href: "/evolucao" }, { label: "Linha do Tempo" }]}
+      breadcrumb={[{ label: "DAVI Métricas", href: "/evolucao" }, { label: "Linha do Tempo" }]}
       eyebrow="Linha do Tempo"
       title="A evolução vista no tempo"
       subtitle="Registrar marcos e conquistas ajuda a enxergar o caminho percorrido."

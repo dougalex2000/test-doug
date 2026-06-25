@@ -15,7 +15,7 @@ export default function MinhaEvolucaoPage() {
       title="Ver o próprio caminho"
       subtitle="O aluno acompanha conquistas e próximos passos de forma simples e motivadora."
       status="Planejado"
-      actions={<LinkButton href="/evolucao">Ver Evolução e Relatórios</LinkButton>}
+      actions={<LinkButton href="/evolucao">Ver DAVI Métricas</LinkButton>}
       sections={[
         {
           eyebrow: "O que mostra",

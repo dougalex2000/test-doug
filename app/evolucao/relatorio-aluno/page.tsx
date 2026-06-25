@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function RelatorioAlunoPage() {
   return (
     <ConceptPage
-      breadcrumb={[{ label: "Evolução e Relatórios", href: "/evolucao" }, { label: "Relatório do Aluno" }]}
+      breadcrumb={[{ label: "DAVI Métricas", href: "/evolucao" }, { label: "Relatório do Aluno" }]}
       eyebrow="Relatório do Aluno"
       title="Evolução em linguagem clara"
       subtitle="Um resumo acessível do progresso, para a família e para o professor."

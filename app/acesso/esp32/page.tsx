@@ -25,7 +25,7 @@ export default function Esp32Page() {
             "Leitura de botões, sopro e sensores",
             "Envio por Bluetooth (BLE) ou WebSocket",
             "Firmware aberto e documentado",
-            "Integração com a Oficina Maker",
+            "Integração com a DAVI Maker",
             "Registro de eventos no DAVI Conecta",
           ],
         },

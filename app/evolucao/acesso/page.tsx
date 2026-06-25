@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function MetricasAcessoPage() {
   return (
     <ConceptPage
-      breadcrumb={[{ label: "Evolução e Relatórios", href: "/evolucao" }, { label: "Métricas de Acesso" }]}
+      breadcrumb={[{ label: "DAVI Métricas", href: "/evolucao" }, { label: "Métricas de Acesso" }]}
       eyebrow="Métricas de Acesso"
       title="Como a pessoa interage melhor"
       subtitle="Indicadores sobre o método de acesso e a eficiência da interação."

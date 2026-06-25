@@ -96,7 +96,7 @@ export default function DaviCapacitaPage() {
         },
         {
           eyebrow: "C. Catálogo",
-          title: "Catálogo de Tecnologias Assistivas",
+          title: "DAVI Catálogo",
           description:
             "Como cadastrar, organizar, documentar e divulgar soluções de tecnologia assistiva no catálogo do Projeto DAVI.",
           bullets: [

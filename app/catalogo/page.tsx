@@ -217,7 +217,7 @@ export default function CatalogoPage() {
             escolas, famílias e instituições parceiras.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <LinkButton href="/tecnologias-assistivas/oficina-maker">Falar com a Oficina Maker</LinkButton>
+            <LinkButton href="/tecnologias-assistivas/oficina-maker">Falar com a DAVI Maker</LinkButton>
             <LinkButton href="/loja-social" variant="secondary">
               Conhecer a Loja Social
             </LinkButton>

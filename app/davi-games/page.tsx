@@ -340,7 +340,7 @@ export default function DaviGamesPage() {
               Métodos de Acesso
             </LinkButton>
             <LinkButton href="/evolucao" variant="secondary">
-              Evolução e Relatórios
+              DAVI Métricas
             </LinkButton>
           </div>
         </div>

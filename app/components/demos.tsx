@@ -806,7 +806,7 @@ export function SubirVideoForm() {
 }
 
 /* ================================================================== */
-/* Chat do Assistente DAVI                                             */
+/* Chat do DAVI Assistente                                             */
 /* ================================================================== */
 
 type ChatMessage = { role: "user" | "assistant"; text: string };
@@ -833,7 +833,7 @@ function answerFor(question: string): string {
   const found = cannedAnswers.find((a) => a.match.test(question));
   return (
     found?.answer ??
-    "Esta é uma demonstração do Assistente DAVI. Posso orientar sobre os módulos (Escola, Comunicação, Vision, Conecta, BioSinal), métodos de acesso, catálogo e oficina maker. Em produção, responderei com base na documentação do projeto (arquitetura RAG)."
+    "Esta é uma demonstração do DAVI Assistente. Posso orientar sobre os módulos (Escola, Comunicação, Vision, Conecta, BioSinal), métodos de acesso, catálogo e oficina maker. Em produção, responderei com base na documentação do projeto (arquitetura RAG)."
   );
 }
 
@@ -841,7 +841,7 @@ export function AssistenteChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      text: "Olá! Sou o Assistente DAVI (demonstração). Como posso ajudar você a usar a plataforma?",
+      text: "Olá! Sou o DAVI Assistente (demonstração). Como posso ajudar você a usar a plataforma?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -854,7 +854,7 @@ export function AssistenteChat() {
   }
 
   return (
-    <Panel title="Assistente DAVI (demonstração)">
+    <Panel title="DAVI Assistente (demonstração)">
       <div
         className="flex max-h-[360px] flex-col gap-3 overflow-y-auto rounded-xl border border-zinc-200 bg-zinc-50 p-4"
         aria-live="polite"
@@ -909,7 +909,7 @@ export function AssistenteChat() {
       </form>
 
       <DemoNote>
-        O Assistente DAVI oferece orientações de uso da plataforma. Ele não
+        O DAVI Assistente oferece orientações de uso da plataforma. Ele não
         realiza diagnóstico, não substitui professores, terapeutas, cuidadores
         ou profissionais especializados. Recurso em desenvolvimento.
       </DemoNote>
