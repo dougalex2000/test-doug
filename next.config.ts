@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/davi-celacesso",
+        destination: "/davi-intercel",
+        permanent: true,
+      },
+      {
         source: "/tecnologias-assistivas/davi-imersivo",
         destination: "/davi-imersivo",
         permanent: true,

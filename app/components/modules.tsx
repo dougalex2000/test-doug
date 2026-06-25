@@ -19,6 +19,7 @@ const focusRing =
 
 const statusStyles: Record<ModuleStatus, string> = {
   "Em construção": "bg-amber-100 text-amber-900 ring-amber-300",
+  "Em desenvolvimento": "bg-green-100 text-green-900 ring-green-300",
   Protótipo: "bg-violet-100 text-violet-900 ring-violet-300",
   "Testes iniciais": "bg-sky-100 text-sky-900 ring-sky-300",
   Planejado: "bg-zinc-100 text-zinc-700 ring-zinc-300",

@@ -46,12 +46,12 @@ const mainModules: ModuleCard[] = [
     status: "Demonstração",
   },
   {
-    title: "DAVI CelAcesso",
+    title: "DAVI InterCel",
     description:
-      "Celular como botão Sim e Não, joystick, mouse, teclado adaptado, prancha de comunicação e controle acessível.",
-    href: "/davi-celacesso",
+      "Celular como interface assistiva. Transforma o celular em uma extensão dos recursos do Projeto DAVI, permitindo comunicação, controle, teclado adaptado, mouse alternativo, joystick, botões personalizados, prancha de comunicação, gestos, movimento, câmera e interação com dispositivos assistivos.",
+    href: "/davi-intercel",
     icon: <IconTouch className="h-6 w-6" />,
-    status: "Protótipo",
+    status: "Em desenvolvimento",
   },
   {
     title: "DAVI Conecta",

@@ -81,7 +81,7 @@ const possibilities: ModuleCard[] = [
   {
     title: "Integração com celular",
     description:
-      "O DAVI CelAcesso como joystick, botão de confirmação, mouse alternativo ou painel de apoio.",
+      "O DAVI InterCel como joystick, botão de confirmação, mouse alternativo ou painel de apoio.",
     icon: <IconTouch className="h-6 w-6" />,
   },
   {
@@ -121,7 +121,7 @@ const interactionModes = [
   "Voz",
   "Joystick",
   "Botão adaptado",
-  "DAVI CelAcesso",
+  "DAVI InterCel",
   "Permanência em alvo",
   "Controle combinado",
   "Sensores corporais",
@@ -130,7 +130,7 @@ const interactionModes = [
 const integrations: ModuleCard[] = [
   { title: "DAVI Vision", description: "Olhar, cabeça, câmera e atenção visual.", href: "/acesso/vision", icon: <IconEye className="h-6 w-6" /> },
   { title: "DAVI Escola", description: "Letras, palavras, números, histórias e atividades imersivas.", href: "/escola", icon: <IconDocument className="h-6 w-6" /> },
-  { title: "DAVI CelAcesso", description: "Celular como controle, joystick, botão ou painel de comunicação.", href: "/davi-celacesso", icon: <IconTouch className="h-6 w-6" /> },
+  { title: "DAVI InterCel", description: "Celular como controle, joystick, botão ou painel de comunicação.", href: "/davi-intercel", icon: <IconTouch className="h-6 w-6" /> },
   { title: "Jogos e gamificação", description: "Experiências lúdicas com diferentes métodos de acesso.", href: "/davi-games", icon: <IconGamepad className="h-6 w-6" /> },
   { title: "DAVI BioSinal", description: "Sinais corporais e sensores complementares em pesquisas futuras.", href: "/acesso/biosinal", icon: <IconLightbulb className="h-6 w-6" /> },
   { title: "DAVI Conecta", description: "Equipamentos embarcados, botões e dispositivos físicos conectados.", href: "/acesso/conecta", icon: <IconChip className="h-6 w-6" /> },
@@ -160,9 +160,9 @@ const careItems = [
 ];
 
 const phases = [
-  { number: "01", title: "Conceito e protótipos visuais", description: "Página institucional, imagens, levantamento de possibilidades e integração conceitual com Vision, Escola, CelAcesso e Jogos." },
+  { number: "01", title: "Conceito e protótipos visuais", description: "Página institucional, imagens, levantamento de possibilidades e integração conceitual com Vision, Escola, InterCel e Jogos." },
   { number: "02", title: "Experimentos controlados", description: "Interfaces simples, seleção por olhar ou cabeça, jogos acessíveis, atividades de atenção e métricas básicas." },
-  { number: "03", title: "Integração com a plataforma", description: "Relatórios, perfis personalizados, DAVI CelAcesso, dispositivos físicos conectados e registros de evolução." },
+  { number: "03", title: "Integração com a plataforma", description: "Relatórios, perfis personalizados, DAVI InterCel, dispositivos físicos conectados e registros de evolução." },
   { number: "04", title: "Pesquisa aplicada", description: "Protocolos de uso, instituições parceiras, avaliação de acessibilidade, documentação técnica, ética e LGPD." },
 ];
 
@@ -348,7 +348,7 @@ export default function DaviImersivoPage() {
             <LinkButton href="/acesso/vision">Conhecer DAVI Vision</LinkButton>
             <LinkButton href="/escola" variant="secondary">Explorar DAVI Escola</LinkButton>
             <LinkButton href="/davi-games" variant="secondary">Ver jogos educativos</LinkButton>
-            <LinkButton href="/davi-celacesso" variant="tertiary">Conhecer DAVI CelAcesso</LinkButton>
+            <LinkButton href="/davi-intercel" variant="tertiary">Conhecer DAVI InterCel</LinkButton>
           </div>
         </div>
       </section>

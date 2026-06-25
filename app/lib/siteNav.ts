@@ -8,6 +8,7 @@
 
 export type ModuleStatus =
   | "Em construção"
+  | "Em desenvolvimento"
   | "Protótipo"
   | "Testes iniciais"
   | "Planejado"
@@ -86,9 +87,9 @@ export const mainNav: NavSection[] = [
     description: "Métodos de acesso, rastreamento ocular, BioSinal e conexão sem fio.",
     items: [
       { label: "Métodos de Acesso", href: "/acesso/metodos", description: "Olhar, toque, botão, sopro e mais." },
-      { label: "DAVI Vision", href: "/acesso/vision", description: "Rastreamento ocular e interação visual.", status: "Protótipo", group: "Grupo DAVI Vision" },
+      { label: "DAVI InterCel", href: "/davi-intercel", description: "Celular como interface assistiva e extensão dos recursos do Projeto DAVI.", status: "Em desenvolvimento", group: "Grupo Acessibilidade e Métodos de Acesso" },
       { label: "DAVI Conecta", href: "/acesso/conecta", description: "Integração com dispositivos sem fio.", status: "Testes iniciais", group: "Grupo DAVI Conecta e Dispositivos Sem Fio" },
-      { label: "DAVI CelAcesso", href: "/davi-celacesso", description: "Celular como botão, joystick, mouse, teclado e prancha de comunicação.", status: "Protótipo", group: "Grupo Acessibilidade e Métodos de Acesso" },
+      { label: "DAVI Vision", href: "/acesso/vision", description: "Rastreamento ocular e interação visual.", status: "Protótipo", group: "Grupo DAVI Vision" },
       { label: "DAVI Calibrar", href: "/acesso/calibrar", description: "Ajustes por método de acesso." },
       { label: "Perfil de Acesso", href: "/acesso/perfil", description: "Registro funcional, não diagnóstico." },
       { label: "BioSinal", href: "/acesso/biosinal", description: "Sinais biológicos como acesso.", status: "Experimental", group: "Grupo DAVI BioSinal" },
@@ -198,7 +199,7 @@ export const footerSections = [
     links: [
       { label: "Catálogo", href: "/tecnologias-assistivas/catalogo" },
       { label: "Oficina Maker", href: "/tecnologias-assistivas/oficina-maker" },
-      { label: "DAVI CelAcesso", href: "/davi-celacesso" },
+      { label: "DAVI InterCel", href: "/davi-intercel" },
       { label: "Galeria", href: "/galeria" },
       { label: "DAVI Games", href: "/davi-games" },
     ],

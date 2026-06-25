@@ -10,6 +10,7 @@ import {
   IconLightbulb,
   IconShieldCheck,
   IconSparkles,
+  IconTouch,
 } from "../components/icons";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ const workingGroups = [
   "Grupo Videoaulas e Tarefas",
   "Grupo Comunicação Alternativa",
   "Grupo DAVI Vision",
+  "Grupo Acessibilidade e Métodos de Acesso",
   "Grupo DAVI Conecta e Dispositivos Sem Fio",
   "Grupo DAVI BioSinal",
   "Grupo Inteligência Artificial",
@@ -130,6 +132,14 @@ export default function ManualPage() {
           ],
         },
         {
+          eyebrow: "9.1. DAVI InterCel",
+          title: "Celular como interface assistiva",
+          paragraphs: [
+            "O DAVI InterCel é o módulo que transforma o celular em uma interface assistiva e em uma extensão dos recursos da plataforma DAVI. Ele poderá ser usado como botão Sim/Não, painel de comandos, teclado adaptado, mouse alternativo, joystick, prancha de comunicação, recurso de escrita, controle de videoaulas, acionador por movimento, gesto ou câmera e ponte com dispositivos assistivos.",
+            "A proposta é ampliar as formas de acesso, comunicação, aprendizagem e autonomia, usando o celular como recurso acessível, personalizável e integrado ao Projeto DAVI.",
+          ],
+        },
+        {
           eyebrow: "10. DAVI BioSinal",
           title: "Sinais biológicos como acesso (experimental)",
           paragraphs: [
@@ -197,6 +207,7 @@ export default function ManualPage() {
           { title: "DAVI Escola", description: "Núcleo pedagógico.", href: "/escola", icon: <IconDocument className="h-6 w-6" /> },
           { title: "Comunicação", description: "Expressão e escolhas.", href: "/comunicacao", icon: <IconChat className="h-6 w-6" /> },
           { title: "DAVI Vision", description: "Rastreamento ocular.", href: "/acesso/vision", icon: <IconEye className="h-6 w-6" />, status: "Protótipo" },
+          { title: "DAVI InterCel", description: "Celular como interface assistiva.", href: "/davi-intercel", icon: <IconTouch className="h-6 w-6" />, status: "Em desenvolvimento" },
           { title: "DAVI Conecta", description: "Dispositivos sem fio.", href: "/acesso/conecta", icon: <IconChip className="h-6 w-6" />, status: "Testes iniciais" },
           { title: "DAVI BioSinal", description: "Sinais biológicos.", href: "/acesso/biosinal", icon: <IconLightbulb className="h-6 w-6" />, status: "Experimental" },
           { title: "Assistente DAVI", description: "Guia com IA.", href: "/ia/assistente", icon: <IconSparkles className="h-6 w-6" />, status: "Demonstração" },
