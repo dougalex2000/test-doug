@@ -29,6 +29,7 @@ const menuStatusDot: Record<ModuleStatus, string> = {
 export function SiteHeader() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [catSel, setCatSel] = useState(0);
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
@@ -97,7 +98,10 @@ export function SiteHeader() {
             <button
               ref={menuBtnRef}
               type="button"
-              onClick={() => setMenuOpen((o) => !o)}
+              onClick={() => {
+                if (!menuOpen) setCatSel(0);
+                setMenuOpen((o) => !o);
+              }}
               aria-expanded={menuOpen}
               aria-controls="mega-menu"
               aria-label={menuOpen ? "Fechar menu de navegação" : "Abrir menu de navegação"}
@@ -177,45 +181,62 @@ export function SiteHeader() {
               </button>
             </div>
 
-            <div className="mt-4 grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-              {megaMenu.map((cat) => (
-                <section key={cat.titulo} aria-label={cat.titulo}>
-                  <h2 className="text-sm font-black uppercase tracking-wide text-zinc-900">
-                    {cat.titulo}
-                  </h2>
-                  <p className="mt-1 text-xs font-semibold leading-5 text-zinc-500">
-                    {cat.descricao}
-                  </p>
-                  <ul className="mt-3 grid gap-0.5">
-                    {cat.itens.map((item) => {
-                      const ativo = pathname === item.href;
-                      return (
-                        <li key={`${cat.titulo}-${item.href}`}>
-                          <Link
-                            href={item.href}
-                            aria-current={ativo ? "page" : undefined}
-                            onClick={() => setMenuOpen(false)}
-                            className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold ${focusRing} ${
-                              ativo
-                                ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
-                                : "text-zinc-700 hover:bg-blue-50 hover:text-blue-800"
-                            }`}
-                          >
-                            <span>{item.label}</span>
-                            {item.status ? (
-                              <span
-                                className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
-                                title={item.status}
-                                aria-label={`Status: ${item.status}`}
-                              />
-                            ) : null}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
-              ))}
+            <div className="mt-4 grid gap-4 lg:grid-cols-[16rem_1fr]">
+              {/* Coluna de categorias */}
+              <nav aria-label="Categorias" className="grid h-max gap-1 lg:border-r lg:border-zinc-200 lg:pr-4">
+                {megaMenu.map((cat, i) => (
+                  <button
+                    key={cat.titulo}
+                    type="button"
+                    onClick={() => setCatSel(i)}
+                    onMouseEnter={() => setCatSel(i)}
+                    aria-pressed={catSel === i}
+                    className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-black ${focusRing} ${
+                      catSel === i
+                        ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
+                        : "text-zinc-800 hover:bg-zinc-50"
+                    }`}
+                  >
+                    <span>{cat.titulo}</span>
+                    <span aria-hidden="true" className="text-zinc-400">›</span>
+                  </button>
+                ))}
+              </nav>
+
+              {/* Links da categoria selecionada */}
+              <div className="min-w-0">
+                <p className="text-sm font-semibold leading-6 text-zinc-600">
+                  {megaMenu[catSel].descricao}
+                </p>
+                <ul className="mt-3 grid gap-1 sm:grid-cols-2">
+                  {megaMenu[catSel].itens.map((item) => {
+                    const ativo = pathname === item.href;
+                    return (
+                      <li key={`${megaMenu[catSel].titulo}-${item.href}`}>
+                        <Link
+                          href={item.href}
+                          aria-current={ativo ? "page" : undefined}
+                          onClick={() => setMenuOpen(false)}
+                          className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold ${focusRing} ${
+                            ativo
+                              ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
+                              : "text-zinc-700 hover:bg-blue-50 hover:text-blue-800"
+                          }`}
+                        >
+                          <span>{item.label}</span>
+                          {item.status ? (
+                            <span
+                              className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
+                              title={item.status}
+                              aria-label={`Status: ${item.status}`}
+                            />
+                          ) : null}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
           </div>
         </>
