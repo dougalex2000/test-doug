@@ -73,34 +73,33 @@ export default function OrigemPage() {
           title: "Quando a barreira de acesso diminui, a aprendizagem aparece",
           paragraphs: [
             "Os resultados foram muito significativos. Em aproximadamente 40 dias de uso da ferramenta, Davi apresentou avanço importante no processo de alfabetização e passou a escrever frases simples em um editor de texto convencional. Esse progresso demonstrou que, quando a barreira de acesso é reduzida, a capacidade de aprendizagem pode aparecer com muito mais clareza.",
-            "Com o sucesso inicial, foi possível ampliar o apoio ao aluno. Um computador desktop foi doado por um amigo lojista, proprietário da loja Balão da Informática, e instalado na casa de Davi, permitindo que ele continuasse seu processo de aprendizagem também fora do ambiente escolar.",
+            "Com o sucesso inicial, foi possível ampliar o apoio ao aluno. Um amigo colaborou com a doação de um computador desktop, que foi instalado na casa de Davi, permitindo que ele continuasse seu processo de aprendizagem também fora do ambiente escolar.",
             "A experiência também teve impacto social. Ao perceberem que Davi aprendia, escrevia e participava, os colegas passaram a interagir mais com ele, incluindo-o nas brincadeiras e nas atividades do grupo. A tecnologia, nesse caso, não apenas apoiou a alfabetização, mas também ajudou a revelar aos demais alunos que Davi compreendia, aprendia e podia participar.",
             "Durante esse período, também foi observado um avanço na comunicação. Davi quase não falava e se comunicava principalmente por gestos. Com o aumento das interações sociais, dos estímulos recebidos e das oportunidades de participação, ele passou a demonstrar mais tentativas de comunicação verbal. Essa observação reforçou a importância do acesso, do convívio e da participação para o desenvolvimento da comunicação.",
           ],
         },
         {
           eyebrow: "Da vivência ao ecossistema",
-          title: "De uma ferramenta simples a um ecossistema de tecnologia assistiva",
+          title: "De uma ferramenta simples a uma proposta mais ampla",
           tone: "soft",
           paragraphs: [
             "A experiência mostrou que a inclusão não depende apenas do conteúdo ensinado, mas também dos meios de acesso, comunicação, participação e reconhecimento. Muitas vezes, a pessoa tem capacidade de aprender, mas precisa de recursos adequados para conseguir expressar o que sabe.",
             "Foi a partir dessa vivência que nasceu a base conceitual do Projeto DAVI.",
-            "O que começou como uma ferramenta simples de alfabetização assistida evoluiu para uma proposta mais ampla: um ecossistema de tecnologia assistiva voltado à comunicação, aprendizagem, acessibilidade, métricas, criação de dispositivos, capacitação e autonomia.",
-            "Hoje, o Projeto DAVI — Desenvolvimento Assistivo para Vida Independente — busca integrar recursos como comunicação alternativa, conexão com dispositivos, celular como interface assistiva, rastreamento visual, recursos imersivos, biossinais, jogos educativos, inteligência artificial, métricas, catálogo de tecnologias assistivas, ambiente maker, capacitação e inclusão profissional.",
+            "O que começou como uma ferramenta simples de alfabetização assistida evoluiu para uma proposta mais ampla de tecnologia assistiva voltada à comunicação, aprendizagem, acessibilidade, métricas, criação de dispositivos, capacitação e autonomia.",
           ],
         },
         {
-          eyebrow: "A jornada DAVI",
-          title: "Da comunicação à autonomia e participação social",
+          eyebrow: "Uma construção colaborativa",
+          title: "O DAVI ganha dimensão de ecossistema",
           paragraphs: [
-            "A jornada DAVI começa pela comunicação e pelas formas de acesso. Depois avança para a aprendizagem, o acompanhamento da evolução, a criação e adaptação de tecnologias assistivas, a capacitação de pessoas e equipes, e chega ao DAVI Emprega como caminho para autonomia, independência e participação social.",
-            "A história do Projeto DAVI mostra que uma solução simples pode transformar profundamente o processo de inclusão quando nasce da escuta de uma necessidade real. O projeto não surgiu apenas de uma ideia tecnológica, mas do encontro entre uma professora atenta, um aluno com potencial e a busca por um caminho acessível para aprender, escrever, se comunicar e participar.",
+            "Atualmente, o Projeto DAVI ganha dimensão de ecossistema a partir da interação entre os pesquisadores Andressa, Taty, Sara e Douglas, que ampliam a proposta inicial para integrar diferentes áreas do conhecimento, práticas educacionais, tecnologias assistivas, fabricação digital, inteligência artificial e estratégias de inclusão. Essa construção colaborativa fortalece o DAVI como uma plataforma voltada não apenas ao uso de recursos tecnológicos, mas à criação de caminhos reais para comunicação, aprendizagem, participação social e vida independente.",
           ],
         },
         {
           eyebrow: "O que ficou",
           title: "Faltava apenas o caminho de acesso",
           paragraphs: [
+            "A história do Projeto DAVI mostra que uma solução simples pode transformar profundamente o processo de inclusão quando nasce da escuta de uma necessidade real. O projeto não surgiu apenas de uma ideia tecnológica, mas do encontro entre uma professora atenta, um aluno com potencial e a busca por um caminho acessível para aprender, escrever, se comunicar e participar.",
             "Davi mostrou que a inteligência estava presente. Faltava apenas o caminho de acesso.",
             "O Projeto DAVI nasceu para construir esse caminho.",
           ],
