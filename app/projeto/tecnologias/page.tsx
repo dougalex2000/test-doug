@@ -286,11 +286,11 @@ export default function TecnologiasPage() {
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Comunicação em tempo real"
-            title="Celular controla a Tela Grande (DAVI InterCel)"
+            title="Celular controla o Painel (DAVI InterCel)"
             description="Os comandos enviados pelo celular chegam ao Painel na hora, usando o canal de tempo real do Supabase."
           />
           <div className="mt-8 overflow-x-auto">
-            <FlowSteps steps={["Celular (controle)", "Supabase Realtime", "Painel (Tela grande)"]} />
+            <FlowSteps steps={["Celular (controle)", "Supabase Realtime", "Painel"]} />
           </div>
           <p className="mt-6 max-w-3xl text-base leading-7 text-zinc-700">
             O <strong>Supabase Realtime</strong> (baseado em WebSocket) transmite os

@@ -52,7 +52,7 @@ para("4) Serviços e dados: Supabase (PostgreSQL, Auth, Realtime) e Vercel AI Ga
 para("5) Infraestrutura e publicação: Git, GitHub, Vercel (deploy automático).");
 
 h1("Comunicação em tempo real (DAVI InterCel)");
-para("Celular (controle)  ->  Supabase Realtime (WebSocket)  ->  Painel (Tela grande). O localStorage do navegador é mantido como histórico e reserva no mesmo aparelho.");
+para("Celular (controle)  ->  Supabase Realtime (WebSocket)  ->  Painel. O localStorage do navegador é mantido como histórico e reserva no mesmo aparelho.");
 
 h1("Stack tecnológica completa");
 chips("Linguagens", ["TypeScript", "JavaScript (JSX/TSX)", "SQL", "HTML", "CSS", "Markdown"]);
