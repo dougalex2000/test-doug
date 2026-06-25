@@ -1418,9 +1418,43 @@ export function InterCelSessionReceiver() {
     "Demonstração",
     "controle-geral",
   );
-  const latest = commands[0];
   const generalControlUrl = makeControlUrl(sessionCode);
   const [copiado, setCopiado] = useState(false);
+
+  // Ação em destaque: comandos momentâneos somem após 2s e voltam ao "aguardando".
+  const [highlight, setHighlight] = useState<Command | null>(null);
+  const [esperandoMsg, setEsperandoMsg] = useState<string | null>(null);
+  const seenIdRef = useRef<string | null>(null);
+  const highlightTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const newest = commands[0];
+    if (!newest || newest.id === seenIdRef.current) return;
+    seenIdRef.current = newest.id;
+    if (highlightTimerRef.current) window.clearTimeout(highlightTimerRef.current);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reage a um novo comando recebido
+    setHighlight(newest);
+    setEsperandoMsg(null);
+    // Texto/escrita ficam visíveis; o resto é momentâneo e some após 2s.
+    const momentaneo = !/escrita/i.test(newest.mode);
+    if (momentaneo) {
+      highlightTimerRef.current = window.setTimeout(() => {
+        setHighlight(null);
+        setEsperandoMsg(
+          /som|sopro/i.test(newest.mode)
+            ? "Aguardando próximo som/sopro…"
+            : "Aguardando próxima ação…",
+        );
+      }, 2000);
+    }
+  }, [commands]);
+
+  useEffect(
+    () => () => {
+      if (highlightTimerRef.current) window.clearTimeout(highlightTimerRef.current);
+    },
+    [],
+  );
 
   async function copiarLink() {
     const url = typeof window !== "undefined" ? new URL(generalControlUrl, window.location.origin).href : generalControlUrl;
@@ -1503,24 +1537,28 @@ export function InterCelSessionReceiver() {
           {/* Última ação recebida */}
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
             <div className="flex items-center gap-3">
-              <span className={`h-3 w-3 rounded-full ${latest ? "bg-green-400" : "animate-pulse bg-amber-400"}`} />
+              <span className={`h-3 w-3 rounded-full ${highlight ? "bg-green-400" : "animate-pulse bg-amber-400"}`} />
               <p className="text-sm font-black uppercase tracking-wide text-zinc-300">
                 Última ação recebida
               </p>
             </div>
-            {latest ? (
-              <div className="mt-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-8">
-                <p className="text-6xl font-black text-green-300">{latest.label}</p>
-                <p className="mt-4 text-2xl font-bold text-white">{latest.detail}</p>
+            {highlight ? (
+              <div className="mt-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-8 transition-opacity duration-300">
+                <p className="text-6xl font-black text-green-300">{highlight.label}</p>
+                <p className="mt-4 text-2xl font-bold text-white">{highlight.detail}</p>
                 <p className="mt-3 text-sm font-black uppercase tracking-wide text-green-200">
-                  {latest.mode} · {latest.deviceName} · {latest.createdAt}
+                  {highlight.mode} · {highlight.deviceName} · {highlight.createdAt}
                 </p>
               </div>
             ) : (
               <div className="mt-6 rounded-2xl border border-dashed border-zinc-700 bg-zinc-950 p-8 text-center text-zinc-400">
-                <p className="text-3xl font-black text-white">Aguardando primeira ação</p>
+                <p className="text-3xl font-black text-white">
+                  {esperandoMsg ?? "Aguardando primeira ação"}
+                </p>
                 <p className="mt-2 text-lg">
-                  Conecte um celular e envie um comando para vê-lo aqui.
+                  {esperandoMsg
+                    ? "Pronto para o próximo acionamento."
+                    : "Conecte um celular e envie um comando para vê-lo aqui."}
                 </p>
               </div>
             )}
