@@ -39,20 +39,20 @@ const hospedagem = [
   },
 ];
 
-/* Logos da stack (Simple Icons, locais) */
-const logosStack = [
-  ["typescript.svg", "TypeScript"],
-  ["nextdotjs.svg", "Next.js"],
-  ["react.svg", "React"],
-  ["tailwindcss.svg", "Tailwind CSS"],
-  ["nodedotjs.svg", "Node.js"],
-  ["supabase.svg", "Supabase"],
-  ["vercel.svg", "Vercel"],
-  ["threedotjs.svg", "three.js"],
-  ["github.svg", "GitHub"],
-  ["git.svg", "Git"],
-  ["eslint.svg", "ESLint"],
-  ["visualstudiocode.svg", "Visual Studio Code"],
+/* Logos da stack (coloridos, locais) + o que cada um faz */
+const logosStack: [string, string, string][] = [
+  ["typescript.svg", "TypeScript", "Linguagem principal: o JavaScript com tipos, que avisa erros antes de o código rodar."],
+  ["nextdotjs.svg", "Next.js", "Framework que organiza as páginas, as rotas e as otimizações em volta do React."],
+  ["react.svg", "React", "Monta a interface em componentes reutilizáveis e atualiza a tela quando os dados mudam."],
+  ["tailwindcss.svg", "Tailwind CSS", "Estiliza com classes utilitárias, dando visual consistente e responsivo."],
+  ["nodedotjs.svg", "Node.js", "Ambiente que executa o build e roda as ferramentas do projeto."],
+  ["supabase.svg", "Supabase", "Banco de dados (PostgreSQL), login e tempo real — usado na comunicação do DAVI InterCel."],
+  ["vercel.svg", "Vercel", "Hospeda, compila e publica o site numa CDN global a cada git push."],
+  ["threedotjs.svg", "three.js", "Renderiza gráficos 3D no navegador (a visualização do pareamento de dispositivos)."],
+  ["github.svg", "GitHub", "Guarda o código na nuvem; é de onde a Vercel publica o site."],
+  ["git.svg", "Git", "Controla as versões do código — cada commit é um ponto salvo."],
+  ["eslint.svg", "ESLint", "Revisa o código, aponta erros e mantém o padrão de qualidade."],
+  ["visualstudiocode.svg", "Visual Studio Code", "O editor onde o código é escrito."],
 ];
 
 /* Camadas da arquitetura (de cima para baixo) */
@@ -140,18 +140,26 @@ export default function TecnologiasPage() {
             ))}
           </div>
 
-          {/* Feito com — faixa de logos */}
+          {/* Construído com — logo + o que cada um faz */}
           <div className="mt-12">
             <p className="text-center text-xs font-black uppercase tracking-wide text-zinc-500">
-              Construído com
+              Construído com — o que cada tecnologia faz
             </p>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-5">
-              {logosStack.map(([arquivo, nome]) => (
-                <span key={arquivo} className="flex flex-col items-center gap-1.5" title={nome}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`/images/tech/${arquivo}`} alt={`Logo ${nome}`} className="h-8 w-8" />
-                  <span className="text-[11px] font-bold text-zinc-500">{nome}</span>
-                </span>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {logosStack.map(([arquivo, nome, descricao]) => (
+                <div
+                  key={arquivo}
+                  className="flex items-start gap-3 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-zinc-50 ring-1 ring-zinc-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={`/images/tech/${arquivo}`} alt={`Logo ${nome}`} className="h-7 w-7" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-sm font-black text-zinc-900">{nome}</p>
+                    <p className="mt-0.5 text-xs leading-5 text-zinc-600">{descricao}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
