@@ -197,7 +197,7 @@ export default function DaviInterCelPage() {
           <>
             <LinkButton href="/davi-intercel/controle">Usar celular como controle</LinkButton>
             <LinkButton href="/davi-intercel/sessao" variant="secondary">
-              Abrir Tela Grande
+              Abrir Painel
             </LinkButton>
             <LinkButton href="/davi-intercel/controle" variant="secondary">
               Ver modo simples
@@ -235,11 +235,11 @@ export default function DaviInterCelPage() {
           <SectionHeader
             eyebrow="Como usar"
             title="Em 4 passos simples"
-            description="A ideia é simples: abri a Tela Grande, li o QR Code, escolhi o que fazer e já comecei a usar."
+            description="A ideia é simples: abri o Painel, li o QR Code, escolhi o que fazer e já comecei a usar."
           />
           <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["1", "Abra a Tela Grande", "No computador, TV ou tablet."],
+              ["1", "Abra o Painel", "No computador, TV ou tablet."],
               ["2", "Leia o QR Code", "Aponte a câmera do celular."],
               ["3", "Escolha o que fazer", "Sim/Não, escrita, joystick, comunicação, som/sopro ou movimento."],
               ["4", "Use os botões grandes", "O celular controla a atividade na tela."],
@@ -317,7 +317,7 @@ export default function DaviInterCelPage() {
             <div>
               <h3 className="text-2xl font-black text-zinc-950">Na TV, escola ou sala de recursos</h3>
               <p className="mt-3 text-lg leading-8 text-zinc-700">
-                A tela grande exibe a aula, o jogo ou a atividade. O celular permite
+                O Painel (na tela grande) exibe a aula, o jogo ou a atividade. O celular permite
                 responder, escrever, controlar vídeos e usar comunicação alternativa
                 sem depender do Bluetooth da televisão.
               </p>

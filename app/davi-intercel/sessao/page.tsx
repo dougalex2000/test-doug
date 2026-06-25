@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { InterCelSessionReceiver } from "../../components/InterCelPrototype";
 
 export const metadata: Metadata = {
-  title: "Sessão DAVI InterCel",
+  title: "Painel DAVI InterCel",
   description:
-    "Tela receptora para testar comandos enviados pelo controle DAVI InterCel.",
+    "Painel para receber, em tempo real, os comandos enviados pelo controle DAVI InterCel no celular.",
 };
 
 export default function DaviInterCelSessaoPage() {

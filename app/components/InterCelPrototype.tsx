@@ -662,14 +662,7 @@ function PhoneShell({
   tecnicoAberto?: boolean;
 }) {
   return (
-    <div
-      className="mx-auto min-w-0 overflow-hidden rounded-[2rem] border-[10px] border-zinc-950 bg-zinc-950 shadow-2xl shadow-blue-950/25"
-      style={{
-        boxSizing: "border-box",
-        maxWidth: "min(430px, calc(100vw - 4rem))",
-        width: "min(100%, calc(100vw - 4rem))",
-      }}
-    >
+    <div className="mx-auto w-full min-w-0 max-w-[26rem] overflow-hidden rounded-[2rem] border-4 border-zinc-950 bg-zinc-950 shadow-2xl shadow-blue-950/25 sm:border-[10px]">
       <div className="overflow-hidden rounded-[1.35rem] bg-[#F6F8FB]">
         <div className="flex items-center justify-between border-b border-blue-100 bg-white px-5 py-4">
           <Link
@@ -1130,18 +1123,9 @@ export function InterCelControlPrototype({
   }
 
   return (
-    <main
-      className="min-h-screen overflow-x-hidden bg-[#EEF5FF] px-4 py-6 text-zinc-950 sm:px-6"
-      style={{ boxSizing: "border-box", maxWidth: "100vw", width: "100vw" }}
-    >
+    <main className="min-h-screen overflow-x-hidden bg-[#EEF5FF] px-4 py-6 text-zinc-950 sm:px-6">
       <div className="mx-auto grid w-full min-w-0 max-w-7xl gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <section
-          className="min-w-0"
-          style={{
-            maxWidth: "42rem",
-            width: "min(100%, calc(100vw - 2rem))",
-          }}
-        >
+        <section className="hidden min-w-0 lg:block">
           <p className="text-sm font-black uppercase tracking-wide text-blue-800">
             DAVI InterCel
           </p>
@@ -1152,18 +1136,10 @@ export function InterCelControlPrototype({
             Escolha no celular o que você quer fazer: Sim/Não, controlar a aula,
             escrever, comunicação, joystick, mouse, som/sopro ou movimento.
           </p>
-          <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-zinc-700 ring-1 ring-zinc-200">
-            <span className={`h-2.5 w-2.5 rounded-full ${realtime === "on" ? "bg-green-500" : realtime === "connecting" ? "animate-pulse bg-amber-500" : "bg-zinc-400"}`} />
-            {realtime === "on"
-              ? "Conectado em tempo real à Tela Grande"
-              : realtime === "connecting"
-              ? "Conectando em tempo real…"
-              : "Tempo real indisponível — funciona no mesmo aparelho"}
-          </p>
           <div className="mt-6 rounded-xl border border-blue-100 bg-white p-5 shadow-sm">
             <p className="text-lg font-black text-zinc-950">Como usar</p>
             <ol className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-zinc-700">
-              <li>1. Abra a <strong>Tela Grande</strong> no computador, TV ou tablet.</li>
+              <li>1. Abra o <strong>Painel</strong> no computador, TV ou tablet.</li>
               <li>2. Leia o QR Code com o celular.</li>
               <li>3. Escolha o que o celular vai fazer.</li>
               <li>4. Use os botões grandes para controlar a atividade.</li>
@@ -1173,7 +1149,7 @@ export function InterCelControlPrototype({
                 href="/davi-intercel/sessao"
                 className={`rounded-lg bg-blue-700 px-5 py-3 text-center text-sm font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 ${focusRing}`}
               >
-                Abrir Tela Grande
+                Abrir Painel
               </Link>
               <Link
                 href="/davi-intercel"
@@ -1191,14 +1167,19 @@ export function InterCelControlPrototype({
           </p>
         </section>
 
-        <section
-          className="min-w-0"
-          style={{
-            maxWidth: "42rem",
-            width: "min(100%, calc(100vw - 2rem))",
-          }}
-          aria-label="Controle DAVI InterCel"
-        >
+        <section className="min-w-0" aria-label="Controle DAVI InterCel">
+          <div className="mx-auto mb-4 flex w-full max-w-[26rem] flex-wrap items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-black text-zinc-700 ring-1 ring-zinc-200">
+              <span className={`h-2.5 w-2.5 rounded-full ${realtime === "on" ? "bg-green-500" : realtime === "connecting" ? "animate-pulse bg-amber-500" : "bg-zinc-400"}`} />
+              {realtime === "on" ? "Tempo real conectado" : realtime === "connecting" ? "Conectando…" : "Sem tempo real"}
+            </span>
+            <Link
+              href="/davi-intercel/sessao"
+              className={`rounded-full bg-blue-700 px-3 py-1 text-xs font-black text-white hover:bg-blue-800 ${focusRing}`}
+            >
+              Abrir Painel
+            </Link>
+          </div>
           <PhoneShell
             sessionCode={sessionCode}
             setSessionCode={setSessionCode}
@@ -1214,7 +1195,7 @@ export function InterCelControlPrototype({
               <ModePanel mode={mode} setMode={setMode} onSend={sendCommand} />
             )}
           </PhoneShell>
-          <div className="mx-auto mt-5 max-w-[430px]">
+          <div className="mx-auto mt-5 w-full max-w-[26rem]">
             <CommandLog commands={commands} />
           </div>
         </section>
@@ -1239,9 +1220,9 @@ export function InterCelSessionReceiver() {
         <div className="flex flex-col gap-4 border-b border-zinc-800 pb-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-black uppercase tracking-wide text-green-400">
-              Tela Grande
+              Painel
             </p>
-            <h1 className="mt-2 text-4xl font-black">Tela Grande DAVI InterCel</h1>
+            <h1 className="mt-2 text-4xl font-black">Painel DAVI InterCel</h1>
             <p className="mt-2 max-w-2xl text-zinc-300">
               Deixe esta tela aberta no computador, TV ou tablet. Use o celular
               para enviar comandos.
