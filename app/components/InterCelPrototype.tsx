@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
+import { EscritaGuiada } from "./EscritaGuiada";
 import {
   IconChat,
   IconClipboard,
@@ -51,6 +52,7 @@ type Mode =
   | "mouse"
   | "comunicacao"
   | "escrita"
+  | "escrita-guiada"
   | "acessibilidade"
   | "olhar"
   | "movimento"
@@ -1138,6 +1140,17 @@ function ModePanel({
         subtitle: "Entrada simples para letras, sílabas e palavras.",
         content: (
           <div className="grid gap-3">
+            <button
+              type="button"
+              onClick={() => setMode("escrita-guiada")}
+              className={`flex items-center gap-3 rounded-xl border-2 border-blue-300 bg-blue-50 p-4 text-left ${focusRing}`}
+            >
+              <span className="text-2xl" aria-hidden="true">✍️</span>
+              <span>
+                <span className="block text-base font-black text-blue-900">Escrita guiada (cursiva)</span>
+                <span className="block text-sm font-semibold text-blue-700">Escreva por cima do modelo pontilhado</span>
+              </span>
+            </button>
             <div className="rounded-xl border border-blue-200 bg-white p-4">
               <p className="text-sm font-black uppercase tracking-wide text-blue-700">Treino</p>
               <p className="mt-2 rounded-lg border border-dashed border-blue-200 bg-blue-50 px-4 py-6 text-center text-5xl font-black text-blue-800">
@@ -1158,6 +1171,14 @@ function ModePanel({
             </div>
           </div>
         ),
+      };
+    }
+
+    if (mode === "escrita-guiada") {
+      return {
+        title: "Escrita guiada",
+        subtitle: "Siga o modelo pontilhado com o dedo.",
+        content: <EscritaGuiada onSend={onSend} onVoltar={() => setMode("escrita")} />,
       };
     }
 
@@ -1226,7 +1247,7 @@ function ModePanel({
         </div>
       ),
     };
-  }, [mode, onSend]);
+  }, [mode, onSend, setMode]);
 
   return (
     <div className="px-5 pb-5">
