@@ -45,6 +45,13 @@ const documentos: Doc[] = [
     meta: "PDF · 10 páginas",
     arquivo: "/docs/resumo-plataforma-davi.pdf",
   },
+  {
+    titulo: "Arquitetura e Tecnologias",
+    descricao:
+      "A stack tecnológica completa: linguagens, frameworks, banco de dados, hospedagem e o fluxo do código ao ar (CI/CD).",
+    meta: "PDF · 1 página",
+    arquivo: "/docs/arquitetura-davi.pdf",
+  },
 ];
 
 export default function DocumentacaoPage() {

@@ -21,22 +21,38 @@ const hospedagem = [
     papel: "Código-fonte",
     detalhe:
       "Repositório com todo o histórico de versões. O envio (git push) para o ramo principal dispara a publicação.",
-    icone: "🐙",
+    logo: "github.svg",
   },
   {
     nome: "Vercel",
     papel: "Hospedagem, build e CDN",
     detalhe:
       "Compila o Next.js e serve o site por uma rede global de entrega (CDN). Publica automaticamente a cada push.",
-    icone: "▲",
+    logo: "vercel.svg",
   },
   {
     nome: "Supabase",
     papel: "Banco de dados, autenticação e tempo real",
     detalhe:
       "PostgreSQL + Auth + Realtime, hospedado na região de São Paulo (sa-east-1).",
-    icone: "🗄️",
+    logo: "supabase.svg",
   },
+];
+
+/* Logos da stack (Simple Icons, locais) */
+const logosStack = [
+  ["typescript.svg", "TypeScript"],
+  ["nextdotjs.svg", "Next.js"],
+  ["react.svg", "React"],
+  ["tailwindcss.svg", "Tailwind CSS"],
+  ["nodedotjs.svg", "Node.js"],
+  ["supabase.svg", "Supabase"],
+  ["vercel.svg", "Vercel"],
+  ["threedotjs.svg", "three.js"],
+  ["github.svg", "GitHub"],
+  ["git.svg", "Git"],
+  ["eslint.svg", "ESLint"],
+  ["visualstudiocode.svg", "Visual Studio Code"],
 ];
 
 /* Camadas da arquitetura (de cima para baixo) */
@@ -91,6 +107,15 @@ export default function TecnologiasPage() {
         eyebrow="Arquitetura e Tecnologias"
         title="Como o Projeto DAVI funciona por dentro"
         description="As tecnologias, linguagens e ferramentas que colocam a plataforma DAVI no ar — e onde cada parte fica hospedada."
+        actions={
+          <a
+            href="/docs/arquitetura-davi.pdf"
+            download
+            className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-3 text-sm font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
+          >
+            ⬇ Baixar arquitetura em PDF
+          </a>
+        }
       />
 
       {/* Onde está hospedado */}
@@ -104,14 +129,31 @@ export default function TecnologiasPage() {
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {hospedagem.map((h) => (
               <div key={h.nome} className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl" aria-hidden="true">
-                  {h.icone}
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-50 ring-1 ring-zinc-200">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`/images/tech/${h.logo}`} alt={`Logo ${h.nome}`} className="h-7 w-7" />
                 </span>
                 <h3 className="mt-4 text-xl font-black text-zinc-950">{h.nome}</h3>
                 <p className="text-sm font-black uppercase tracking-wide text-blue-800">{h.papel}</p>
                 <p className="mt-2 text-sm leading-6 text-zinc-600">{h.detalhe}</p>
               </div>
             ))}
+          </div>
+
+          {/* Feito com — faixa de logos */}
+          <div className="mt-12">
+            <p className="text-center text-xs font-black uppercase tracking-wide text-zinc-500">
+              Construído com
+            </p>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-5">
+              {logosStack.map(([arquivo, nome]) => (
+                <span key={arquivo} className="flex flex-col items-center gap-1.5" title={nome}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`/images/tech/${arquivo}`} alt={`Logo ${nome}`} className="h-8 w-8" />
+                  <span className="text-[11px] font-bold text-zinc-500">{nome}</span>
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -170,6 +212,63 @@ export default function TecnologiasPage() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Diagrama boxes-and-arrows */}
+      <section className="border-b border-zinc-200 bg-white px-6 py-14">
+        <div className="mx-auto max-w-5xl">
+          <SectionHeader
+            eyebrow="Diagrama técnico"
+            title="Visão em blocos e setas"
+            description="Da máquina do desenvolvedor à execução no navegador e aos serviços."
+          />
+          <div className="mt-10 rounded-2xl border-2 border-dashed border-zinc-300 bg-[#FbFcFe] p-5 sm:p-8">
+            {/* Pipeline de publicação */}
+            <p className="mb-3 text-xs font-black uppercase tracking-wide text-zinc-500">
+              Desenvolvimento e publicação
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {["VS Code", "Git", "GitHub", "Vercel (build)", "CDN global"].map((b, i, arr) => (
+                <span key={b} className="flex items-center gap-2">
+                  <span className="rounded-xl border-2 border-zinc-300 bg-white px-4 py-3 text-center text-sm font-black text-zinc-800 shadow-sm">
+                    {b}
+                  </span>
+                  {i < arr.length - 1 && (
+                    <span aria-hidden="true" className="text-2xl font-black text-zinc-400">→</span>
+                  )}
+                </span>
+              ))}
+            </div>
+
+            <div className="my-2 text-center text-2xl font-black text-zinc-300" aria-hidden="true">↓</div>
+
+            {/* Navegador */}
+            <p className="mb-3 text-center text-xs font-black uppercase tracking-wide text-zinc-500">
+              Execução no navegador
+            </p>
+            <div className="mx-auto max-w-md rounded-xl border-2 border-blue-300 bg-blue-50 px-4 py-3 text-center text-sm font-black text-blue-900 shadow-sm">
+              Navegador — Next.js 16 + React 19 + Tailwind 4
+            </div>
+
+            <div className="my-2 text-center text-2xl font-black text-zinc-300" aria-hidden="true">↑↓</div>
+
+            {/* Serviços e APIs */}
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border-2 border-amber-300 bg-amber-50 px-4 py-3 text-center text-sm font-black text-amber-900 shadow-sm">
+                Supabase
+                <span className="mt-1 block text-xs font-semibold text-amber-800">PostgreSQL · Auth · Realtime</span>
+              </div>
+              <div className="rounded-xl border-2 border-emerald-300 bg-emerald-50 px-4 py-3 text-center text-sm font-black text-emerald-900 shadow-sm">
+                APIs do navegador
+                <span className="mt-1 block text-xs font-semibold text-emerald-800">Voz · Bluetooth · Câmera · Sensores · Canvas</span>
+              </div>
+              <div className="rounded-xl border-2 border-violet-300 bg-violet-50 px-4 py-3 text-center text-sm font-black text-violet-900 shadow-sm">
+                Vercel AI Gateway
+                <span className="mt-1 block text-xs font-semibold text-violet-800">Geração com IA</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
