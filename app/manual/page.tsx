@@ -90,10 +90,12 @@ export default function ManualPage() {
         },
         {
           eyebrow: "3. Origem do DAVI",
-          title: "Tudo começou com um aluno",
+          title: "Da iniciativa de uma professora a um ecossistema",
           paragraphs: [
-            "O projeto nasceu do acompanhamento de Davi, um aluno de 9 anos em Valinhos-SP, que ainda não lia nem escrevia por limitações motoras severas. Ao perceber que ele conseguia pressionar algumas teclas, criou-se um protótipo com comandos simples para controlar videoaulas (pausar, avançar, voltar, repetir) e escrever em uma caixa de texto acessível.",
-            "Os ganhos em autonomia, confiança e participação mostraram que, muitas vezes, a limitação não está na capacidade de aprender, mas na falta de ferramentas adequadas de acesso.",
+            "O Projeto DAVI nasceu de uma experiência real de inclusão educacional com Davi, aluno de 9 anos do 4º ano do Ensino Fundamental em Valinhos-SP. A história só foi possível pela iniciativa da professora Alessandra del Castillo, que percebeu as dificuldades de Davi na alfabetização e buscou apoio de um pesquisador para encontrar uma solução tecnológica.",
+            "Davi ainda não lia nem escrevia por limitações motoras severas, não por falta de capacidade. Ao notar que ele conseguia pressionar algumas teclas (F1, F2, F3, F4), foi criada uma ferramenta de alfabetização assistida: controle de videoaulas (pausar, repetir), escrita em caixa de texto acessível, leitura por voz do que escrevia, som de aplausos como reforço positivo e registro de métricas (tempo, acertos, erros, progresso).",
+            "Em cerca de 40 dias, Davi avançou na alfabetização e passou a escrever frases simples — com impacto também na participação social e na comunicação. A experiência mostrou que, muitas vezes, a limitação não está na capacidade de aprender, mas na falta de ferramentas adequadas de acesso.",
+            "Atualmente, o DAVI ganha dimensão de ecossistema com a interação entre os pesquisadores Andressa, Taty, Sara e Douglas, que ampliam a proposta inicial integrando práticas educacionais, tecnologias assistivas, fabricação digital, inteligência artificial e estratégias de inclusão. A história completa está na página Origem do DAVI.",
           ],
         },
         {

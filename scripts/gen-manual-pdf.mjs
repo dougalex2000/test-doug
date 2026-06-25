@@ -107,10 +107,10 @@ const menu = [
     ["Dispositivos DAVI", "/tecnologias-assistivas/dispositivos"],
     ["DAVI Assistivo App", "/tecnologias-assistivas/davi-assistivo-app"],
     ["DAVI Imersivo", "/tecnologias-assistivas/davi-imersivo"],
-    ["Oficina Maker", "/tecnologias-assistivas/oficina-maker"],
+    ["DAVI Maker", "/tecnologias-assistivas/oficina-maker"],
     ["Projetos Abertos", "/tecnologias-assistivas/projetos-abertos"], ["Materiais de Apoio", "/tecnologias-assistivas/materiais"],
   ]],
-  ["Evolução e Relatórios", "/evolucao", [
+  ["DAVI Métricas", "/evolucao", [
     ["Visão Geral", "/evolucao"], ["Métricas de Aprendizagem", "/evolucao/aprendizagem"],
     ["Métricas de Acesso", "/evolucao/acesso"], ["Relatório do Aluno", "/evolucao/relatorio-aluno"],
     ["Relatório Institucional", "/evolucao/relatorio-institucional"], ["Linha do Tempo", "/evolucao/linha-do-tempo"],
@@ -166,7 +166,7 @@ para("Mais do que um site, o DAVI é pensado como um caminho: cada módulo apoia
 
 h1(2, "Objetivo");
 para("O objetivo do DAVI é ampliar autonomia, aprendizagem e participação social de pessoas com deficiência, transformando tecnologia assistiva em um caminho concreto para a comunicação, a alfabetização, a escrita, a aprendizagem e a vida independente.");
-para("O projeto nasceu de uma experiência real com um aluno chamado Davi, em Valinhos-SP, que não lia nem escrevia por limitações motoras severas. Ao perceber que ele conseguia pressionar algumas teclas, criou-se um protótipo simples para controlar videoaulas e escrever em uma caixa de texto acessível — e os ganhos em autonomia mostraram que, muitas vezes, a limitação não está na capacidade de aprender, mas na falta de ferramentas adequadas de acesso.");
+para("O projeto nasceu de uma experiência real com Davi, aluno de 9 anos em Valinhos-SP, pela iniciativa da professora Alessandra del Castillo. Davi não lia nem escrevia por limitações motoras severas. Ao perceber que ele conseguia pressionar algumas teclas (F1-F4), criou-se uma ferramenta de alfabetização assistida: controle de videoaulas, escrita em caixa de texto acessível, leitura por voz, reforço positivo e registro de métricas. Em cerca de 40 dias houve avanço importante — mostrando que, muitas vezes, a limitação não está na capacidade de aprender, mas na falta de ferramentas adequadas de acesso. Hoje o DAVI ganha dimensão de ecossistema com os pesquisadores Andressa, Taty, Sara e Douglas.");
 
 h1(3, "A jornada DAVI");
 para("Toda a plataforma é organizada em torno de uma jornada conceitual, do primeiro contato à autonomia:");
@@ -178,7 +178,7 @@ para("Cada módulo do ecossistema apoia uma ou mais dessas etapas.");
 h1(4, "Módulos do ecossistema");
 h2("DAVI Escola");
 para("Núcleo pedagógico: Língua Portuguesa, Matemática, videoaulas acessíveis, tarefas e os modos Aluno, Professor e Casa, com atividades demonstrativas e métricas de aprendizagem.");
-h2("DAVI Comunicação");
+h2("DAVI Comunica");
 para("Comunicação alternativa para expressar necessidades, vontades e escolhas: sim e não, frases rápidas, pranchas com símbolos e necessidades básicas.");
 h2("Acesso e Dispositivos");
 para("Como cada pessoa interage com o DAVI. Inclui DAVI Vision (rastreamento ocular, em protótipo), DAVI Conecta (botões, sensores e ESP32 sem fio, em testes iniciais), DAVI BioSinal (sinais do corpo como EEG, EMG, EOG e piscadas — e também sensores no braço, pescoço, mãos e outras regiões, não só na cabeça), calibração e perfil de acesso.");
@@ -192,7 +192,7 @@ h2("DAVI Assistivo App");
 para("Proposta em desenvolvimento para transformar o celular em tecnologia assistiva multifuncional: teclado, mouse, joystick, prancha de comunicação, sensor de movimento, rastreador visual e controle pedagógico conectado à plataforma, aproveitando um aparelho que muitas pessoas já têm.");
 h2("DAVI Imersivo");
 para("Linha de pesquisa sobre óculos de realidade virtual, aumentada, mista e smart glasses como recursos de acessibilidade, aprendizagem e interação — integrados ao DAVI Vision, Escola, BioSinal, Games e Conecta, com atenção a conforto, segurança e adaptação individual.");
-h2("Evolução e Relatórios");
+h2("DAVI Métricas");
 para("Métricas para compreender, apoiar e ampliar possibilidades — sem diagnóstico clínico. Relatórios para família, professor e instituição.");
 h2("DAVI Emprega");
 para("Área conceitual de inclusão profissional pela metodologia do Emprego Apoiado: aproxima pessoas com deficiência, famílias, instituições e empresas, considerando preparação, comunicação, acessibilidade, adaptação do trabalho e acompanhamento — antes, durante e depois da entrada no mundo do trabalho. É uma proposta conceitual, sem coleta de dados nesta etapa.");
