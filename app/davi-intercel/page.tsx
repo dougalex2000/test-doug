@@ -195,15 +195,15 @@ export default function DaviInterCelPage() {
         description="O celular como interface assistiva e extensão dos recursos do Projeto DAVI."
         actions={
           <>
-            <LinkButton href="/davi-intercel/controle">Usar celular como controle</LinkButton>
-            <LinkButton href="/davi-intercel/sessao" variant="secondary">
-              Abrir Painel
-            </LinkButton>
+            <LinkButton href="/davi-intercel/sessao">Abrir Tela Grande</LinkButton>
             <LinkButton href="/davi-intercel/controle" variant="secondary">
-              Ver modo simples
+              Usar celular como controle
+            </LinkButton>
+            <LinkButton href="/davi-intercel/controle/sim-nao" variant="secondary">
+              Ver demonstração
             </LinkButton>
             <LinkButton href="/davi-intercel/tecnico" variant="secondary">
-              Ver modo técnico
+              Modo técnico
             </LinkButton>
           </>
         }
@@ -254,10 +254,10 @@ export default function DaviInterCelPage() {
             ))}
           </ol>
           <p className="mt-6 max-w-3xl text-sm leading-6 text-zinc-500">
-            Este ainda é um protótipo. Nesta versão, alguns comandos funcionam
-            melhor no mesmo navegador/dispositivo porque ainda usam o
-            armazenamento local. A próxima etapa usará Supabase Realtime ou
-            WebSocket para comunicação real entre celular e computador.
+            Esta versão já permite usar o DAVI InterCel no navegador, com conexão
+            em <strong>tempo real</strong> entre o celular e a Tela Grande via
+            Supabase Realtime. O armazenamento local (localStorage) é mantido como
+            histórico e reserva no mesmo aparelho.
           </p>
         </div>
       </section>
