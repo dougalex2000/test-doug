@@ -177,9 +177,9 @@ export function SiteHeader() {
             id="menu-principal-painel"
             ref={panelRef}
             aria-label="Menu principal do Projeto DAVI"
-            className="absolute left-0 right-0 top-full z-50 max-h-[calc(100vh-5.5rem)] w-full overflow-y-auto border-t border-zinc-200 bg-white shadow-2xl shadow-blue-950/15"
+            className="absolute left-2 top-full z-50 mt-1 max-h-[calc(100vh-6rem)] w-[min(94vw,460px)] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/20 sm:left-6"
           >
-            <div className="mx-auto max-w-3xl px-4 py-4">
+            <div>
               <p className="px-1 text-sm font-black uppercase tracking-wide text-blue-800">
                 Navegação do Projeto DAVI
               </p>
