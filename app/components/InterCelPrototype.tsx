@@ -642,6 +642,181 @@ function MicrophoneSensorPanel({
   );
 }
 
+function MotionSensorPanel({
+  onSend,
+}: {
+  onSend: (label: string, detail: string, mode: string) => void;
+}) {
+  const [active, setActive] = useState(false);
+  const [gamma, setGamma] = useState(0);
+  const [shake, setShake] = useState(0);
+  const [sens, setSens] = useState(22);
+  const [error, setError] = useState("");
+
+  const sensRef = useRef(sens);
+  useEffect(() => { sensRef.current = sens; }, [sens]);
+  const onSendRef = useRef(onSend);
+  useEffect(() => { onSendRef.current = onSend; }, [onSend]);
+
+  const lastTriggerRef = useRef(0);
+  const prevAccelRef = useRef<{ x: number; y: number; z: number } | null>(null);
+
+  // Handlers estáveis (criados uma vez), lendo valores atuais de refs.
+  const handlersRef = useRef<{
+    orient: (e: DeviceOrientationEvent) => void;
+    motion: (e: DeviceMotionEvent) => void;
+  } | null>(null);
+  if (!handlersRef.current) {
+    const fire = (label: string, detail: string) => {
+      const now = Date.now();
+      if (now - lastTriggerRef.current < 1100) return;
+      lastTriggerRef.current = now;
+      onSendRef.current(label, detail, "Movimento");
+      if ("vibrate" in navigator) navigator.vibrate?.(40);
+    };
+    handlersRef.current = {
+      orient: (e) => {
+        const g = e.gamma ?? 0; // esquerda(-) / direita(+)
+        setGamma(Math.round(g));
+        const t = sensRef.current;
+        if (g <= -t) fire("Inclinar esquerda", `Giro ${Math.round(g)}°`);
+        else if (g >= t) fire("Inclinar direita", `Giro ${Math.round(g)}°`);
+      },
+      motion: (e) => {
+        const a = e.accelerationIncludingGravity;
+        if (!a || a.x == null) return;
+        const cur = { x: a.x ?? 0, y: a.y ?? 0, z: a.z ?? 0 };
+        const prev = prevAccelRef.current;
+        prevAccelRef.current = cur;
+        if (!prev) return;
+        const d = Math.sqrt(
+          (cur.x - prev.x) ** 2 + (cur.y - prev.y) ** 2 + (cur.z - prev.z) ** 2,
+        );
+        setShake(Math.round(d));
+        if (d > 16) fire("Agitar", "Pedir ajuda ou repetir");
+      },
+    };
+  }
+
+  const stop = useCallback(() => {
+    const h = handlersRef.current;
+    if (h) {
+      window.removeEventListener("deviceorientation", h.orient);
+      window.removeEventListener("devicemotion", h.motion);
+    }
+    prevAccelRef.current = null;
+    setActive(false);
+    setGamma(0);
+    setShake(0);
+  }, []);
+
+  const start = useCallback(async () => {
+    setError("");
+    try {
+      const DOE = window.DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> } | undefined;
+      const DME = window.DeviceMotionEvent as unknown as { requestPermission?: () => Promise<string> } | undefined;
+      if (typeof window.DeviceOrientationEvent === "undefined" && typeof window.DeviceMotionEvent === "undefined") {
+        throw new Error("Este aparelho/navegador não oferece sensores de movimento.");
+      }
+      // iOS 13+ exige permissão a partir de um toque do usuário.
+      if (DOE && typeof DOE.requestPermission === "function") {
+        const p = await DOE.requestPermission();
+        if (p !== "granted") throw new Error("Permissão de movimento negada nas configurações do navegador.");
+      }
+      if (DME && typeof DME.requestPermission === "function") {
+        try { await DME.requestPermission(); } catch { /* alguns só pedem a de orientação */ }
+      }
+      const h = handlersRef.current!;
+      window.addEventListener("deviceorientation", h.orient);
+      window.addEventListener("devicemotion", h.motion);
+      setActive(true);
+    } catch (e) {
+      setError((e as Error).message || "Não foi possível acessar os sensores de movimento.");
+      stop();
+    }
+  }, [stop]);
+
+  useEffect(() => stop, [stop]);
+
+  const lado = gamma <= -sens ? "Esquerda" : gamma >= sens ? "Direita" : "Centro";
+
+  return (
+    <div className="grid gap-4">
+      <div className="rounded-xl border border-lime-200 bg-lime-50 p-4">
+        <p className="text-sm font-black uppercase tracking-wide text-lime-900">
+          Movimento do celular
+        </p>
+        <p className="mt-2 text-sm font-semibold leading-6 text-lime-950">
+          Incline o celular para a esquerda ou direita, ou agite, para enviar um
+          comando. Toque em “Ativar movimento” e permita o uso dos sensores.
+        </p>
+      </div>
+
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-black uppercase tracking-wide text-zinc-500">Inclinação</p>
+            <p className="text-3xl font-black text-zinc-950">{gamma}°</p>
+          </div>
+          <span className={`rounded-full px-3 py-1 text-xs font-black ${active ? "bg-green-100 text-green-800" : "bg-zinc-100 text-zinc-600"}`}>
+            {active ? `Ativo · ${lado}` : "Pausado"}
+          </span>
+        </div>
+        <div className="mt-4 flex h-5 overflow-hidden rounded-full bg-zinc-100" aria-hidden="true">
+          <div className="flex-1 border-r border-zinc-300" />
+          <div className="flex-1" />
+        </div>
+        <p className="mt-3 text-sm font-black uppercase tracking-wide text-zinc-500">
+          Agitar: <span className="text-zinc-950">{shake}</span>
+        </p>
+      </div>
+
+      <label className="block rounded-xl border border-zinc-200 bg-white p-4">
+        <span className="text-sm font-black uppercase tracking-wide text-zinc-500">
+          Sensibilidade (inclinação para acionar): {sens}°
+        </span>
+        <input
+          type="range"
+          min="10"
+          max="45"
+          value={sens}
+          onChange={(event) => setSens(Number(event.target.value))}
+          className="mt-3 w-full"
+        />
+      </label>
+
+      {error ? (
+        <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-semibold text-red-800">{error}</p>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={active ? stop : start}
+        className={`min-h-16 rounded-lg px-4 py-3 text-center text-base font-black text-white ${active ? "bg-zinc-700 hover:bg-zinc-800" : "bg-lime-600 hover:bg-lime-700"} ${focusRing}`}
+      >
+        {active ? "Parar" : "Ativar movimento"}
+      </button>
+
+      <div className="grid grid-cols-3 gap-2">
+        {[
+          ["Inclinar esquerda", "Comando lateral"],
+          ["Inclinar direita", "Comando lateral"],
+          ["Agitar", "Pedir ajuda"],
+        ].map(([label, detail]) => (
+          <CommandButton
+            key={label}
+            label={label}
+            detail={detail}
+            mode="Movimento"
+            className="border-lime-200 bg-white text-lime-950 text-center"
+            onSend={onSend}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function PhoneShell({
   children,
   sessionCode,
@@ -964,37 +1139,9 @@ function ModePanel({
 
     if (mode === "movimento") {
       return {
-        title: "Sensor de movimento",
-        subtitle: "Celular usado como acionador por inclinação, giro ou toque no aparelho.",
-        content: (
-          <div className="grid gap-3">
-            <div className="rounded-xl border border-lime-200 bg-lime-50 p-4">
-              <p className="text-sm font-black uppercase tracking-wide text-lime-900">
-                Protótipo
-              </p>
-              <p className="mt-2 text-sm font-semibold leading-6 text-lime-950">
-                Nesta fase, os botões abaixo simulam eventos de movimento. Na próxima
-                etapa, podemos ler sensores reais do celular quando o navegador permitir.
-              </p>
-            </div>
-            {[
-              ["Movimento detectado", "Acionador por movimento"],
-              ["Inclinar esquerda", "Comando lateral"],
-              ["Inclinar direita", "Comando lateral"],
-              ["Levantar celular", "Confirmar escolha"],
-              ["Agitar", "Pedir ajuda ou repetir"],
-            ].map(([label, detail]) => (
-              <CommandButton
-                key={label}
-                label={label}
-                detail={detail}
-                mode="Movimento"
-                className="border-lime-200 bg-white text-lime-950"
-                onSend={onSend}
-              />
-            ))}
-          </div>
-        ),
+        title: "Movimento do celular",
+        subtitle: "Incline ou agite o celular para enviar comandos.",
+        content: <MotionSensorPanel onSend={onSend} />,
       };
     }
 
