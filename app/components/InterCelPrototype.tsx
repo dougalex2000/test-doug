@@ -474,10 +474,35 @@ function CommandButton({
     <button
       type="button"
       onClick={() => onSend(label, detail, mode)}
-      className={`min-h-20 min-w-0 rounded-lg border px-4 py-4 text-left shadow-sm transition active:scale-[0.99] ${focusRing} ${className}`}
+      className={`flex min-h-20 min-w-0 flex-col justify-center rounded-lg border px-3 py-3 text-left shadow-sm transition active:scale-[0.99] ${focusRing} ${className}`}
     >
-      <span className="block break-words text-xl font-black leading-tight">{label}</span>
-      <span className="mt-1 block break-words text-sm font-semibold opacity-80">{detail}</span>
+      <span className="block hyphens-none break-words text-lg font-black leading-tight [overflow-wrap:break-word]">{label}</span>
+      <span className="mt-1 block hyphens-none break-words text-sm font-semibold leading-snug opacity-80 [overflow-wrap:break-word]">{detail}</span>
+    </button>
+  );
+}
+
+/** Botão compacto e quadrado para o pad direcional do joystick. */
+function PadButton({
+  arrow,
+  label,
+  tone = "border-indigo-200 bg-indigo-50 text-indigo-950",
+  onClick,
+}: {
+  arrow: string;
+  label: string;
+  tone?: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={`flex aspect-square min-w-0 flex-col items-center justify-center rounded-xl border text-center shadow-sm transition active:scale-[0.97] ${focusRing} ${tone}`}
+    >
+      <span className="text-2xl font-black leading-none">{arrow}</span>
+      <span className="mt-1 text-[11px] font-bold leading-none">{label}</span>
     </button>
   );
 }
@@ -798,7 +823,7 @@ function MotionSensorPanel({
         {active ? "Parar" : "Ativar movimento"}
       </button>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2">
         {[
           ["Inclinar esquerda", "Comando lateral"],
           ["Inclinar direita", "Comando lateral"],
@@ -809,7 +834,7 @@ function MotionSensorPanel({
             label={label}
             detail={detail}
             mode="Movimento"
-            className="border-lime-200 bg-white text-lime-950 text-center"
+            className="border-lime-200 bg-white text-lime-950"
             onSend={onSend}
           />
         ))}
@@ -1043,16 +1068,16 @@ function ModePanel({
         title: "Joystick",
         subtitle: "Direção e botões para jogos acessíveis.",
         content: (
-          <div className="grid gap-3">
-            <div className="mx-auto grid w-64 grid-cols-3 gap-3">
+          <div className="grid gap-4">
+            <div className="mx-auto grid w-full max-w-[15rem] grid-cols-3 gap-2">
               <span />
-              <CommandButton label="↑" detail="Cima" mode="Joystick" className="border-indigo-200 bg-indigo-50 text-indigo-950 text-center" onSend={onSend} />
+              <PadButton arrow="↑" label="Cima" onClick={() => onSend("↑", "Cima", "Joystick")} />
               <span />
-              <CommandButton label="←" detail="Esquerda" mode="Joystick" className="border-indigo-200 bg-indigo-50 text-indigo-950 text-center" onSend={onSend} />
-              <CommandButton label="OK" detail="Ação" mode="Joystick" className="border-green-700 bg-green-600 text-white text-center" onSend={onSend} />
-              <CommandButton label="→" detail="Direita" mode="Joystick" className="border-indigo-200 bg-indigo-50 text-indigo-950 text-center" onSend={onSend} />
+              <PadButton arrow="←" label="Esquerda" onClick={() => onSend("←", "Esquerda", "Joystick")} />
+              <PadButton arrow="OK" label="Ação" tone="border-green-700 bg-green-600 text-white" onClick={() => onSend("OK", "Ação", "Joystick")} />
+              <PadButton arrow="→" label="Direita" onClick={() => onSend("→", "Direita", "Joystick")} />
               <span />
-              <CommandButton label="↓" detail="Baixo" mode="Joystick" className="border-indigo-200 bg-indigo-50 text-indigo-950 text-center" onSend={onSend} />
+              <PadButton arrow="↓" label="Baixo" onClick={() => onSend("↓", "Baixo", "Joystick")} />
               <span />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -1205,16 +1230,25 @@ function ModePanel({
 
   return (
     <div className="px-5 pb-5">
-      <button
-        type="button"
-        onClick={() => setMode("inicio")}
-        className={`mb-4 rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-black text-blue-800 ${focusRing}`}
-      >
-        ← Todos os recursos
-      </button>
+      <div className="mb-4 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setMode("inicio")}
+          className={`min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-black text-blue-800 hover:border-blue-400 ${focusRing}`}
+        >
+          ← Todos os recursos
+        </button>
+        <Link
+          href="/davi-intercel"
+          className={`shrink-0 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-black text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
+          aria-label="Voltar à tela principal do DAVI InterCel"
+        >
+          ⌂ Início
+        </Link>
+      </div>
       <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-        <h2 className="text-2xl font-black text-zinc-950">{panel.title}</h2>
-        <p className="mt-1 text-sm font-semibold text-zinc-600">{panel.subtitle}</p>
+        <h2 className="text-xl font-black leading-tight text-zinc-950">{panel.title}</h2>
+        <p className="mt-1 text-sm font-semibold leading-snug text-zinc-600">{panel.subtitle}</p>
         <div className="mt-4">{panel.content}</div>
       </div>
     </div>
