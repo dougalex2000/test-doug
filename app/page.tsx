@@ -148,40 +148,6 @@ const mainModules: ModuleCard[] = [
   },
 ];
 
-// Recursos agrupados por jornada de uso (a ordem segue mainModules).
-const recursosGrupos: { titulo: string; descricao: string; items: ModuleCard[] }[] = [
-  {
-    titulo: "Comunicação e formas de acesso",
-    descricao:
-      "Recursos para a pessoa interagir com a plataforma, se comunicar e controlar atividades de diferentes formas.",
-    items: mainModules.slice(0, 5),
-  },
-  {
-    titulo: "Aprendizagem e desenvolvimento",
-    descricao:
-      "Conteúdos e atividades pedagógicas acessíveis para aprender, jogar e treinar no próprio ritmo.",
-    items: mainModules.slice(5, 8),
-  },
-  {
-    titulo: "Apoio inteligente e acompanhamento",
-    descricao:
-      "Orientação com inteligência artificial e métricas para acompanhar a evolução, sem diagnóstico clínico.",
-    items: mainModules.slice(8, 10),
-  },
-  {
-    titulo: "Tecnologias assistivas e criação",
-    descricao:
-      "Catálogo de recursos prontos e oficina maker para adaptar, criar e documentar soluções de baixo custo.",
-    items: mainModules.slice(10, 12),
-  },
-  {
-    titulo: "Formação, autonomia e trabalho",
-    descricao:
-      "Capacitação, propriedade intelectual e caminhos para inclusão produtiva e emprego apoiado.",
-    items: mainModules.slice(12),
-  },
-];
-
 const audiences = [
   "Alunos",
   "Famílias",
@@ -314,18 +280,10 @@ export default function Home() {
           <SectionHeader
             eyebrow="Recursos da plataforma"
             title="Recursos do DAVI"
-            description="Recursos conectados por uma jornada: da comunicação e do acesso à aprendizagem, ao acompanhamento, à tecnologia assistiva, à formação e ao trabalho."
+            description="Recursos conectados para apoiar comunicação, aprendizagem e autonomia."
           />
-          <div className="mt-10 space-y-12">
-            {recursosGrupos.map((grupo) => (
-              <div key={grupo.titulo}>
-                <h3 className="text-xl font-black text-zinc-900 sm:text-2xl">{grupo.titulo}</h3>
-                <p className="mt-1 max-w-3xl text-base leading-7 text-zinc-600">{grupo.descricao}</p>
-                <div className="mt-6">
-                  <ModuleGrid items={grupo.items} />
-                </div>
-              </div>
-            ))}
+          <div className="mt-10">
+            <ModuleGrid items={mainModules} />
           </div>
         </div>
       </section>

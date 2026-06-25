@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { mockUser, mockNotifications } from "../lib/userData";
 import { assetSrc } from "../lib/imageAssets";
 import { getSupabaseBrowserClient } from "../lib/supabase/browser";
-import { footerSections, megaMenu, type ModuleStatus } from "../lib/siteNav";
+import { mainNav, footerSections, type ModuleStatus } from "../lib/siteNav";
 import { IconBell, IconMenu } from "./icons";
 import { VisitCounter } from "./VisitCounter";
 
@@ -28,41 +27,6 @@ const menuStatusDot: Record<ModuleStatus, string> = {
 
 export function SiteHeader() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const pathname = usePathname();
-  const panelRef = useRef<HTMLDivElement>(null);
-  const menuBtnRef = useRef<HTMLButtonElement>(null);
-  const fecharBtnRef = useRef<HTMLButtonElement>(null);
-
-  // Fecha ao navegar.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- fecha o menu ao mudar de rota
-    setMenuOpen(false);
-  }, [pathname]);
-
-  // Esc + clique fora + foco no botão Fechar ao abrir.
-  useEffect(() => {
-    if (!menuOpen) return;
-    fecharBtnRef.current?.focus();
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-        menuBtnRef.current?.focus();
-      }
-    }
-    function onDown(e: MouseEvent) {
-      const t = e.target as Node;
-      if (!panelRef.current?.contains(t) && !menuBtnRef.current?.contains(t)) {
-        setMenuOpen(false);
-      }
-    }
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("mousedown", onDown);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("mousedown", onDown);
-    };
-  }, [menuOpen]);
 
   useEffect(() => {
     const supabase = getSupabaseBrowserClient();
@@ -93,19 +57,76 @@ export function SiteHeader() {
 
       <div className="bg-white">
         <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between gap-3 px-6 py-3 text-zinc-950">
-          <div className="flex min-w-0 items-center gap-3">
-            <button
-              ref={menuBtnRef}
-              type="button"
-              onClick={() => setMenuOpen((o) => !o)}
-              aria-expanded={menuOpen}
-              aria-controls="mega-menu"
-              aria-label={menuOpen ? "Fechar menu de navegação" : "Abrir menu de navegação"}
-              className={`flex h-12 items-center gap-2 rounded-lg px-3 text-blue-800 hover:bg-blue-50 ${focusRing}`}
-            >
-              <IconMenu className="h-7 w-7" />
-              <span className="hidden text-base font-black sm:inline">Menu</span>
-            </button>
+          <div className="flex min-w-0 items-center gap-4">
+            <details className="relative">
+              <summary
+                className={`flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-lg text-blue-800 hover:bg-blue-50 ${focusRing}`}
+                aria-label="Abrir menu de navegação"
+              >
+                <IconMenu className="h-7 w-7" />
+              </summary>
+              <div className="absolute left-0 top-14 z-50 max-h-[calc(100vh-7rem)] w-[min(94vw,520px)] overflow-y-auto rounded-lg border border-zinc-200 bg-white p-4 shadow-2xl shadow-blue-950/15">
+                <p className="text-sm font-black uppercase tracking-wide text-blue-800">
+                  Navegação DAVI
+                </p>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {[
+                    { label: "Início", href: "/" },
+                    { label: "Manual", href: "/manual" },
+                    { label: "Contato", href: "/contato" },
+                    { label: "Acessibilidade", href: "/acessibilidade" },
+                  ].map((quick) => (
+                    <Link
+                      key={quick.href}
+                      href={quick.href}
+                      className={`rounded-full border border-zinc-300 px-3 py-1.5 text-xs font-bold text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
+                    >
+                      {quick.label}
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-3 grid gap-1.5">
+                  {mainNav.map((section) => (
+                    <details key={section.href} className="group rounded-lg border border-zinc-200 bg-white">
+                      <summary
+                        className={`flex cursor-pointer list-none items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-black text-zinc-900 hover:bg-blue-50 ${focusRing}`}
+                      >
+                        <span>{section.title}</span>
+                        <span aria-hidden="true" className="text-zinc-400 transition group-open:rotate-90">
+                          ›
+                        </span>
+                      </summary>
+                      <div className="grid gap-0.5 px-2 pb-2">
+                        <Link
+                          href={section.href}
+                          className={`rounded-lg px-3 py-2 text-sm font-bold text-blue-800 hover:bg-blue-50 ${focusRing}`}
+                        >
+                          {section.title}: visão geral
+                        </Link>
+                        {section.items
+                          .filter((item) => item.href !== section.href)
+                          .map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-zinc-700 hover:bg-blue-50 hover:text-blue-800 ${focusRing}`}
+                            >
+                              <span>{item.label}</span>
+                              {item.status ? (
+                                <span
+                                  className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
+                                  title={item.status}
+                                  aria-label={`Status: ${item.status}`}
+                                />
+                              ) : null}
+                            </Link>
+                          ))}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            </details>
 
             <div className="min-w-0">
               <p className="text-base font-semibold leading-tight tracking-tight sm:text-2xl lg:text-3xl">
@@ -150,76 +171,6 @@ export function SiteHeader() {
           </div>
         </div>
       </div>
-
-      {menuOpen && (
-        <>
-          <div className="fixed inset-0 z-40 bg-zinc-950/40" aria-hidden="true" />
-          <div
-            id="mega-menu"
-            ref={panelRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu de navegação do Projeto DAVI"
-            className="fixed left-1/2 top-2 z-50 max-h-[calc(100vh-1rem)] w-[min(96vw,72rem)] -translate-x-1/2 overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xl shadow-blue-950/20 sm:top-3"
-          >
-            <div className="flex items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-              <p className="text-sm font-black uppercase tracking-wide text-blue-800">
-                Navegação do Projeto DAVI
-              </p>
-              <button
-                ref={fecharBtnRef}
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                className={`flex items-center gap-2 rounded-lg border border-zinc-300 px-3 py-2 text-sm font-black text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
-              >
-                <span aria-hidden="true" className="text-base leading-none">✕</span>
-                Fechar menu
-              </button>
-            </div>
-
-            <div className="mt-4 grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
-              {megaMenu.map((cat) => (
-                <section key={cat.titulo} aria-label={cat.titulo}>
-                  <h2 className="text-sm font-black uppercase tracking-wide text-zinc-900">
-                    {cat.titulo}
-                  </h2>
-                  <p className="mt-1 text-xs font-semibold leading-5 text-zinc-500">
-                    {cat.descricao}
-                  </p>
-                  <ul className="mt-3 grid gap-0.5">
-                    {cat.itens.map((item) => {
-                      const ativo = pathname === item.href;
-                      return (
-                        <li key={`${cat.titulo}-${item.href}`}>
-                          <Link
-                            href={item.href}
-                            aria-current={ativo ? "page" : undefined}
-                            onClick={() => setMenuOpen(false)}
-                            className={`flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold ${focusRing} ${
-                              ativo
-                                ? "bg-blue-50 text-blue-800 ring-1 ring-blue-200"
-                                : "text-zinc-700 hover:bg-blue-50 hover:text-blue-800"
-                            }`}
-                          >
-                            <span>{item.label}</span>
-                            {item.status ? (
-                              <span
-                                className={`h-2 w-2 shrink-0 rounded-full ${menuStatusDot[item.status]}`}
-                                title={item.status}
-                                aria-label={`Status: ${item.status}`}
-                              />
-                            ) : null}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </section>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
     </header>
   );
 }
