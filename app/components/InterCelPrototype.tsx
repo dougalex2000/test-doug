@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   IconChat,
-  IconCheckCircle,
   IconClipboard,
   IconDocument,
   IconEye,
@@ -62,10 +61,10 @@ const focusRing =
 const defaultSession = "DAVI-24";
 
 const roleLabels: Record<DeviceRole, string> = {
-  "controle-geral": "Controle geral",
+  "controle-geral": "Todos os controles",
   "botao-sim-nao": "Botão Sim/Não",
-  "sensor-movimento": "Sensor de movimento",
-  "sensor-som-sopro": "Sensor de som/sopro",
+  "sensor-movimento": "Movimento do celular",
+  "sensor-som-sopro": "Usar som ou sopro",
   joystick: "Joystick",
   comunicacao: "Comunicação",
   mouse: "Mouse",
@@ -86,7 +85,7 @@ const roleDefaultMode: Record<DeviceRole, Mode> = {
 const roleOptions: Array<{ role: DeviceRole; title: string; description: string }> = [
   {
     role: "controle-geral",
-    title: "Controle geral",
+    title: "Todos os controles",
     description: "Abre todos os recursos do DAVI InterCel.",
   },
   {
@@ -320,13 +319,6 @@ const modeItems: Array<{
   tone: string;
 }> = [
   {
-    id: "escrita",
-    title: "Escrita",
-    subtitle: "Letras e palavras",
-    icon: <IconDocument className="h-7 w-7" />,
-    tone: "bg-blue-50 text-blue-800 ring-blue-100",
-  },
-  {
     id: "sim-nao",
     title: "Sim / Não",
     subtitle: "Escolhas rápidas",
@@ -335,10 +327,24 @@ const modeItems: Array<{
   },
   {
     id: "comandos",
-    title: "Comandos",
-    subtitle: "Aula e atividade",
+    title: "Controlar aula",
+    subtitle: "Vídeo e atividade",
     icon: <IconClipboard className="h-7 w-7" />,
     tone: "bg-sky-50 text-sky-800 ring-sky-100",
+  },
+  {
+    id: "escrita",
+    title: "Escrever",
+    subtitle: "Letras e palavras",
+    icon: <IconDocument className="h-7 w-7" />,
+    tone: "bg-blue-50 text-blue-800 ring-blue-100",
+  },
+  {
+    id: "comunicacao",
+    title: "Comunicação rápida",
+    subtitle: "Falar e expressar",
+    icon: <IconChat className="h-7 w-7" />,
+    tone: "bg-violet-50 text-violet-800 ring-violet-100",
   },
   {
     id: "joystick",
@@ -355,11 +361,18 @@ const modeItems: Array<{
     tone: "bg-cyan-50 text-cyan-800 ring-cyan-100",
   },
   {
-    id: "comunicacao",
-    title: "Comunicação",
-    subtitle: "Falar e expressar",
-    icon: <IconChat className="h-7 w-7" />,
-    tone: "bg-violet-50 text-violet-800 ring-violet-100",
+    id: "som-sopro",
+    title: "Usar som ou sopro",
+    subtitle: "Microfone",
+    icon: <IconMotion className="h-7 w-7" />,
+    tone: "bg-rose-50 text-rose-900 ring-rose-100",
+  },
+  {
+    id: "movimento",
+    title: "Movimento do celular",
+    subtitle: "Inclinar para acionar",
+    icon: <IconMotion className="h-7 w-7" />,
+    tone: "bg-lime-50 text-lime-900 ring-lime-100",
   },
   {
     id: "acessibilidade",
@@ -367,20 +380,6 @@ const modeItems: Array<{
     subtitle: "Ajustes de uso",
     icon: <IconMotion className="h-7 w-7" />,
     tone: "bg-amber-50 text-amber-900 ring-amber-100",
-  },
-  {
-    id: "movimento",
-    title: "Movimento",
-    subtitle: "Sensor do celular",
-    icon: <IconMotion className="h-7 w-7" />,
-    tone: "bg-lime-50 text-lime-900 ring-lime-100",
-  },
-  {
-    id: "som-sopro",
-    title: "Som/Sopro",
-    subtitle: "Microfone",
-    icon: <IconMotion className="h-7 w-7" />,
-    tone: "bg-rose-50 text-rose-900 ring-rose-100",
   },
   {
     id: "olhar",
@@ -609,6 +608,7 @@ function PhoneShell({
   setDeviceName,
   deviceRole,
   setDeviceRole,
+  tecnicoAberto = false,
 }: {
   children: ReactNode;
   sessionCode: string;
@@ -617,6 +617,7 @@ function PhoneShell({
   setDeviceName: (value: string) => void;
   deviceRole: DeviceRole;
   setDeviceRole: (value: DeviceRole) => void;
+  tecnicoAberto?: boolean;
 }) {
   return (
     <div
@@ -648,37 +649,42 @@ function PhoneShell({
             ON
           </span>
         </div>
-        <div className="grid gap-3 px-5 py-4">
-          <SessionCodeField value={sessionCode} onChange={setSessionCode} />
-          <label className="block">
-            <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
-              Nome deste celular
-            </span>
-            <input
-              value={deviceName}
-              onChange={(event) => setDeviceName(event.target.value)}
-              className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-950 shadow-sm ${focusRing}`}
-              aria-label="Nome deste celular"
-            />
-          </label>
-          <label className="block">
-            <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
-              Papel do celular
-            </span>
-            <select
-              value={deviceRole}
-              onChange={(event) => setDeviceRole(normalizeRole(event.target.value))}
-              className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-black text-zinc-950 shadow-sm ${focusRing}`}
-              aria-label="Papel deste celular na sessão"
-            >
-              {Object.entries(roleLabels).map(([role, label]) => (
-                <option key={role} value={role}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <details open={tecnicoAberto} className="border-b border-blue-100 px-5 py-3">
+          <summary className={`cursor-pointer list-none rounded-lg px-1 py-1 text-xs font-black uppercase tracking-wide text-blue-700 ${focusRing}`}>
+            ⚙️ Modo técnico (avançado)
+          </summary>
+          <div className="grid gap-3 pt-3">
+            <SessionCodeField value={sessionCode} onChange={setSessionCode} />
+            <label className="block">
+              <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
+                Nome deste celular
+              </span>
+              <input
+                value={deviceName}
+                onChange={(event) => setDeviceName(event.target.value)}
+                className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-bold text-zinc-950 shadow-sm ${focusRing}`}
+                aria-label="Nome deste celular"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs font-black uppercase tracking-wide text-zinc-500">
+                Função do celular
+              </span>
+              <select
+                value={deviceRole}
+                onChange={(event) => setDeviceRole(normalizeRole(event.target.value))}
+                className={`mt-2 w-full rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-black text-zinc-950 shadow-sm ${focusRing}`}
+                aria-label="Função deste celular na sessão"
+              >
+                {Object.entries(roleLabels).map(([role, label]) => (
+                  <option key={role} value={role}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </details>
         {children}
       </div>
     </div>
@@ -687,21 +693,36 @@ function PhoneShell({
 
 function ModeHome({ setMode }: { setMode: (mode: Mode) => void }) {
   return (
-    <div className="grid min-w-0 grid-cols-2 gap-3 px-5 pb-5">
-      {modeItems.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          onClick={() => setMode(item.id)}
-          className={`min-h-32 min-w-0 rounded-xl p-4 text-left ring-1 transition hover:-translate-y-0.5 hover:shadow-md ${focusRing} ${item.tone}`}
+    <div className="px-5 pb-5">
+      <h2 className="mb-3 mt-1 text-xl font-black leading-tight text-zinc-900">
+        Como você quer usar este celular?
+      </h2>
+      <div className="grid min-w-0 grid-cols-2 gap-3">
+        {modeItems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setMode(item.id)}
+            className={`min-h-32 min-w-0 rounded-xl p-4 text-left ring-1 transition hover:-translate-y-0.5 hover:shadow-md ${focusRing} ${item.tone}`}
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/80 shadow-sm">
+              {item.icon}
+            </span>
+            <span className="mt-3 block break-words text-lg font-black leading-tight">{item.title}</span>
+            <span className="mt-1 block break-words text-sm font-semibold opacity-80">{item.subtitle}</span>
+          </button>
+        ))}
+        <Link
+          href="/davi-intercel/tecnico"
+          className={`col-span-2 flex items-center gap-3 rounded-xl bg-zinc-100 p-4 text-left ring-1 ring-zinc-200 transition hover:-translate-y-0.5 hover:shadow-md ${focusRing}`}
         >
-          <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/80 shadow-sm">
-            {item.icon}
+          <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-white text-xl shadow-sm" aria-hidden="true">⚙️</span>
+          <span>
+            <span className="block text-lg font-black leading-tight text-zinc-900">Modo técnico</span>
+            <span className="mt-0.5 block text-sm font-semibold text-zinc-600">Sessão, histórico, funções e diagnóstico</span>
           </span>
-          <span className="mt-3 block break-words text-lg font-black leading-tight">{item.title}</span>
-          <span className="mt-1 block break-words text-sm font-semibold opacity-80">{item.subtitle}</span>
-        </button>
-      ))}
+        </Link>
+      </div>
     </div>
   );
 }
@@ -997,7 +1018,7 @@ function CommandLog({ commands }: { commands: Command[] }) {
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
       <p className="text-sm font-black uppercase tracking-wide text-zinc-500">
-        Últimos comandos
+        Últimas ações
       </p>
       <div className="mt-3 grid gap-2">
         {commands.length ? (
@@ -1022,13 +1043,21 @@ function CommandLog({ commands }: { commands: Command[] }) {
   );
 }
 
-export function InterCelControlPrototype() {
+export function InterCelControlPrototype({
+  modoForcado,
+  tecnico = false,
+}: {
+  /** Abre direto em um modo específico (usado pelas sub-rotas). */
+  modoForcado?: Mode;
+  /** Abre a área técnica já expandida. */
+  tecnico?: boolean;
+} = {}) {
   const initialParams = useInitialControlParams();
   const deviceId = useStableDeviceId();
   const [sessionCode, setSessionCode] = useState(defaultSession);
   const [deviceRole, setDeviceRole] = useState<DeviceRole>("controle-geral");
   const [deviceName, setDeviceName] = useState("Celular 1");
-  const [mode, setMode] = useState<Mode>("inicio");
+  const [mode, setMode] = useState<Mode>(modoForcado ?? "inicio");
   const { commands, sendCommand, announceDevice } = useInterCelCommands(
     sessionCode,
     deviceName || roleLabels[deviceRole],
@@ -1039,12 +1068,13 @@ export function InterCelControlPrototype() {
     const loadParams = window.setTimeout(() => {
       setSessionCode(initialParams.sessionCode);
       setDeviceRole(initialParams.role);
-      setMode(roleDefaultMode[initialParams.role]);
+      // Respeita o modo forçado pela sub-rota; senão, segue o papel da URL.
+      if (!modoForcado) setMode(roleDefaultMode[initialParams.role]);
       setDeviceName(roleLabels[initialParams.role]);
     }, 0);
 
     return () => window.clearTimeout(loadParams);
-  }, [initialParams]);
+  }, [initialParams, modoForcado]);
 
   useEffect(() => {
     if (!deviceId) return;
@@ -1071,40 +1101,29 @@ export function InterCelControlPrototype() {
           }}
         >
           <p className="text-sm font-black uppercase tracking-wide text-blue-800">
-            Protótipo web
+            DAVI InterCel
           </p>
           <h1 className="mt-3 max-w-2xl break-words text-3xl font-black leading-tight text-zinc-950 sm:text-5xl">
-            DAVI InterCel Controle
+            Use o celular como controle
           </h1>
           <p className="mt-4 max-w-2xl break-words text-lg font-semibold leading-8 text-zinc-700">
-            Uma página de internet que transforma o celular em controle assistivo
-            para comunicação, escrita, jogos, mouse, comandos e acessibilidade.
+            Escolha no celular o que você quer fazer: Sim/Não, controlar a aula,
+            escrever, comunicação, joystick, mouse, som/sopro ou movimento.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
-            {[
-              ["Acessível", "Botões grandes"],
-              ["Inclusivo", "Sem barreiras"],
-              ["Humano", "Feito para pessoas"],
-            ].map(([title, text]) => (
-              <div key={title} className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
-                <IconCheckCircle className="h-7 w-7 text-green-700" />
-                <p className="mt-3 text-sm font-black uppercase text-blue-800">{title}</p>
-                <p className="text-sm font-semibold text-zinc-600">{text}</p>
-              </div>
-            ))}
-          </div>
           <div className="mt-6 rounded-xl border border-blue-100 bg-white p-5 shadow-sm">
-            <p className="text-lg font-black text-zinc-950">Como testar agora</p>
-            <p className="mt-2 text-sm font-semibold leading-6 text-zinc-600">
-              Abra a tela de sessão no computador e conecte um ou mais celulares
-              com o mesmo código. Cada aparelho pode ter um papel diferente.
-            </p>
+            <p className="text-lg font-black text-zinc-950">Como usar</p>
+            <ol className="mt-3 grid gap-2 text-sm font-semibold leading-6 text-zinc-700">
+              <li>1. Abra a <strong>Tela Grande</strong> no computador, TV ou tablet.</li>
+              <li>2. Leia o QR Code com o celular.</li>
+              <li>3. Escolha o que o celular vai fazer.</li>
+              <li>4. Use os botões grandes para controlar a atividade.</li>
+            </ol>
             <div className="mt-4 grid gap-3 sm:flex sm:flex-wrap">
               <Link
                 href="/davi-intercel/sessao"
                 className={`rounded-lg bg-blue-700 px-5 py-3 text-center text-sm font-black text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 ${focusRing}`}
               >
-                Abrir tela receptora
+                Abrir Tela Grande
               </Link>
               <Link
                 href="/davi-intercel"
@@ -1114,6 +1133,12 @@ export function InterCelControlPrototype() {
               </Link>
             </div>
           </div>
+          <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-500">
+            Este ainda é um protótipo. Nesta versão, alguns comandos funcionam
+            melhor no mesmo navegador/dispositivo porque ainda usam o
+            armazenamento local. A próxima etapa usará Supabase Realtime ou
+            WebSocket para comunicação real entre celular e computador.
+          </p>
         </section>
 
         <section
@@ -1131,6 +1156,7 @@ export function InterCelControlPrototype() {
             setDeviceName={setDeviceName}
             deviceRole={deviceRole}
             setDeviceRole={handleRoleChange}
+            tecnicoAberto={tecnico}
           >
             {mode === "inicio" ? (
               <ModeHome setMode={setMode} />
@@ -1149,7 +1175,11 @@ export function InterCelControlPrototype() {
 
 export function InterCelSessionReceiver() {
   const [sessionCode, setSessionCode] = useState(defaultSession);
-  const { commands, devices, clearCommands } = useInterCelCommands(sessionCode);
+  const { commands, devices, clearCommands, sendCommand } = useInterCelCommands(
+    sessionCode,
+    "Demonstração",
+    "controle-geral",
+  );
   const latest = commands[0];
   const generalControlUrl = makeControlUrl(sessionCode);
 
@@ -1159,12 +1189,12 @@ export function InterCelSessionReceiver() {
         <div className="flex flex-col gap-4 border-b border-zinc-800 pb-6 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-sm font-black uppercase tracking-wide text-green-400">
-              Tela receptora
+              Tela Grande
             </p>
-            <h1 className="mt-2 text-4xl font-black">Sessão DAVI InterCel</h1>
+            <h1 className="mt-2 text-4xl font-black">Tela Grande DAVI InterCel</h1>
             <p className="mt-2 max-w-2xl text-zinc-300">
-              Use esta tela no computador, TV ou tablet. O celular envia comandos
-              pela página de controle usando o mesmo código.
+              Deixe esta tela aberta no computador, TV ou tablet. Use o celular
+              para enviar comandos.
             </p>
           </div>
           <div className="w-full max-w-xs">
@@ -1172,62 +1202,85 @@ export function InterCelSessionReceiver() {
           </div>
         </div>
 
-        <section className="grid gap-6 py-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
-            <p className="text-sm font-black uppercase tracking-wide text-zinc-400">
-              Comando recebido
+        <section className="grid gap-6 py-8 lg:grid-cols-[0.95fr_1.05fr]">
+          {/* Conectar: QR grande + código */}
+          <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
+            <p className="text-sm font-black uppercase tracking-wide text-blue-800">
+              1. Leia o QR Code com o celular
             </p>
+            <div className="mt-5 flex flex-col items-center gap-4">
+              {/* QR externo do protótipo; quando virar recurso final, trocar por gerador local. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={qrImageUrl(generalControlUrl)}
+                alt={`QR Code para abrir o controle DAVI InterCel da sessão ${sessionCode}`}
+                width={260}
+                height={260}
+                className="rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm"
+              />
+              <p className="text-center text-sm font-semibold text-zinc-600">
+                Código da sessão
+              </p>
+              <p className="rounded-xl bg-zinc-100 px-6 py-2 text-3xl font-black tracking-widest text-zinc-950">
+                {sessionCode}
+              </p>
+              <a
+                href={generalControlUrl}
+                className={`inline-flex rounded-lg bg-blue-700 px-5 py-3 text-sm font-black text-white hover:bg-blue-800 ${focusRing}`}
+              >
+                Abrir controle neste aparelho
+              </a>
+            </div>
+          </div>
+
+          {/* Status + último comando */}
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+            <div className="flex items-center gap-3">
+              <span className={`h-3 w-3 rounded-full ${latest ? "bg-green-400" : "bg-amber-400"} ${latest ? "" : "animate-pulse"}`} />
+              <p className="text-sm font-black uppercase tracking-wide text-zinc-300">
+                {latest ? "Comando recebido" : "Aguardando celular"}
+              </p>
+            </div>
             {latest ? (
               <div className="mt-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-8">
                 <p className="text-6xl font-black text-green-300">{latest.label}</p>
                 <p className="mt-4 text-2xl font-bold text-white">{latest.detail}</p>
                 <p className="mt-3 text-sm font-black uppercase tracking-wide text-green-200">
-                  {latest.mode} · {latest.deviceName} · {roleLabels[latest.deviceRole]} · {latest.createdAt}
+                  {latest.mode} · {latest.deviceName} · {latest.createdAt}
                 </p>
               </div>
             ) : (
               <div className="mt-6 rounded-2xl border border-dashed border-zinc-700 bg-zinc-950 p-8 text-zinc-400">
                 <IconJoystick className="h-16 w-16" />
                 <p className="mt-6 text-3xl font-black text-white">
-                  Aguardando comando
+                  Aguardando celular
                 </p>
                 <p className="mt-2 text-lg">
-                  Abra o controle no celular e use o código {sessionCode}.
+                  Leia o QR Code ou use o código {sessionCode} no celular.
                 </p>
               </div>
             )}
+            <button
+              type="button"
+              onClick={() => sendCommand("SIM", "Demonstração", "Demonstração")}
+              className={`mt-5 inline-flex rounded-lg bg-green-500 px-5 py-3 text-sm font-black text-zinc-950 hover:bg-green-400 ${focusRing}`}
+            >
+              ▶ Abrir modo demonstração
+            </button>
           </div>
+        </section>
 
-          <div className="grid gap-6">
+        {/* Opções avançadas (modo técnico) */}
+        <details className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+          <summary className={`cursor-pointer list-none text-sm font-black uppercase tracking-wide text-zinc-300 ${focusRing}`}>
+            ⚙️ Opções avançadas (modo técnico)
+          </summary>
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
             <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
               <p className="text-sm font-black uppercase tracking-wide text-blue-800">
-                Conectar celular
+                Abrir o celular com uma função específica
               </p>
-              <h2 className="mt-2 text-2xl font-black">QR Code da sessão</h2>
-              <div className="mt-5 grid gap-5 md:grid-cols-[auto_1fr] md:items-center">
-                {/* QR externo do protótipo; quando virar recurso final, trocar por gerador local. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={qrImageUrl(generalControlUrl)}
-                  alt={`QR Code para abrir o controle DAVI InterCel da sessão ${sessionCode}`}
-                  width={220}
-                  height={220}
-                  className="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm"
-                />
-                <div>
-                  <p className="text-sm font-semibold leading-6 text-zinc-600">
-                    Aponte a câmera do celular para abrir o controle já conectado à
-                    sessão {sessionCode}. Depois escolha o papel deste aparelho.
-                  </p>
-                  <a
-                    href={generalControlUrl}
-                    className={`mt-4 inline-flex rounded-lg bg-blue-700 px-5 py-3 text-sm font-black text-white hover:bg-blue-800 ${focusRing}`}
-                  >
-                    Abrir controle neste aparelho
-                  </a>
-                </div>
-              </div>
-              <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
                 {roleOptions.map((option) => {
                   const href = makeControlUrl(sessionCode, option.role);
                   return (
@@ -1236,12 +1289,8 @@ export function InterCelSessionReceiver() {
                       href={href}
                       className={`rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-left hover:border-blue-300 hover:bg-blue-50 ${focusRing}`}
                     >
-                      <span className="block text-sm font-black text-zinc-950">
-                        {option.title}
-                      </span>
-                      <span className="mt-1 block text-xs font-semibold leading-5 text-zinc-600">
-                        {option.description}
-                      </span>
+                      <span className="block text-sm font-black text-zinc-950">{option.title}</span>
+                      <span className="mt-1 block text-xs font-semibold leading-5 text-zinc-600">{option.description}</span>
                     </a>
                   );
                 })}
@@ -1255,10 +1304,7 @@ export function InterCelSessionReceiver() {
               <div className="mt-4 grid gap-3">
                 {devices.length ? (
                   devices.map((device) => (
-                    <article
-                      key={device.id}
-                      className="rounded-xl border border-zinc-200 bg-zinc-50 p-4"
-                    >
+                    <article key={device.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
                       <p className="font-black text-zinc-950">{device.name}</p>
                       <p className="text-sm font-semibold text-zinc-600">
                         {roleLabels[device.role]} · ativo às {device.lastSeen}
@@ -1273,49 +1319,52 @@ export function InterCelSessionReceiver() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950">
-            <div className="flex items-start justify-between gap-4">
-              <div>
+            <div className="rounded-2xl border border-zinc-800 bg-white p-6 text-zinc-950 lg:col-span-2">
+              <div className="flex items-start justify-between gap-4">
                 <p className="text-sm font-black uppercase tracking-wide text-blue-800">
-                  Histórico
+                  Últimas ações
                 </p>
-                <h2 className="mt-2 text-2xl font-black">Comandos da sessão</h2>
+                <button
+                  type="button"
+                  onClick={clearCommands}
+                  className={`rounded-lg border border-zinc-300 px-4 py-2 text-sm font-black text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
+                >
+                  Limpar
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={clearCommands}
-                className={`rounded-lg border border-zinc-300 px-4 py-2 text-sm font-black text-zinc-800 hover:border-blue-400 hover:text-blue-800 ${focusRing}`}
-              >
-                Limpar
-              </button>
-            </div>
-            <div className="mt-5 grid gap-3">
-              {commands.length ? (
-                commands.map((command) => (
-                  <article key={command.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-                    <p className="text-lg font-black">{command.label}</p>
-                    <p className="text-sm font-semibold text-zinc-600">{command.detail}</p>
-                    <p className="mt-2 text-xs font-black uppercase tracking-wide text-zinc-400">
-                      {command.mode} · {command.deviceName} · {roleLabels[command.deviceRole]} · {command.createdAt}
-                    </p>
-                  </article>
-                ))
-              ) : (
-                <p className="rounded-xl bg-zinc-50 p-5 font-semibold text-zinc-500">
-                  Nenhum comando nesta sessão.
-                </p>
-              )}
-            </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {commands.length ? (
+                  commands.map((command) => (
+                    <article key={command.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                      <p className="text-lg font-black">{command.label}</p>
+                      <p className="text-sm font-semibold text-zinc-600">{command.detail}</p>
+                      <p className="mt-2 text-xs font-black uppercase tracking-wide text-zinc-400">
+                        {command.mode} · {command.deviceName} · {roleLabels[command.deviceRole]} · {command.createdAt}
+                      </p>
+                    </article>
+                  ))
+                ) : (
+                  <p className="rounded-xl bg-zinc-50 p-5 font-semibold text-zinc-500">
+                    Nenhuma ação nesta sessão.
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-        </section>
+          <p className="mt-6 text-sm leading-6 text-zinc-400">
+            Observação: este é um protótipo. Nesta versão, a comunicação ainda usa
+            o armazenamento local do navegador (localStorage), funcionando melhor
+            no mesmo dispositivo. A próxima etapa usará Supabase Realtime ou
+            WebSocket para comunicação real entre celular e computador.
+          </p>
+        </details>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/davi-intercel/controle"
             className={`rounded-lg bg-green-500 px-5 py-3 text-sm font-black text-zinc-950 hover:bg-green-400 ${focusRing}`}
           >
-            Abrir controle
+            Abrir controle no celular
           </Link>
           <Link
             href="/davi-intercel"

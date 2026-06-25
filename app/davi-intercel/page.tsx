@@ -195,12 +195,15 @@ export default function DaviInterCelPage() {
         description="O celular como interface assistiva e extensão dos recursos do Projeto DAVI."
         actions={
           <>
-            <LinkButton href="/davi-intercel/controle">Abrir controle InterCel</LinkButton>
+            <LinkButton href="/davi-intercel/controle">Usar celular como controle</LinkButton>
             <LinkButton href="/davi-intercel/sessao" variant="secondary">
-              Abrir tela receptora
+              Abrir Tela Grande
             </LinkButton>
-            <LinkButton href="/escola" variant="secondary">
-              Conhecer DAVI Escola
+            <LinkButton href="/davi-intercel/controle" variant="secondary">
+              Ver modo simples
+            </LinkButton>
+            <LinkButton href="/davi-intercel/tecnico" variant="secondary">
+              Ver modo técnico
             </LinkButton>
           </>
         }
@@ -224,6 +227,38 @@ export default function DaviInterCelPage() {
             sizes="(min-width: 1280px) 1200px, 100vw"
             className="h-auto w-full rounded-lg border border-zinc-200 shadow-xl shadow-blue-950/10"
           />
+        </div>
+      </section>
+
+      <section className="border-b border-zinc-200 bg-white px-6 py-16">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader
+            eyebrow="Como usar"
+            title="Em 4 passos simples"
+            description="A ideia é simples: abri a Tela Grande, li o QR Code, escolhi o que fazer e já comecei a usar."
+          />
+          <ol className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["1", "Abra a Tela Grande", "No computador, TV ou tablet."],
+              ["2", "Leia o QR Code", "Aponte a câmera do celular."],
+              ["3", "Escolha o que fazer", "Sim/Não, escrita, joystick, comunicação, som/sopro ou movimento."],
+              ["4", "Use os botões grandes", "O celular controla a atividade na tela."],
+            ].map(([n, title, text]) => (
+              <li key={n} className="rounded-2xl border border-blue-100 bg-[#F6F8FB] p-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-700 text-lg font-black text-white">
+                  {n}
+                </span>
+                <p className="mt-4 text-lg font-black text-zinc-950">{title}</p>
+                <p className="mt-1 text-sm font-semibold leading-6 text-zinc-600">{text}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-6 max-w-3xl text-sm leading-6 text-zinc-500">
+            Este ainda é um protótipo. Nesta versão, alguns comandos funcionam
+            melhor no mesmo navegador/dispositivo porque ainda usam o
+            armazenamento local. A próxima etapa usará Supabase Realtime ou
+            WebSocket para comunicação real entre celular e computador.
+          </p>
         </div>
       </section>
 
