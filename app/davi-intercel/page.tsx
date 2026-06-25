@@ -195,9 +195,9 @@ export default function DaviInterCelPage() {
         description="O celular como interface assistiva e extensão dos recursos do Projeto DAVI."
         actions={
           <>
-            <LinkButton href="#funcionalidades">Ver funcionalidades</LinkButton>
-            <LinkButton href="/acesso/conecta" variant="secondary">
-              Conectar à plataforma
+            <LinkButton href="/davi-intercel/controle">Abrir controle InterCel</LinkButton>
+            <LinkButton href="/davi-intercel/sessao" variant="secondary">
+              Abrir tela receptora
             </LinkButton>
             <LinkButton href="/escola" variant="secondary">
               Conhecer DAVI Escola
@@ -376,7 +376,9 @@ export default function DaviInterCelPage() {
             </div>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <LinkButton href="/escola">Conhecer DAVI Escola</LinkButton>
+            <LinkButton href="/davi-intercel/controle">Testar controle InterCel</LinkButton>
+            <LinkButton href="/davi-intercel/sessao" variant="secondary">Abrir sessão na tela maior</LinkButton>
+            <LinkButton href="/escola" variant="secondary">Conhecer DAVI Escola</LinkButton>
             <LinkButton href="/davi-games" variant="secondary">Ver jogos educativos</LinkButton>
             <LinkButton href="/tecnologias-assistivas/catalogo" variant="secondary">Explorar dispositivos</LinkButton>
             <LinkButton href="/contato" variant="tertiary">Falar sobre acessibilidade</LinkButton>
