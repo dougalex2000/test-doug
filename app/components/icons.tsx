@@ -31,6 +31,29 @@ export function IconMenu(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function IconIntegra(props: SVGProps<SVGSVGElement>) {
+  return (
+    <IconBase {...props}>
+      {/* Três nós conectados — pessoas e áreas que se integram. */}
+      <circle cx="6" cy="7" r="2.4" />
+      <circle cx="18" cy="7" r="2.4" />
+      <circle cx="12" cy="17.5" r="2.4" />
+      <path d="M8.2 8.2 10 15.4M15.8 8.2 14 15.4M8 7h8" />
+    </IconBase>
+  );
+}
+
+export function IconHandshake(props: SVGProps<SVGSVGElement>) {
+  return (
+    <IconBase {...props}>
+      <path d="M12 6.5 9.5 5a2 2 0 0 0-2 .1L3 8v6l2 1" />
+      <path d="M12 6.5 14.5 5a2 2 0 0 1 2 .1L21 8v6l-2 1" />
+      <path d="m8 12 2.2 2.2a1.5 1.5 0 0 0 2.1 0l3.7-3.7" />
+      <path d="m13 11 2 2M11 13l1.5 1.5M9.5 14.5 11 16" />
+    </IconBase>
+  );
+}
+
 export function IconBell(props: SVGProps<SVGSVGElement>) {
   return (
     <IconBase {...props}>

@@ -19,6 +19,7 @@ const focusRing =
 
 const statusStyles: Record<ModuleStatus, string> = {
   "Em construção": "bg-amber-100 text-amber-900 ring-amber-300",
+  "Em estruturação": "bg-teal-100 text-teal-900 ring-teal-300",
   "Em desenvolvimento": "bg-green-100 text-green-900 ring-green-300",
   Protótipo: "bg-violet-100 text-violet-900 ring-violet-300",
   "Testes iniciais": "bg-sky-100 text-sky-900 ring-sky-300",
@@ -127,6 +128,8 @@ export type ModuleCard = {
   href?: string;
   status?: ModuleStatus;
   icon?: ReactNode;
+  /** Texto do link do card (padrão: "Explorar →"). */
+  cta?: string;
 };
 
 export function ModuleGrid({
@@ -159,7 +162,7 @@ export function ModuleGrid({
             </p>
             {item.href ? (
               <p className="mt-auto pt-5 text-sm font-black text-blue-800">
-                Explorar →
+                {item.cta ?? "Explorar →"}
               </p>
             ) : null}
           </div>

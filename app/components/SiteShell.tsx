@@ -17,6 +17,7 @@ const unreadCount = mockNotifications.filter((n) => !n.read).length;
 
 const menuStatusDot: Record<ModuleStatus, string> = {
   "Em construção": "bg-amber-500",
+  "Em estruturação": "bg-teal-500",
   "Em desenvolvimento": "bg-green-500",
   Protótipo: "bg-violet-500",
   "Testes iniciais": "bg-sky-500",

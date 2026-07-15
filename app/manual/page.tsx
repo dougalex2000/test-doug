@@ -7,6 +7,7 @@ import {
   IconCube,
   IconDocument,
   IconEye,
+  IconIntegra,
   IconLightbulb,
   IconShieldCheck,
   IconSparkles,
@@ -196,6 +197,24 @@ export default function ManualPage() {
           tone: "soft",
         },
         {
+          eyebrow: "13.2. DAVI Integra",
+          title: "A comunidade aberta de colaboração e pesquisa",
+          paragraphs: [
+            "O DAVI Integra é o espaço de colaboração, pesquisa, desenvolvimento e inovação aberta do Projeto DAVI. É um módulo transversal: não substitui nenhum outro, mas conecta pessoas — pesquisadores, estudantes, desenvolvedores, profissionais, instituições e comunidades — aos grupos de trabalho de todos os módulos, do DAVI Comunica ao DAVI Emprega.",
+            "Qualquer pessoa pode participar: de forma individual, acadêmica (iniciação científica, TCC, extensão), técnica (programação, eletrônica, IA, maker, design, documentação), institucional (universidades, escolas, prefeituras, ONGs, empresas) ou como comunidade. Pessoas com deficiência, familiares e cuidadores são reconhecidos também como pesquisadores, desenvolvedores, avaliadores e consultores — não apenas como público beneficiário.",
+            "Os desafios transformam necessidades reais em oportunidades de pesquisa, desenvolvimento, documentação e teste; cada um tem status, maturidade, competências desejadas, grupo responsável e entregas esperadas. Os grupos de trabalho organizam quem colabora em cada módulo ou tema, com objetivo, atividades e forma de participação.",
+            "É importante distinguir três formas de envolvimento: a colaboração (contribuir com tempo, conhecimento e trabalho no ecossistema); a pesquisa com participantes (que exige consentimento, LGPD e, quando aplicável, Comitê de Ética em Pesquisa); e a parceria institucional (acordo formal entre o projeto e uma organização). O DAVI Integra não deve ser confundido com o DAVI Conecta (integra dispositivos físicos) nem com os Projetos Abertos (disponibilizam arquivos para reprodução): o Integra articula as pessoas que pesquisam, desenvolvem, documentam e ampliam essas soluções, apoiando também o DAVI Maker, o DAVI Capacita e os demais módulos.",
+          ],
+          bullets: [
+            "Quem pode participar: pesquisadores, estudantes, técnicos, profissionais, instituições e comunidades",
+            "Desafios abertos com status, maturidade e competências desejadas",
+            "Grupos de trabalho ligados a cada módulo e tema",
+            "Colaboração, pesquisa com participantes e parceria institucional são coisas diferentes",
+            "Nada de bolsas, vagas ou parcerias apresentadas sem confirmação",
+          ],
+          tone: "soft",
+        },
+        {
           eyebrow: "14. Grupos de trabalho",
           title: "Desenvolvimento modular por equipes",
           paragraphs: [
@@ -232,6 +251,7 @@ export default function ManualPage() {
           { title: "DAVI Assistente", description: "Guia com IA.", href: "/ia/assistente", icon: <IconSparkles className="h-6 w-6" />, status: "Demonstração" },
           { title: "Catálogo", description: "Recursos prontos.", href: "/tecnologias-assistivas/catalogo", icon: <IconCube className="h-6 w-6" /> },
           { title: "Evolução", description: "Métricas e relatórios.", href: "/evolucao", icon: <IconClipboard className="h-6 w-6" /> },
+          { title: "DAVI Integra", description: "Comunidade e colaboração.", href: "/integra", icon: <IconIntegra className="h-6 w-6" />, status: "Em estruturação" },
           { title: "Ética, CEP e LGPD", description: "Proteção da pessoa.", href: "/projeto/etica", icon: <IconShieldCheck className="h-6 w-6" /> },
         ],
       }}

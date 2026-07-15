@@ -20,6 +20,7 @@ import {
   IconEye,
   IconGamepad,
   IconHeartHand,
+  IconIntegra,
   IconLightbulb,
   IconSparkles,
   IconTouch,
@@ -145,6 +146,15 @@ const mainModules: ModuleCard[] = [
     href: "/davi-emprega",
     icon: <IconHeartHand className="h-6 w-6" />,
     status: "Planejado",
+  },
+  {
+    title: "DAVI Integra",
+    description:
+      "Comunidade aberta para pesquisa, desenvolvimento, desafios e colaboração em tecnologia assistiva.",
+    href: "/integra",
+    icon: <IconIntegra className="h-6 w-6" />,
+    status: "Em estruturação",
+    cta: "Participar →",
   },
 ];
 

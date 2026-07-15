@@ -31,6 +31,15 @@ export default function ProjetosAbertosPage() {
           ],
         },
       ]}
+      note={
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-teal-200 bg-teal-50 p-6">
+          <p className="max-w-2xl text-base font-bold leading-7 text-teal-900">
+            Quer ajudar a desenvolver, pesquisar, testar ou documentar estas soluções? Conheça o
+            DAVI Integra.
+          </p>
+          <LinkButton href="/integra">Participar pelo DAVI Integra →</LinkButton>
+        </div>
+      }
     />
   );
 }

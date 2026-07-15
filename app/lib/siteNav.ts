@@ -8,6 +8,7 @@
 
 export type ModuleStatus =
   | "Em construção"
+  | "Em estruturação"
   | "Em desenvolvimento"
   | "Protótipo"
   | "Testes iniciais"
@@ -160,6 +161,22 @@ export const mainNav: NavSection[] = [
     ],
   },
   {
+    title: "DAVI Integra",
+    href: "/integra",
+    description: "Comunidade aberta de pesquisa, desenvolvimento e colaboração — módulo transversal.",
+    items: [
+      { label: "Visão Geral", href: "/integra", description: "O espaço colaborativo do Projeto DAVI.", status: "Em estruturação", group: "Grupo Instituições, Comunidades e Parcerias" },
+      { label: "Como Participar", href: "/integra/como-participar", description: "Caminhos individual, acadêmico, técnico e institucional." },
+      { label: "Áreas de Contribuição", href: "/integra#areas", description: "Formas de contribuir por área de conhecimento." },
+      { label: "Desafios Abertos", href: "/integra/desafios", description: "Necessidades reais como oportunidades.", status: "Em estruturação" },
+      { label: "Projetos em Andamento", href: "/integra/projetos", description: "Iniciativas com filtros por módulo e área.", status: "Em estruturação" },
+      { label: "Grupos de Trabalho", href: "/integra/grupos-de-trabalho", description: "Grupos ligados aos módulos do ecossistema." },
+      { label: "Propor uma Contribuição", href: "/integra/propor", description: "Sugerir ideia, desafio, pesquisa ou parceria." },
+      { label: "Parcerias Institucionais", href: "/integra/parcerias", description: "Universidades, escolas, prefeituras, ONGs e empresas." },
+      { label: "Código de Colaboração", href: "/integra/codigo-de-colaboracao", description: "Como colaboramos com respeito, ética e reconhecimento." },
+    ],
+  },
+  {
     title: "Área do Usuário",
     href: "/entrar",
     description: "Login e painel logado: perfil, alunos, profissionais e configurações.",
@@ -232,6 +249,20 @@ export const megaMenu: MegaCategoria[] = [
     ],
   },
   {
+    titulo: "DAVI Integra — colaboração e pesquisa",
+    itens: [
+      { label: "Visão geral", href: "/integra", status: "Em estruturação" },
+      { label: "Como participar", href: "/integra/como-participar" },
+      { label: "Áreas de contribuição", href: "/integra#areas" },
+      { label: "Desafios abertos", href: "/integra/desafios", status: "Em estruturação" },
+      { label: "Projetos em andamento", href: "/integra/projetos", status: "Em estruturação" },
+      { label: "Grupos de trabalho", href: "/integra/grupos-de-trabalho" },
+      { label: "Propor uma contribuição", href: "/integra/propor" },
+      { label: "Parcerias institucionais", href: "/integra/parcerias" },
+      { label: "Código de colaboração", href: "/integra/codigo-de-colaboracao" },
+    ],
+  },
+  {
     titulo: "Documentação e Segurança",
     itens: [
       { label: "Ética e LGPD", href: "/projeto/etica" },
@@ -275,6 +306,7 @@ export const footerSections = [
   {
     title: "Comunidade",
     links: [
+      { label: "DAVI Integra", href: "/integra" },
       { label: "Famílias", href: "/comunidades/familias" },
       { label: "Escolas", href: "/comunidades/escolas" },
       { label: "Profissionais", href: "/comunidades/profissionais" },
