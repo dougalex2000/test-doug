@@ -92,7 +92,7 @@ export default function OrigemPage() {
           eyebrow: "Uma construção colaborativa",
           title: "O DAVI ganha dimensão de ecossistema",
           paragraphs: [
-            "Atualmente, o Projeto DAVI ganha dimensão de ecossistema a partir da interação entre os pesquisadores Andressa, Taty, Sara e Douglas, que ampliam a proposta inicial para integrar diferentes áreas do conhecimento, práticas educacionais, tecnologias assistivas, fabricação digital, inteligência artificial e estratégias de inclusão. Essa construção colaborativa fortalece o DAVI como uma plataforma voltada não apenas ao uso de recursos tecnológicos, mas à criação de caminhos reais para comunicação, aprendizagem, participação social e vida independente.",
+            "Atualmente, o Projeto DAVI ganha dimensão de ecossistema a partir da interação entre os pesquisadores Andressa, Taty, Sara, Clarissa, Adriano e Douglas, que ampliam a proposta inicial para integrar diferentes áreas do conhecimento, práticas educacionais, tecnologias assistivas, fabricação digital, inteligência artificial e estratégias de inclusão. Essa construção colaborativa fortalece o DAVI como uma plataforma voltada não apenas ao uso de recursos tecnológicos, mas à criação de caminhos reais para comunicação, aprendizagem, participação social e vida independente.",
           ],
         },
         {
