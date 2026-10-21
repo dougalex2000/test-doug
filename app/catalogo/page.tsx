@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import {
   Breadcrumb,
-  Illustration,
   LinkButton,
   PageHero,
   PageShell,
@@ -131,8 +130,8 @@ export default function CatalogoPage() {
       />
       <PageHero
         eyebrow="DAVI Catálogo"
-        title="Dispositivos pensados para cada forma de acesso"
-        description="Acionadores, sensores, suportes, pranchas e kits — todos com indicação de uso, tipo de acesso, dificuldade de montagem e custo estimado. Projetos abertos podem ser reproduzidos livremente; os demais são adaptados sob demanda pela oficina maker."
+        title="Catálogo de tecnologia assistiva"
+        description="Explore dispositivos, recursos de comunicação e protótipos de pesquisa. Consulte a indicação de uso e o estágio de desenvolvimento de cada solução."
         actions={
           <>
             <LinkButton href="/tecnologias-assistivas/oficina-maker">Solicitar adaptação</LinkButton>
@@ -143,15 +142,10 @@ export default function CatalogoPage() {
         }
       />
 
-      <section className="border-b border-zinc-200 bg-white px-6 py-16">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <SectionHeader
-              eyebrow="Como o catálogo funciona"
-              title="Do movimento da pessoa ao dispositivo certo"
-              description="O catálogo não é uma vitrine genérica: cada dispositivo indica para quem é, qual movimento utiliza e o que pode ser personalizado."
-            />
-            <div className="mt-10 grid gap-5 sm:grid-cols-2">
+      <section className="border-b border-zinc-200 bg-white px-6 py-4">
+        <details className="mx-auto max-w-7xl">
+          <summary className="cursor-pointer py-2 text-sm font-bold text-zinc-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">Como escolher e adaptar um dispositivo</summary>
+            <div className="grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-4">
               {howItWorks.map((step) => (
                 <div
                   key={step.title}
@@ -169,38 +163,44 @@ export default function CatalogoPage() {
                 </div>
               ))}
             </div>
-          </div>
-          <Illustration
-            name="catalogo-dispositivos"
-            alt="Conjunto de dispositivos de tecnologia assistiva: acionador grande, webcam em suporte, prancha de comunicação, sensor de sopro e teclado ampliado"
-            className="min-h-[320px]"
-          />
-        </div>
+        </details>
       </section>
 
-      <section className="border-b border-zinc-200 bg-zinc-50 px-6 py-16">
+      <section className="border-b border-zinc-200 bg-zinc-50 px-6 py-10">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader eyebrow="Exemplos ilustrativos" title="Tecnologia assistiva em diferentes formas" description="Representações realistas de um acionador de grande área, um teclado com teclas ampliadas e um suporte articulado para comunicação por tablet." />
-          <figure className="mt-8 overflow-hidden rounded-xl border border-zinc-200 bg-white">
-            <Image src="/images/davi/tecnologia-assistiva-ilustrativa.png" alt="Imagem ilustrativa gerada por IA de um acionador vermelho, teclado ampliado de alto contraste e tablet de comunicação em suporte articulado" width={1536} height={1024} sizes="(max-width: 1280px) 100vw, 1280px" className="h-auto w-full" />
-            <figcaption className="border-t border-zinc-200 p-5 text-sm leading-7 text-zinc-700">
-              <strong className="block text-base text-blue-900">Produto ilustrativo — não comercializado.</strong>
-              Imagem gerada por inteligência artificial para apresentar possibilidades de tecnologia assistiva. Não é fotografia de produtos fabricados pelo DAVI, não representa estoque ou oferta de venda e não comprova desempenho ou compatibilidade.
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section className="border-b border-zinc-200 bg-blue-50 px-6 py-16">
-        <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
-          <Image src="/images/davi/cricket-usb-c-prototipo.jpeg" alt="Ilustração conceitual do CRICKET USB-C: fone com câmera e microfone conectado ao celular para uso com o DAVI Mentor" width={1448} height={1086} className="h-auto w-full rounded-xl border border-zinc-200" />
-          <div>
-            <p className="font-bold uppercase tracking-wide text-blue-800">Protótipo em teste · Sem finalidade comercial</p>
-            <h2 className="mt-3 text-3xl font-black text-zinc-950">CRICKET USB-C + DAVI Mentor</h2>
-            <p className="mt-4 text-lg leading-8 text-zinc-700">Proposta de fone com microcâmera, microfone e conexão USB-C ao smartphone para apoio visual e cognitivo por áudio. O dispositivo está em desenvolvimento; a imagem apresenta o conceito, não um produto disponível.</p>
-            <p className="mt-3 leading-7 text-zinc-700">Sem preço, venda ou encomendas. Compatibilidade USB-C, ergonomia e integração física ainda dependem de validação. Conheça o funcionamento proposto e o que já pode ser testado no DAVI Mentor.</p>
-            <div className="mt-6"><LinkButton href="/catalogo/cricket-usb-c">Conhecer o protótipo e seu uso</LinkButton></div>
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div><p className="text-xs font-bold uppercase tracking-widest text-blue-700">Demonstrações e pesquisa</p><h2 className="mt-2 text-2xl font-black text-zinc-950">Explore as soluções</h2></div>
+            <p className="text-sm text-zinc-500">Imagens ilustrativas · Sem comercialização</p>
           </div>
+          <div className="mt-6 grid gap-5 md:grid-cols-2">
+            <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+              <div className="relative flex h-48 items-center justify-center border-b border-zinc-100 bg-zinc-100 p-3 sm:h-56">
+                <Image src="/images/davi/tecnologia-assistiva-ilustrativa.png" alt="Exemplos ilustrativos de acionador vermelho, teclado ampliado e tablet de comunicação" width={1536} height={1024} sizes="(max-width: 768px) 100vw, 600px" className="h-full w-full object-contain" />
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <span className="self-start rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-bold text-zinc-600">Ilustrativo · Não comercializado</span>
+                <h3 className="mt-3 text-xl font-black text-zinc-950">Acesso e comunicação</h3>
+                <p className="mt-2 text-sm leading-6 text-zinc-600">Acionador de grande área, teclado ampliado e tablet em suporte articulado: exemplos de recursos para diferentes formas de interação.</p>
+                <p className="mt-3 text-xs leading-5 text-zinc-500">Representação gerada por IA. Não corresponde a estoque, fabricação ou oferta de venda do DAVI.</p>
+                <div className="mt-auto pt-5"><LinkButton href="#acionadores" variant="secondary">Explorar dispositivos</LinkButton></div>
+              </div>
+            </article>
+            <article className="flex flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+              <div className="relative flex h-48 items-center justify-center border-b border-zinc-100 bg-zinc-100 p-3 sm:h-56">
+                <Image src="/images/davi/cricket-usb-c-prototipo.jpeg" alt="Prancha conceitual do fone CRICKET USB-C com câmera e microfone" width={1448} height={1086} sizes="(max-width: 768px) 100vw, 600px" className="h-full w-full object-contain" />
+              </div>
+              <div className="flex flex-1 flex-col p-5">
+                <span className="self-start rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800">Protótipo em teste · Não comercializado</span>
+                <h3 className="mt-3 text-xl font-black text-zinc-950">CRICKET USB-C</h3>
+                <p className="mt-2 text-sm leading-6 text-zinc-600">Conceito de fone com câmera e microfone para apoio visual e cognitivo junto ao DAVI Mentor.</p>
+                <p className="mt-3 text-xs leading-5 text-zinc-500">Sem preço, venda ou encomendas. Hardware e compatibilidade ainda em validação.</p>
+                <div className="mt-auto pt-5"><LinkButton href="/catalogo/cricket-usb-c">Ver detalhes do protótipo</LinkButton></div>
+              </div>
+            </article>
+          </div>
+          <nav aria-label="Categorias do catálogo" className="mt-8 flex flex-wrap gap-2 border-t border-zinc-200 pt-5">
+            {catalogGroups.map((group) => <a key={group.id} href={`#${group.id}`} className="rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-bold text-zinc-700 transition hover:border-blue-500 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">{group.eyebrow}</a>)}
+          </nav>
         </div>
       </section>
 
@@ -208,7 +208,7 @@ export default function CatalogoPage() {
         <section
           key={group.id}
           id={group.id}
-          className={`scroll-mt-24 border-b border-zinc-200 px-6 py-16 ${
+          className={`scroll-mt-24 border-b border-zinc-200 px-6 py-10 ${
             index % 2 === 0 ? "bg-[#F6F8FB]" : "bg-white"
           }`}
         >
@@ -223,7 +223,7 @@ export default function CatalogoPage() {
                 description={group.description}
               />
             </div>
-            <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {devicesOf(group).map((device) => (
                 <DeviceCard key={device.slug} device={device} />
               ))}
