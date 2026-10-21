@@ -42,6 +42,13 @@ export default function CricketUsbCPage() {
           <p className="mt-3 leading-8">A arquitetura CRICKET organiza o contexto em EU (perfil, objetivos e memória autorizada), OUTROS (contexto social) e MUNDO (cena e ambiente). Essa organização não significa reconhecimento automático de identidade nem detecção confiável de riscos.</p>
           <div className="mt-6 flex flex-wrap gap-3"><LinkButton href="/davi-mentor/sessao?p=DEMO001">Testar com o perfil demo</LinkButton><LinkButton href="/davi-mentor/qr" variant="secondary">Abrir QR Codes</LinkButton></div>
         </section>
+        <section id="oculos-conducao-ossea" className="scroll-mt-24 rounded-xl border border-zinc-200 p-6">
+          <h2 className="text-2xl font-black">Conceito alternativo: óculos e fone por condução óssea</h2>
+          <div className="mt-4 grid items-center gap-6 sm:grid-cols-[240px_1fr]">
+            <Image src="/images/davi/cricket-oculos-conducao-ossea.png" alt="Óculos com câmera e fone por condução óssea: conceito experimental CRICKET" width={1536} height={1024} sizes="(max-width: 640px) 100vw, 240px" className="h-44 w-full rounded-lg object-contain" />
+            <div><p className="text-sm leading-7">Outra configuração em estudo combina óculos com câmera e microfone, smartphone e fone por condução óssea. A proposta mantém as mensagens do DAVI Mentor disponíveis por áudio, com o canal auditivo aberto. Não é uma promessa de desempenho auditivo, segurança ou compatibilidade.</p><p className="mt-3 text-xs leading-6 text-zinc-500">Imagem conceitual gerada por IA. Produto experimental, sem preço e não comercializado. Transmissão de vídeo, alimentação, ergonomia e integração ao Mentor ainda precisam ser validadas.</p></div>
+          </div>
+        </section>
         <section>
           <h2 className="text-2xl font-black">Cuidados e próximos testes</h2>
           <p className="mt-4 leading-8">Ainda precisam ser avaliados o protótipo físico, a seleção da câmera USB no navegador, alimentação e aquecimento, qualidade de áudio, conforto, latência e fidelidade das descrições. A IA pode produzir informações incorretas; confirme informações importantes. Para testes de câmera, avise as pessoas no ambiente e evite captar dados privados. O módulo não substitui avaliação profissional, recursos de mobilidade ou decisões da pessoa.</p>

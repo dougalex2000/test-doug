@@ -131,6 +131,25 @@ export default async function DaviMentorPage({
         </div>
       </section>
 
+      <section className="border-b border-zinc-200 bg-white px-6 py-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-5 rounded-xl border border-zinc-200 bg-zinc-50 p-5 sm:flex-row sm:items-center">
+          <figure className="w-full shrink-0 sm:w-52">
+            <Link href="/catalogo/cricket-usb-c#oculos-conducao-ossea" aria-label="Conheça o conceito experimental de óculos CRICKET e fone por condução óssea" className="block rounded-lg transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">
+              <Image src="/images/davi/cricket-oculos-conducao-ossea.png" alt="Conceito ilustrativo de óculos CRICKET com câmera e fone aberto por condução óssea" width={1536} height={1024} sizes="(max-width: 640px) 320px, 208px" className="h-40 w-full rounded-lg object-contain" />
+            </Link>
+            <figcaption className="mt-2 text-center text-[11px] text-zinc-500">Imagem conceitual · Em desenvolvimento</figcaption>
+            <Link href="/catalogo/cricket-usb-c#oculos-conducao-ossea" className="mt-1 flex min-h-11 items-center justify-center rounded text-sm font-bold text-blue-700 underline underline-offset-4 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">Conheça o produto</Link>
+          </figure>
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-wide text-green-700">Óculos e áudio por condução óssea</p>
+            <h2 className="mt-1 text-xl font-black text-zinc-950">Outra forma de levar o DAVI Mentor com você</h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Estudamos também óculos com câmera e microfone para captar a cena em primeira pessoa, associados a um fone por condução óssea para ouvir as mensagens do Mentor sem inserir um alto-falante no canal auditivo.</p>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">A proposta é usar o celular como interface: solicitar uma descrição, receber orientações e ouvir a resposta no acessório. Captura de imagem, conexão sem fio, conforto, autonomia e qualidade do áudio ainda dependem de testes.</p>
+            <p className="mt-2 text-xs leading-5 text-zinc-500">Produto experimental e ilustrativo, não comercializado. Não há integração física validada desses óculos; as análises atuais do Mentor são sob demanda, sem garantia de resposta instantânea.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="border-b border-zinc-200 bg-white px-6 py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
