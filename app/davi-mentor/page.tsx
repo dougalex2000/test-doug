@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   Breadcrumb,
@@ -114,8 +115,11 @@ export default async function DaviMentorPage({
       <section className="border-b border-zinc-200 bg-white px-6 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-start gap-5 rounded-xl border border-zinc-200 bg-zinc-50 p-5 sm:flex-row sm:items-center">
           <figure className="w-full shrink-0 sm:w-52">
+            <Link href="/catalogo/cricket-usb-c" aria-label="Conheça o produto CRICKET: protótipo em desenvolvimento" className="block rounded-lg transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">
             <Image src="/images/davi/cricket-bluetooth-conceito.png" alt="Conceito ilustrativo de acessório sem fio CRICKET com câmera e grilinho DAVI, usado no ouvido sem mostrar o rosto" width={1536} height={1024} sizes="(max-width: 640px) 320px, 208px" className="h-40 w-full rounded-lg object-contain" />
+            </Link>
             <figcaption className="mt-2 text-center text-[11px] text-zinc-500">Imagem conceitual · Em desenvolvimento</figcaption>
+            <Link href="/catalogo/cricket-usb-c" className="mt-1 flex min-h-11 items-center justify-center rounded text-sm font-bold text-blue-700 underline underline-offset-4 hover:text-blue-900 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300">Conheça o produto</Link>
           </figure>
           <div className="max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-wide text-green-700">No celular ou com acessórios</p>
