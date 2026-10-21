@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import {
   Breadcrumb,
@@ -106,6 +107,22 @@ export default async function DaviMentorPage({
                 Modo Demonstração
               </LinkButton>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-zinc-200 bg-white px-6 py-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-start gap-5 rounded-xl border border-zinc-200 bg-zinc-50 p-5 sm:flex-row sm:items-center">
+          <figure className="w-full shrink-0 sm:w-52">
+            <Image src="/images/davi/cricket-bluetooth-conceito.png" alt="Conceito ilustrativo de acessório sem fio CRICKET com câmera e grilinho DAVI, usado no ouvido sem mostrar o rosto" width={1536} height={1024} sizes="(max-width: 640px) 320px, 208px" className="h-40 w-full rounded-lg object-contain" />
+            <figcaption className="mt-2 text-center text-[11px] text-zinc-500">Imagem conceitual · Em desenvolvimento</figcaption>
+          </figure>
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-wide text-green-700">No celular ou com acessórios</p>
+            <h2 className="mt-1 text-xl font-black text-zinc-950">O Mentor também pode acompanhar você pelo áudio</h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Use diretamente a câmera, o microfone e o alto-falante do celular, ou ouça as respostas em um fone Bluetooth conectado ao aparelho. A saída e a captura de áudio dependem do celular e do navegador.</p>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Também estudamos um acessório sem fio com câmera embutida, microfone e fone, identificado pelo grilinho CRICKET. A proposta é captar a cena em primeira pessoa e ouvir as mensagens do DAVI Mentor durante o uso. Conexão de vídeo, autonomia e compatibilidade ainda precisam ser validadas; Bluetooth para áudio não garante transmissão de câmera.</p>
+            <p className="mt-2 text-xs leading-5 text-zinc-500">Protótipo ilustrativo, não comercializado. Hoje a análise visual é solicitada sob demanda; não há monitoramento contínuo nem garantia de resposta instantânea.</p>
           </div>
         </div>
       </section>
