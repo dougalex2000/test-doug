@@ -107,6 +107,7 @@ export const mainNav: NavSection[] = [
     items: [
       { label: "Visão Geral", href: "/ia", description: "A IA no ecossistema DAVI.", group: "Grupo Inteligência Artificial" },
       { label: "DAVI Assistente", href: "/ia/assistente", description: "Guia inteligente da plataforma.", status: "Demonstração" },
+      { label: "DAVI Mentor", href: "/davi-mentor", description: "Assistente cognitivo contextual: lembrar, orientar e apoiar a autonomia.", status: "Em construção", group: "Grupo Inteligência Artificial" },
       { label: "IA no DAVI Vision", href: "/ia/vision", description: "Apoio à calibração e interpretação.", status: "Planejado" },
       { label: "IA na Aprendizagem", href: "/ia/aprendizagem", description: "Personalização de atividades.", status: "Planejado" },
       { label: "IA na Comunicação", href: "/ia/comunicacao", description: "Ampliar a comunicação alternativa.", status: "Planejado" },
@@ -231,6 +232,7 @@ export const megaMenu: MegaCategoria[] = [
     titulo: "Acompanhamento e apoio",
     itens: [
       { label: "DAVI Assistente", href: "/ia/assistente", status: "Demonstração" },
+      { label: "DAVI Mentor", href: "/davi-mentor", status: "Em construção" },
       { label: "DAVI Métricas", href: "/evolucao" },
     ],
   },

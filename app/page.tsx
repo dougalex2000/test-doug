@@ -12,6 +12,7 @@ import {
 import { AssistiveGallery } from "./components/AssistiveGallery";
 import { assistiveGallery } from "./lib/assistiveGallery";
 import {
+  IconBell,
   IconChat,
   IconChip,
   IconClipboard,
@@ -109,6 +110,14 @@ const mainModules: ModuleCard[] = [
     href: "/ia/assistente",
     icon: <IconSparkles className="h-6 w-6" />,
     status: "Demonstração",
+  },
+  {
+    title: "DAVI Mentor",
+    description:
+      "Assistente cognitivo contextual para lembrar rotinas e compromissos, orientar no contexto e apoiar a autonomia da pessoa.",
+    href: "/davi-mentor",
+    icon: <IconBell className="h-6 w-6" />,
+    status: "Em construção",
   },
   {
     title: "DAVI Métricas",
