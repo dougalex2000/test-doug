@@ -277,6 +277,18 @@ export function SiteFooter() {
             >
               contato.plataformadavi@gmail.com
             </a>
+            <p className="mt-3 text-xs leading-6 text-zinc-400">
+              Dúvidas com o desenvolvedor<br />
+              Eng. Douglas Alexandre de Sousa<br />
+              <a
+                href="https://wa.me/5519997001105"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex min-h-11 items-center rounded underline decoration-zinc-600 underline-offset-4 hover:text-white ${focusRing}`}
+              >
+                WhatsApp: (19) 99700-1105
+              </a>
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
             {footerSections.map((section) => (
