@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import {
   Breadcrumb,
   Illustration,
@@ -174,6 +175,19 @@ export default function CatalogoPage() {
             alt="Conjunto de dispositivos de tecnologia assistiva: acionador grande, webcam em suporte, prancha de comunicação, sensor de sopro e teclado ampliado"
             className="min-h-[320px]"
           />
+        </div>
+      </section>
+
+      <section className="border-b border-zinc-200 bg-blue-50 px-6 py-16">
+        <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
+          <Image src="/images/davi/cricket-usb-c-prototipo.jpeg" alt="Ilustração conceitual do CRICKET USB-C: fone com câmera e microfone conectado ao celular para uso com o DAVI Mentor" width={1448} height={1086} className="h-auto w-full rounded-xl border border-zinc-200" />
+          <div>
+            <p className="font-bold uppercase tracking-wide text-blue-800">Protótipo em teste · Sem finalidade comercial</p>
+            <h2 className="mt-3 text-3xl font-black text-zinc-950">CRICKET USB-C + DAVI Mentor</h2>
+            <p className="mt-4 text-lg leading-8 text-zinc-700">Proposta de fone com microcâmera, microfone e conexão USB-C ao smartphone para apoio visual e cognitivo por áudio. O dispositivo está em desenvolvimento; a imagem apresenta o conceito, não um produto disponível.</p>
+            <p className="mt-3 leading-7 text-zinc-700">Sem preço, venda ou encomendas. Compatibilidade USB-C, ergonomia e integração física ainda dependem de validação. Conheça o funcionamento proposto e o que já pode ser testado no DAVI Mentor.</p>
+            <div className="mt-6"><LinkButton href="/catalogo/cricket-usb-c">Conhecer o protótipo e seu uso</LinkButton></div>
+          </div>
         </div>
       </section>
 
