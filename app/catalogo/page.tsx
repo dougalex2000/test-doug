@@ -178,6 +178,19 @@ export default function CatalogoPage() {
         </div>
       </section>
 
+      <section className="border-b border-zinc-200 bg-zinc-50 px-6 py-16">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeader eyebrow="Exemplos ilustrativos" title="Tecnologia assistiva em diferentes formas" description="Representações realistas de um acionador de grande área, um teclado com teclas ampliadas e um suporte articulado para comunicação por tablet." />
+          <figure className="mt-8 overflow-hidden rounded-xl border border-zinc-200 bg-white">
+            <Image src="/images/davi/tecnologia-assistiva-ilustrativa.png" alt="Imagem ilustrativa gerada por IA de um acionador vermelho, teclado ampliado de alto contraste e tablet de comunicação em suporte articulado" width={1536} height={1024} sizes="(max-width: 1280px) 100vw, 1280px" className="h-auto w-full" />
+            <figcaption className="border-t border-zinc-200 p-5 text-sm leading-7 text-zinc-700">
+              <strong className="block text-base text-blue-900">Produto ilustrativo — não comercializado.</strong>
+              Imagem gerada por inteligência artificial para apresentar possibilidades de tecnologia assistiva. Não é fotografia de produtos fabricados pelo DAVI, não representa estoque ou oferta de venda e não comprova desempenho ou compatibilidade.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
       <section className="border-b border-zinc-200 bg-blue-50 px-6 py-16">
         <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-2">
           <Image src="/images/davi/cricket-usb-c-prototipo.jpeg" alt="Ilustração conceitual do CRICKET USB-C: fone com câmera e microfone conectado ao celular para uso com o DAVI Mentor" width={1448} height={1086} className="h-auto w-full rounded-xl border border-zinc-200" />
